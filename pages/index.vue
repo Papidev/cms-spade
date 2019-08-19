@@ -24,9 +24,13 @@
       </search-suggest>
     </div>
 
+    <!-- this component will only be rendered on client-side -->
     <main class="bg-red-100 h-screen w-1/2 border-2 border-black">
-      <new-markdown-editor v-model="wikiContent"></new-markdown-editor>
+      <no-ssr placeholder="Loading...">
+        <new-markdown-editor v-model="wikiContent"></new-markdown-editor>
+      </no-ssr>
     </main>
+
     <!--
     <div class="w-1/4">
       <json-tree :data="jsonSource" @selected="itemSelected" />
@@ -37,21 +41,27 @@
 
 <script>
 import { VueAutosuggest } from 'vue-autosuggest'
-// import markdownEditor from 'vue-simplemde/src/markdown-editor'
-// import { JSONView } from 'vue-json-component'
-import newMarkdownEditor from '~/components/MarkdownEditor.vue'
+// import newMarkdownEditor from ''
 import {
   getDataEndpoint,
   mergeNamesDescriptions,
   fetchData
 } from '~/components/helpers.js'
-require('easymde/dist/easymde.min.css')
+// import markdownEditor from 'vue-simplemde/src/markdown-editor'
+// import { JSONView } from 'vue-json-component'
+// let newMarkdownEditor
+if (process.client) {
+  console.log('ONLY ON BROWSER')
+  // newMarkdownEditor = require('~/components/MarkdownEditor.vue')
+  require('easymde/dist/easymde.min.css')
+}
 
 export default {
   components: {
     'search-suggest': VueAutosuggest,
     // 'markdown-editor': markdownEditor
-    'new-markdown-editor': newMarkdownEditor
+    // 'new-markdown-editor': newMarkdownEditor
+    'new-markdown-editor': () => import('~/components/MarkdownEditor.vue')
     // 'json-tree': JSONView
   },
 
