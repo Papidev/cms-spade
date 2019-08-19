@@ -1,55 +1,57 @@
 <template>
-  <div class="bg-yellow-100 h-screen w-1/2">
-    PIPPONE
-    <search-suggest
-      ref="autosuggest"
-      v-model="searchString"
-      class="bg-green-300 h-120 w-full"
-      :suggestions="suggestions"
-      :get-suggestion-value="getSuggestionValue"
-      :input-props="{
-        id: 'autosuggest_input',
-        placeholder: 'Type here for Search'
-      }"
-      @input="getSuggestions"
-      @selected="getPageContent"
-    >
-      <template v-slot:default="{ suggestion }">
-        <div>
-          <strong>{{ suggestion.item.name }} </strong> ----
-          {{ suggestion.item.description.substring(0, 75) }}
-        </div>
-      </template>
-    </search-suggest>
-  </div>
-  <!--
-    <main class="w-2/4 bg-orange-500 border-2 border-black">
+  <div>
+    <div class="bg-yellow-100 h-screen w-1/2">
+      PIPPONE
+      <search-suggest
+        ref="autosuggest"
+        v-model="searchString"
+        class="bg-green-300 h-120 w-full"
+        :suggestions="suggestions"
+        :get-suggestion-value="getSuggestionValue"
+        :input-props="{
+          id: 'autosuggest_input',
+          placeholder: 'Type here for Search'
+        }"
+        @input="getSuggestions"
+        @selected="getPageContent"
+      >
+        <template v-slot:default="{ suggestion }">
+          <div>
+            <strong>{{ suggestion.item.name }} </strong> ----
+            {{ suggestion.item.description.substring(0, 75) }}
+          </div>
+        </template>
+      </search-suggest>
+    </div>
+
+    <main class="bg-red-100 h-screen w-1/2 border-2 border-black">
       <new-markdown-editor v-model="wikiContent"></new-markdown-editor>
     </main>
-    
+    <!--
     <div class="w-1/4">
       <json-tree :data="jsonSource" @selected="itemSelected" />
     </div>
     -->
+  </div>
 </template>
 
 <script>
 import { VueAutosuggest } from 'vue-autosuggest'
 // import markdownEditor from 'vue-simplemde/src/markdown-editor'
 // import { JSONView } from 'vue-json-component'
-
-// import newMarkdownEditor from '~/components/MarkdownEditor.vue'
+import newMarkdownEditor from '~/components/MarkdownEditor.vue'
 import {
   getDataEndpoint,
   mergeNamesDescriptions,
   fetchData
 } from '~/components/helpers.js'
+require('easymde/dist/easymde.min.css')
 
 export default {
   components: {
-    'search-suggest': VueAutosuggest
-    // 'markdown-editor': markdownEditor,
-    // 'new-markdown-editor': newMarkdownEditor,
+    'search-suggest': VueAutosuggest,
+    // 'markdown-editor': markdownEditor
+    'new-markdown-editor': newMarkdownEditor
     // 'json-tree': JSONView
   },
 
@@ -130,6 +132,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-/* @import '~simplemde/dist/simplemde.min.css'; */
-</style>

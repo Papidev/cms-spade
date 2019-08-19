@@ -22,7 +22,7 @@ export default {
   },
 
   watch: {
-    value: function(newValue) {
+    value(newValue) {
       this.easyMDE.value(newValue)
     }
   },
@@ -41,7 +41,7 @@ export default {
 
     /* this.easyMDE.codemirror.on('inputRead', () => {
       this.$emit('input', this.easyMDE.value())
-    })*/
+    }) */
   },
   methods: {}
 }
