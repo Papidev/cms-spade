@@ -1,11 +1,11 @@
 <template>
-  <div>
-    <div class="bg-yellow-100 h-screen w-1/2">
+  <div class="flex">
+    <div class="bg-green-100 h-screen w-1/2">
       PIPPONE
       <search-suggest
         ref="autosuggest"
         v-model="searchString"
-        class="bg-green-300 h-120 w-full"
+        class="bg-green-200 h-screen w-full"
         :suggestions="suggestions"
         :get-suggestion-value="getSuggestionValue"
         :input-props="{
