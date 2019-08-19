@@ -1,27 +1,28 @@
 <template>
-  <div>
-    <div>
-      <search-suggest
-        ref="autosuggest"
-        v-model="searchString"
-        :suggestions="suggestions"
-        :get-suggestion-value="getSuggestionValue"
-        :input-props="{
-          id: 'autosuggest_input',
-          placeholder: 'Type here for Search'
-        }"
-        @input="getSuggestions"
-        @selected="getPageContent"
-      >
-        <template v-slot:default="{ suggestion }">
-          <div>
-            <strong>{{ suggestion.item.name }} </strong> ----
-            {{ suggestion.item.description.substring(0, 75) }}
-          </div>
-        </template>
-      </search-suggest>
-    </div>
-    <!--
+  <div class="bg-yellow-100 h-screen w-1/2">
+    PIPPONE
+    <search-suggest
+      ref="autosuggest"
+      v-model="searchString"
+      class="bg-green-300 h-120 w-full"
+      :suggestions="suggestions"
+      :get-suggestion-value="getSuggestionValue"
+      :input-props="{
+        id: 'autosuggest_input',
+        placeholder: 'Type here for Search'
+      }"
+      @input="getSuggestions"
+      @selected="getPageContent"
+    >
+      <template v-slot:default="{ suggestion }">
+        <div>
+          <strong>{{ suggestion.item.name }} </strong> ----
+          {{ suggestion.item.description.substring(0, 75) }}
+        </div>
+      </template>
+    </search-suggest>
+  </div>
+  <!--
     <main class="w-2/4 bg-orange-500 border-2 border-black">
       <new-markdown-editor v-model="wikiContent"></new-markdown-editor>
     </main>
@@ -30,7 +31,6 @@
       <json-tree :data="jsonSource" @selected="itemSelected" />
     </div>
     -->
-  </div>
 </template>
 
 <script>
