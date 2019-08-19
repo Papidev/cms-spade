@@ -37,35 +37,13 @@
 import { VueAutosuggest } from 'vue-autosuggest'
 // import markdownEditor from 'vue-simplemde/src/markdown-editor'
 // import { JSONView } from 'vue-json-component'
-import axios from 'axios'
+
 // import newMarkdownEditor from '~/components/MarkdownEditor.vue'
-import { getDataEndpoint } from '~/components/helpers.js'
-
-function mergeNamesDescriptions(names, descriptions) {
-  console.log('names ')
-  console.log(names)
-  console.log('descriptions ')
-  console.log(descriptions)
-  const result = []
-  for (let i = 0; i < names.length; i++) {
-    result.push({
-      id: i,
-      name: names[i],
-      description: descriptions[i]
-    })
-  }
-
-  return [{ data: result }]
-}
-
-async function fetchData(url) {
-  try {
-    const response = await axios.get(url)
-    return response
-  } catch (err) {
-    console.log(err)
-  }
-}
+import {
+  getDataEndpoint,
+  mergeNamesDescriptions,
+  fetchData
+} from '~/components/helpers.js'
 
 export default {
   components: {
@@ -111,7 +89,7 @@ export default {
       this.selected = item.item.name
       const queryUrl =
         getDataEndpoint('en', 'wikipedia', 'query') + item.item.name
-
+      console.log(queryUrl)
       const resource = await fetchData(queryUrl)
       const page = Object.keys(resource.data.query.pages)[0]
       this.wikiContent = resource.data.query.pages[page].extract
