@@ -66,6 +66,12 @@ export default {
           opensearch:
             'https://it.wikipedia.org/w/api.php?action=opensearch&limit=10&origin=*&namespace=0&format=json&search='
         }
+      },
+
+      cms: {
+        en: {
+          fetch: process.env.CMS_URL || 'http://localhost:1337'
+        }
       }
     }
   },
