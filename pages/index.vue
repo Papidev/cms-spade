@@ -24,7 +24,7 @@
       </search-suggest>
     </div>
     <div class="bg-red-100 h-screen w-1/2 border-2 border-black">
-      <button type="button" @click="queryCms('Sant\'Ambrogio', 'en')">
+      <button type="button" @click="queryCms('Identifier', 'PL-0000001', 'en')">
         Click Me!
       </button>
       <!-- this component will only be rendered on client-side -->
@@ -51,7 +51,7 @@ import {
   fetchData,
   // eslint-disable-next-line no-unused-vars
   queryCms
-} from '~/components/helpers.js'
+} from '~/components/helpersFunctions.js'
 // import markdownEditor from 'vue-simplemde/src/markdown-editor'
 // import { JSONView } from 'vue-json-component'
 // let newMarkdownEditor
@@ -96,9 +96,9 @@ export default {
   },
 
   methods: {
-    async queryCms(name, lang) {
+    async queryCms(attribute, name, lang) {
       // "convertToSome" inside is the imported function
-      this.cmsDescription = await queryCms(name, lang)
+      this.cmsDescription = await queryCms(attribute, name, lang)
     },
 
     itemSelected(event) {

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Strapi from 'strapi-sdk-javascript/build/main'
+import { queryPlacesByName, queryPlacesByIdentifier } from './helpersGraph'
 
 function getDataEndpoint(lang, source, operation) {
   return process.env.endpoints[source][lang][operation]
@@ -26,20 +27,16 @@ async function fetchData(url) {
   }
 }
 
-async function queryCms(name, lang) {
+async function queryCms(attribute, searchString, lang) {
   try {
     const url = getDataEndpoint(lang, 'cms', 'query')
+    let query
     const strapi = new Strapi(url)
+    if (attribute === 'Identifier')
+      query = queryPlacesByIdentifier(searchString)
+    else query = queryPlacesByName(searchString)
 
-    const query = `query {
-      places(where: { Name: "${name}" }) {
-        id
-        Identifier
-        Name
-        Description
-      }
-    }`
-
+    console.log(query)
     const response = await strapi.request('post', '/graphql', {
       data: {
         query
