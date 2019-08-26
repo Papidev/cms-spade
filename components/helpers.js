@@ -26,30 +26,34 @@ async function fetchData(url) {
   }
 }
 
-async function fetchCms(name, lang) {
+async function queryCms(name, lang) {
   try {
-    const url = getDataEndpoint(lang, 'cms', 'fetch')
-    console.log('fetch cms url : ' + url)
+    const url = getDataEndpoint(lang, 'cms', 'query')
     const strapi = new Strapi(url)
-    const risultato = await strapi.request('post', '/graphql', {
+
+    const query = `query {
+      places(where: { Name: "${name}" }) {
+        id
+        Identifier
+        Name
+        Description
+      }
+    }`
+
+    const response = await strapi.request('post', '/graphql', {
       data: {
-        query: `query {
-attractions (where: {
-   
-Name: "${name}"
-}){
-Description
-}
-}`
+        query
       }
     })
 
-    if (typeof risultato.data.attractions[0] !== 'undefined') {
-      return risultato.data.attractions[0].Description
-    } else return 'Nessun risultato trovato'
+    const content = response.data.places[0]
+    if (typeof content !== 'undefined') {
+      console.log('Description ' + content.Description)
+      return content.Description
+    } else return 'Nessun response trovato'
   } catch (err) {
     console.log('fetch failed', err)
   }
 }
 
-export { getDataEndpoint, mergeNamesDescriptions, fetchData }
+export { getDataEndpoint, mergeNamesDescriptions, fetchData, queryCms }

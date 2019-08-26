@@ -70,7 +70,7 @@ export default {
 
       cms: {
         en: {
-          fetch: process.env.CMS_URL || 'http://localhost:1337'
+          query: process.env.CMS_URL || 'http://localhost:1337'
         }
       }
     }

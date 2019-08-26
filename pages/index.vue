@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <div class="bg-green-100 h-screen w-1/2">
-      PIPPONE
+      {{ cmsDescription }}
       <search-suggest
         ref="autosuggest"
         v-model="searchString"
@@ -23,14 +23,17 @@
         </template>
       </search-suggest>
     </div>
-
-    <!-- this component will only be rendered on client-side -->
-    <main class="bg-red-100 h-screen w-1/2 border-2 border-black">
-      <no-ssr placeholder="Loading...">
-        <new-markdown-editor v-model="wikiContent"></new-markdown-editor>
-      </no-ssr>
-    </main>
-
+    <div class="bg-red-100 h-screen w-1/2 border-2 border-black">
+      <button type="button" @click="queryCms('Sant\'Ambrogio', 'en')">
+        Click Me!
+      </button>
+      <!-- this component will only be rendered on client-side -->
+      <main>
+        <no-ssr placeholder="Loading...">
+          <new-markdown-editor v-model="wikiContent"></new-markdown-editor>
+        </no-ssr>
+      </main>
+    </div>
     <!--
     <div class="w-1/4">
       <json-tree :data="jsonSource" @selected="itemSelected" />
@@ -45,7 +48,9 @@ import { VueAutosuggest } from 'vue-autosuggest'
 import {
   getDataEndpoint,
   mergeNamesDescriptions,
-  fetchData
+  fetchData,
+  // eslint-disable-next-line no-unused-vars
+  queryCms
 } from '~/components/helpers.js'
 // import markdownEditor from 'vue-simplemde/src/markdown-editor'
 // import { JSONView } from 'vue-json-component'
@@ -67,6 +72,7 @@ export default {
 
   data() {
     return {
+      cmsDescription: '',
       searchString: '',
       selected: '',
       suggestions: [],
@@ -88,7 +94,13 @@ export default {
       this.jsonSource = response.data
     })
   },
+
   methods: {
+    async queryCms(name, lang) {
+      // "convertToSome" inside is the imported function
+      this.cmsDescription = await queryCms(name, lang)
+    },
+
     itemSelected(event) {
       this.searchString = event.value
     },
