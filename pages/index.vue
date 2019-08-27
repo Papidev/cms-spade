@@ -1,6 +1,12 @@
+/* eslint-disable prefer-const */
 <template>
   <div class="flex">
     <div class="bg-green-100 h-screen w-1/2">
+      <div class="bg-red-200 ">
+        <h1 v-if="selected">Hai selezionato {{ selected }}</h1>
+        <h1 v-else>Non hai selezionato nulla 😢</h1>
+      </div>
+      <br />
       <ul>
         <li
           v-for="(value, name, index) in cmsItem"
@@ -9,6 +15,9 @@
           {{ index }}. {{ name }}: {{ value }}
         </li>
       </ul>
+      <button type="button" @click="queryCms('en')">
+        Click Me!
+      </button>
       <search-suggest
         ref="autosuggest"
         v-model="searchString"
@@ -31,9 +40,6 @@
       </search-suggest>
     </div>
     <div class="bg-red-100 h-screen w-1/2 border-2 border-black">
-      <button type="button" @click="queryCms('Identifier', 'PL-0000001', 'en')">
-        Click Me!
-      </button>
       <!-- this component will only be rendered on client-side -->
       <main>
         <no-ssr placeholder="Loading...">
@@ -80,8 +86,10 @@ export default {
   data() {
     return {
       cmsItem: {
-        Identifier: '---',
-        Name: 'Ignoto'
+        id: '',
+        Identifier: '',
+        Name: '',
+        Description: ''
       },
 
       searchString: '',
@@ -107,14 +115,30 @@ export default {
   },
 
   methods: {
-    async queryCms(attribute, name, lang) {
+    async queryCms(lang) {
+      console.log('CLICK')
+      let attribute, searchString
+
+      if (this.selected !== '') {
+        searchString = this.selected
+      } else return null
+
       const url = getDataEndpoint(lang, 'cms', 'query')
       // "convertToSome" inside is the imported function
+      if (this.Identifier !== '' && typeof this.Identifier !== 'undefined') {
+        attribute = 'Identifier'
+      } else {
+        attribute = 'Name'
+      }
 
-      this.resultItem = await queryCms(attribute, name, lang, url)
-      for (const k in this.resultItem) this.cmsItem[k] = this.resultItem[k]
-
-      console.log(this.cmsItem.Identifier)
+      this.resultItem = await queryCms(attribute, searchString, lang, url)
+      if (this.resultItem !== null) {
+        for (const k in this.resultItem) {
+          console.log(this.resultItem[k])
+          this.cmsItem[k] = this.resultItem[k]
+        }
+      }
+      // console.log(this.cmsItem.Identifier)
     },
     itemSelected(event) {
       this.searchString = event.value

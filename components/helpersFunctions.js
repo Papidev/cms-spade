@@ -46,10 +46,10 @@ async function queryCms(attribute, searchString, lang, url) {
     if (typeof content !== 'undefined') {
       console.log('Description ' + content.Description)
       return content
-    } else return 'Nessun response trovato'
+    } else return null
   } catch (err) {
     console.log('fetch failed', err)
-    return 'FETCH FAILED'
+    return null
   }
 }
 
