@@ -18,7 +18,7 @@ function mergeNamesDescriptions(names, descriptions) {
   return [{ data: result }]
 }
 
-async function fetchData(url) {
+async function axiosGet(url) {
   try {
     const response = await axios.get(url)
     return response
@@ -27,10 +27,9 @@ async function fetchData(url) {
   }
 }
 
-async function queryCms(attribute, searchString, lang) {
+async function queryCms(attribute, searchString, lang, url) {
+  let query
   try {
-    const url = getDataEndpoint(lang, 'cms', 'query')
-    let query
     const strapi = new Strapi(url)
     if (attribute === 'Identifier')
       query = queryPlacesByIdentifier(searchString)
@@ -46,11 +45,12 @@ async function queryCms(attribute, searchString, lang) {
     const content = response.data.places[0]
     if (typeof content !== 'undefined') {
       console.log('Description ' + content.Description)
-      return content.Description
+      return content
     } else return 'Nessun response trovato'
   } catch (err) {
     console.log('fetch failed', err)
+    return 'FETCH FAILED'
   }
 }
 
-export { getDataEndpoint, mergeNamesDescriptions, fetchData, queryCms }
+export { getDataEndpoint, mergeNamesDescriptions, axiosGet, queryCms }

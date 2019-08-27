@@ -1,7 +1,14 @@
 <template>
   <div class="flex">
     <div class="bg-green-100 h-screen w-1/2">
-      {{ cmsDescription }}
+      <ul>
+        <li
+          v-for="(value, name, index) in cmsItem"
+          :key="(value, name, index).index"
+        >
+          {{ index }}. {{ name }}: {{ value }}
+        </li>
+      </ul>
       <search-suggest
         ref="autosuggest"
         v-model="searchString"
@@ -48,7 +55,7 @@ import { VueAutosuggest } from 'vue-autosuggest'
 import {
   getDataEndpoint,
   mergeNamesDescriptions,
-  fetchData,
+  axiosGet,
   // eslint-disable-next-line no-unused-vars
   queryCms
 } from '~/components/helpersFunctions.js'
@@ -72,7 +79,11 @@ export default {
 
   data() {
     return {
-      cmsDescription: '',
+      cmsItem: {
+        Identifier: '---',
+        Name: 'Ignoto'
+      },
+
       searchString: '',
       selected: '',
       suggestions: [],
@@ -90,17 +101,21 @@ export default {
   },
 
   created() {
-    fetchData('/data/Chiese_Abbazie_ProvinciaMilano.json').then((response) => {
+    axiosGet('/data/Chiese_Abbazie_ProvinciaMilano.json').then((response) => {
       this.jsonSource = response.data
     })
   },
 
   methods: {
     async queryCms(attribute, name, lang) {
+      const url = getDataEndpoint(lang, 'cms', 'query')
       // "convertToSome" inside is the imported function
-      this.cmsDescription = await queryCms(attribute, name, lang)
-    },
 
+      this.resultItem = await queryCms(attribute, name, lang, url)
+      for (const k in this.resultItem) this.cmsItem[k] = this.resultItem[k]
+
+      console.log(this.cmsItem.Identifier)
+    },
     itemSelected(event) {
       this.searchString = event.value
     },
@@ -114,7 +129,7 @@ export default {
       const queryUrl =
         getDataEndpoint('en', 'wikipedia', 'query') + item.item.name
       console.log(queryUrl)
-      const resource = await fetchData(queryUrl)
+      const resource = await axiosGet(queryUrl)
       const page = Object.keys(resource.data.query.pages)[0]
       this.wikiContent = resource.data.query.pages[page].extract
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
@@ -124,12 +139,12 @@ export default {
       // console.log('getSuggestions ' + searchString)
       let url = getDataEndpoint('en', 'wikipedia', 'opensearch') + searchString
       // console.log(url)
-      let resource = await fetchData(url)
+      let resource = await axiosGet(url)
       // console.log(resource)
 
       if (resource.data[1].length === 0) {
         url = getDataEndpoint('it', 'wikipedia', 'opensearch') + searchString
-        resource = await fetchData(url)
+        resource = await axiosGet(url)
 
         // console.log('switchato it')
         // console.log(resource)
