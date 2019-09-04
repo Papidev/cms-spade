@@ -19,7 +19,7 @@
         <button
           class="rounded mx-auto px-10"
           type="button"
-          @click="queryCms('en')"
+          @click="getPlaceByName(searchString, 'en')"
         >
           Click Me!
         </button>
@@ -37,7 +37,7 @@
           placeholder: 'Type here for Search'
         }"
         @input="getSuggestions"
-        @selected="getPageContent"
+        @selected="handleSelected"
       >
         <template v-slot:default="{ suggestion }">
           <div>
@@ -71,7 +71,7 @@ import {
   mergeNamesDescriptions,
   axiosGet,
   // eslint-disable-next-line no-unused-vars
-  queryCms,
+  // queryCms,
   getPlaceByName
 } from '~/components/helpersFunctions.js'
 // import markdownEditor from 'vue-simplemde/src/markdown-editor'
@@ -123,32 +123,6 @@ export default {
   },
 
   methods: {
-    async queryCms(lang) {
-      console.log('CLICK')
-      // eslint-disable-next-line no-unused-vars
-      let attribute, searchString
-
-      if (this.selected !== '') {
-        searchString = this.selected
-      } else return null
-
-      // const url = getDataEndpoint(lang, 'cms', 'query')
-      // "convertToSome" inside is the imported function
-      if (this.Identifier !== '' && typeof this.Identifier !== 'undefined') {
-        attribute = 'Identifier'
-      } else {
-        attribute = 'Name'
-      }
-
-      this.resultItem = await getPlaceByName(searchString, lang)
-      if (this.resultItem !== null) {
-        for (const k in this.resultItem) {
-          console.log(this.resultItem[k])
-          this.cmsItem[k] = this.resultItem[k]
-        }
-      }
-      // console.log(this.cmsItem.Identifier)
-    },
     itemSelected(event) {
       this.searchString = event.value
     },
@@ -157,17 +131,10 @@ export default {
       this.jsonSource = data
     },
 
-    async getPageContent(item) {
+    async handleSelected(item) {
       this.selected = item.item.name
       console.log('this.selected : ', this.selected)
       this.wikiContent = await getPlaceByName(item.item.name, 'en')
-
-      // const queryUrl =
-      //   getDataEndpoint('en', 'wikipedia', 'query') + item.item.name
-      // console.log(queryUrl)
-      // const resource = await axiosGet(queryUrl)
-      // const page = Object.keys(resource.data.query.pages)[0]
-      // this.wikiContent = resource.data.query.pages[page].extract
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
 
