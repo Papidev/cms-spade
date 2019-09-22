@@ -19,7 +19,7 @@
         <button
           class="rounded mx-auto px-10"
           type="button"
-          @click="getPlaceByName(searchString, 'en')"
+          @click="getPlaceByName(searchString, this.$store.getters.getLanguage)"
         >
           Click Me!
         </button>
@@ -29,7 +29,7 @@
       <search-suggest
         ref="autosuggest"
         v-model="searchString"
-        class="bg-green-200 h-screen w-full"
+        class="bg-green-400 w-full"
         :suggestions="suggestions"
         :get-suggestion-value="getSuggestionValue"
         :input-props="{
@@ -132,15 +132,24 @@ export default {
     },
 
     async handleSelected(item) {
+      console.log('item : ', item)
       this.selected = item.item.name
       console.log('this.selected : ', this.selected)
-      this.wikiContent = await getPlaceByName(item.item.name, 'en')
+      this.wikiContent = await getPlaceByName(
+        item.item.name,
+        this.$store.getters.getLanguage
+      )
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
 
     async getSuggestions(searchString) {
       // console.log('getSuggestions ' + searchString)
-      let url = getDataEndpoint('en', 'wikipedia', 'opensearch') + searchString
+      let url =
+        getDataEndpoint(
+          this.$store.getters.getLanguage,
+          'wikipedia',
+          'opensearch'
+        ) + searchString
       // console.log(url)
       let resource = await axiosGet(url)
       // console.log(resource)

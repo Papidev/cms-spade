@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Strapi from 'strapi-sdk-javascript/build/main'
 import { queryPlacesByName } from './helpersGraph'
+import createStore from '~/store/index.js'
 
 function getDataEndpoint(lang, source, operation) {
   return process.env.endpoints[source][lang][operation]
@@ -71,7 +72,9 @@ async function getPlaceByNameCms(name, lang) {
 
 async function getPlaceByNameWiki(name, lang) {
   try {
-    const url = getDataEndpoint('en', 'wikipedia', 'query') + name
+    const url =
+      getDataEndpoint(createStore().getters.getLanguage, 'wikipedia', 'query') +
+      name
 
     console.log('url ' + url)
     const response = await axiosGet(url)
