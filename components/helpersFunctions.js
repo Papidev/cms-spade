@@ -1,4 +1,4 @@
-import axios from 'axios'
+
 import Strapi from 'strapi-sdk-javascript/build/main'
 import { queryPlacesByName } from './helpersGraph'
 import createStore from '~/store/index.js'
@@ -21,7 +21,7 @@ function mergeNamesDescriptions(names, descriptions) {
 
 async function axiosGet(url) {
   try {
-    const response = await axios.get(url)
+    const response = await this.$axios.$get(url)
     return response
   } catch (err) {
     console.log(err)
