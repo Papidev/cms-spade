@@ -1,14 +1,14 @@
 <template>
   <div>
-    <textarea id="my-text-area"></textarea>
+    <textarea id="my-text-area" ref="mytextarea"></textarea>
   </div>
 </template>
 
 <script>
 import EasyMDE from 'easymde'
-
+let easyMDE = {}
 export default {
-  // eslint-disable-next-line vue/require-prop-types
+ 
   props: {
     value: {
       required: true,
@@ -17,20 +17,20 @@ export default {
   },
   data() {
     return {
-      easyMDE: ''
+     // easyMDE: {}
     }
   },
 
   watch: {
     value(newValue) {
-      this.easyMDE.value(newValue)
+      easyMDE.value(newValue)
     }
   },
 
   mounted() {
-    this.easyMDE = new EasyMDE({
+    easyMDE = new EasyMDE({
       autofocus: true,
-      element: document.getElementById('my-text-area'),
+      element: this.$refs.mytextarea ,// document.getElementById('my-text-area'),
       autosave: {
         enabled: true,
         uniqueId: 'MyMDE'
@@ -39,9 +39,7 @@ export default {
       spellChecker: false
     })
 
-    /* this.easyMDE.codemirror.on('inputRead', () => {
-      this.$emit('input', this.easyMDE.value())
-    }) */
+   
   },
   methods: {}
 }
