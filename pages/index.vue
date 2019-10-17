@@ -19,14 +19,18 @@
         <button
           class="rounded mx-auto px-10"
           type="button"
-          @click="clickHandler(searchString)">
+          @click="clickHandler(searchString)"
+        >
           Click Me!
         </button>
       </div>
 
       <hr />
 
-    <search-suggest :searchString= searchString :suggestions= suggestions />
+      <search-suggest
+        :search-string="searchString"
+        :suggestions="suggestions"
+      />
     </div>
     <div class="bg-red-100 h-screen w-1/2 border-2 border-black">
       <!-- this component will only be rendered on client-side -->
@@ -45,16 +49,15 @@
 </template>
 
 <script>
-
 // import newMarkdownEditor from ''
- import {
-//   getDataEndpoint,
-//   mergeNamesDescriptions,  
- axiosGet,
-//   // eslint-disable-next-line no-unused-vars
-//   // queryCms,
-//   //getPlaceByName
- } from '~/components/helpersFunctions.js'
+import {
+  //   getDataEndpoint,
+  //   mergeNamesDescriptions,
+  axiosGet
+  //   // eslint-disable-next-line no-unused-vars
+  //   // queryCms,
+  //   //getPlaceByName
+} from '~/components/helpersFunctions.js'
 // import markdownEditor from 'vue-simplemde/src/markdown-editor'
 // import { JSONView } from 'vue-json-component'
 // let newMarkdownEditor
@@ -65,7 +68,6 @@ if (process.client) {
 
 export default {
   components: {
-  
     // 'markdown-editor': markdownEditor
     // 'new-markdown-editor': newMarkdownEditor
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
@@ -105,22 +107,19 @@ export default {
   },
 
   methods: {
-
-clickHandler(event,searchString){
-this.$store.dispatch('getPlaceByName', {
-  name: searchString,
-  lang: this.$store.getters.getLanguage
-})
-}
-,
-
+    clickHandler(event, searchString) {
+      this.$store.dispatch('getPlaceByName', {
+        name: searchString,
+        lang: this.$store.getters.getLanguage
+      })
+    },
     itemSelected(event) {
       this.searchString = event.value
     },
 
     onChangeJson(data) {
       this.jsonSource = data
-    },
+    }
 
     // async handleSelected(item) {
     //   console.log('item : ', item)

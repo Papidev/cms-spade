@@ -41,6 +41,7 @@ export default {
    ** Nuxt.js modules
    */
   modules: [
+    'nuxt-rfg-icon',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa'

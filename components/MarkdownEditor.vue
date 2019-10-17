@@ -8,7 +8,6 @@
 import EasyMDE from 'easymde'
 let easyMDE = {}
 export default {
- 
   props: {
     value: {
       required: true,
@@ -17,7 +16,7 @@ export default {
   },
   data() {
     return {
-     // easyMDE: {}
+      // easyMDE: {}
     }
   },
 
@@ -30,7 +29,7 @@ export default {
   mounted() {
     easyMDE = new EasyMDE({
       autofocus: true,
-      element: this.$refs.mytextarea ,// document.getElementById('my-text-area'),
+      element: this.$refs.mytextarea, // document.getElementById('my-text-area'),
       autosave: {
         enabled: true,
         uniqueId: 'MyMDE'
@@ -38,8 +37,6 @@ export default {
       minHeight: '700px',
       spellChecker: false
     })
-
-   
   },
   methods: {}
 }

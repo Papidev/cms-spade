@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 import Strapi from 'strapi-sdk-javascript/build/main'
 import { queryPlacesByName } from './helpersGraph'
 import createStore from '~/store/index.js'
@@ -19,12 +19,10 @@ function mergeNamesDescriptions(names, descriptions) {
   return [{ data: result }]
 }
 
- async function axiosGet(url) {
-  
-    const response = await axios.get(url)
-     return response
-  
- }
+async function axiosGet(url) {
+  const response = await axios.get(url)
+  return response
+}
 
 // async function getPlaceByName(name, lang) {
 //   let wikiResult
@@ -54,10 +52,6 @@ function mergeNamesDescriptions(names, descriptions) {
 //         query
 //       }
 //     })
-
-
-
-
 
 //     //const strapi = new Strapi(url)
 //     // const response = await strapi.request('post', '/graphql', {
@@ -107,9 +101,9 @@ function mergeNamesDescriptions(names, descriptions) {
 // }
 
 export {
-  //getDataEndpoint,
-  //mergeNamesDescriptions,
-  axiosGet,
+  // getDataEndpoint,
+  // mergeNamesDescriptions,
+  axiosGet
   // queryCms,
-  //getPlaceByName
+  // getPlaceByName
 }
