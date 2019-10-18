@@ -24,6 +24,10 @@ async function axiosGet(url) {
   return response
 }
 
+function getDataEndpoint(lang, source, operation) {
+  return process.env.endpoints[source][lang][operation]
+}
+
 // async function getPlaceByName(name, lang) {
 //   let wikiResult
 //   let cmsResult = ''
@@ -103,7 +107,8 @@ async function axiosGet(url) {
 export {
   // getDataEndpoint,
   // mergeNamesDescriptions,
-  axiosGet
+  axiosGet,
+  getDataEndpoint
   // queryCms,
   // getPlaceByName
 }

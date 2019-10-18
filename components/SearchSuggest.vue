@@ -24,7 +24,8 @@
 </template>
 <script>
 import { VueAutosuggest } from 'vue-autosuggest'
-import { axiosGet } from '~/components/helpersFunctions.js'
+import { axiosGet,getDataEndpoint } from '~/components/helpersFunctions.js'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     'search-suggest': VueAutosuggest
@@ -46,10 +47,15 @@ export default {
       shownSuggestions: this.suggestions
     }
   },
+  computed:{
+
+...mapGetters({language : 'getLanguage'})
+   
+
+
+  },
   methods: {
-    getDataEndpoint(lang, source, operation) {
-      return process.env.endpoints[source][lang][operation]
-    },
+   
     /**
      * This is what the <input/> value is set to when you are selecting a suggestion.
      */
@@ -57,25 +63,21 @@ export default {
       return suggestion.item.name
     },
     async getSuggestions(searchedElement) {
-      // console.log('getSuggestions ' + searchedElement)
+    
       let url =
-        this.getDataEndpoint(
-          this.$store.getters.getLanguage,
+      getDataEndpoint(
+         this.language,
           'wikipedia',
           'opensearch'
         ) + searchedElement
-      // console.log(url)
+  
       let resource = await axiosGet(url)
-      // console.log(resource)
-
-      if (resource.data[1].length === 0) {
+       if (resource.data[1].length === 0) {
         url =
-          this.getDataEndpoint('it', 'wikipedia', 'opensearch') +
+          getDataEndpoint('it', 'wikipedia', 'opensearch') +
           searchedElement
         resource = await axiosGet(url)
 
-        // console.log('switchato it')
-        // console.log(resource)
       }
       this.shownSuggestions = this.mergeNamesDescriptions(
         resource.data[1],
@@ -83,12 +85,12 @@ export default {
       )
     },
     async handleSelected(item) {
-      console.log('item : ', item)
+      
       this.selected = item.item.name
       console.log('this.selected : ', this.selected)
       this.wikiContent = await this.getPlaceByName(
-        item.item.name,
-        this.$store.getters.getLanguage
+       this.selected,
+      this.language
       )
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
@@ -105,7 +107,7 @@ export default {
       return [{ data: result }]
     },
     async getPlaceByName(name, lang) {
-      console.log(name + ' ' + lang)
+      console.log("getPlaceByName : " +name + ' ' + lang)
      // let wikiResult
      // const cmsResult = ''
       //   cmsResult = await getPlaceByNameCms(name, lang)
