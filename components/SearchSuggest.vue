@@ -93,6 +93,7 @@ export default {
     async handleSelectedSuggestion(item) {
       
       this.selected = item.item.name
+      this.$store.dispatch('setWikiSelectedElement',item.item.name)
       console.log('this.selected : ', this.selected)
       this.wikiContent = await this.getPlaceByName(
        this.selected,

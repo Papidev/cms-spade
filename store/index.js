@@ -22,12 +22,21 @@ const createStore = () => {
     getters: {
       getLanguage(state) {
         return state.language
+      },
+      getWikiSelectedElement(state) {
+        return state.wikiSelectedElement
+      },
+      getCmsSelectedElement(state) {
+        return state.cmsSelectedElement
       }
     },
 
     actions: {
       setLanguage(vuexContext, language) {
         vuexContext.commit('setLanguage', language)
+      },
+      setWikiSelectedElement(vuexContext, wikiSelectedElement) {
+        vuexContext.commit('setWikiSelectedElement', wikiSelectedElement)
       }
     }
   })
