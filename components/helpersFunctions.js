@@ -1,23 +1,23 @@
 import axios from 'axios'
-import Strapi from 'strapi-sdk-javascript/build/main'
-import { queryPlacesByName } from './helpersGraph'
-import createStore from '~/store/index.js'
+// import Strapi from 'strapi-sdk-javascript/build/main'
+// import { queryPlacesByName } from './helpersGraph'
+// import createStore from '~/store/index.js'
 
 // function getDataEndpoint(lang, source, operation) {
 //   return process.env.endpoints[source][lang][operation]
 // }
 
-function mergeNamesDescriptions(names, descriptions) {
-  const result = []
-  for (let i = 0; i < names.length; i++) {
-    result.push({
-      id: i,
-      name: names[i],
-      description: descriptions[i]
-    })
-  }
-  return [{ data: result }]
-}
+// function mergeNamesDescriptions(names, descriptions) {
+//   const result = []
+//   for (let i = 0; i < names.length; i++) {
+//     result.push({
+//       id: i,
+//       name: names[i],
+//       description: descriptions[i]
+//     })
+//   }
+//   return [{ data: result }]
+// }
 
 async function axiosGet(url) {
   const response = await axios.get(url)

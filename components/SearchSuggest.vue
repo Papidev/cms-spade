@@ -105,8 +105,9 @@ export default {
       return [{ data: result }]
     },
     async getPlaceByName(name, lang) {
-      let wikiResult
-      const cmsResult = ''
+      console.log(name + ' ' + lang)
+     // let wikiResult
+     // const cmsResult = ''
       //   cmsResult = await getPlaceByNameCms(name, lang)
 
       //   if (cmsResult !== null && cmsResult !== undefined) {
@@ -120,4 +121,5 @@ export default {
     }
   }
 }
+
 </script>

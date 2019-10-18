@@ -35,9 +35,9 @@
     <div class="bg-red-100 h-screen w-1/2 border-2 border-black">
       <!-- this component will only be rendered on client-side -->
       <main>
-        <no-ssr placeholder="Loading...">
+        <client-only placeholder="Loading...">
           <new-markdown-editor v-model="wikiContent"></new-markdown-editor>
-        </no-ssr>
+        </client-only>
       </main>
     </div>
     <!--
@@ -74,6 +74,7 @@ export default {
     'search-suggest': () => import('~/components/SearchSuggest.vue')
     // 'json-tree': JSONView
   },
+
 
   data() {
     return {

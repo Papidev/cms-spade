@@ -15,7 +15,7 @@
     "@nuxtjs/axios": "^5.6.0",
     "@nuxtjs/pwa": "^3.0.0-beta.19",
     "easymde": "^2.8.0",
-    "nuxt": "^2.10.0",
+    "nuxt": "^2.10.1",
     "nuxt-rfg-icon": "^0.6.4",
     "strapi-sdk-javascript": "^0.3.3",
     "vue-autosuggest": "^2.0.4"
@@ -29,6 +29,7 @@
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-vue": "^5.2.3",
     "prettier": "^1.18.2"
   }
 }
