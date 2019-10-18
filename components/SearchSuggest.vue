@@ -10,8 +10,8 @@
         id: 'autosuggest_input',
         placeholder: 'Type here for Search'
       }"
-      @input="getSuggestions"
-      @selected="handleSelected"
+      @input="searchWikiSuggestions"
+      @selected="handleSelectedSuggestion"
     >
       <template v-slot:default="{ suggestion }">
         <div>
@@ -61,12 +61,11 @@ export default {
      * This is what the <input/> value is set to when you are selecting a suggestion.
      */
    getSuggestionItemName (suggestion) {
- 
-  return suggestion.item.name
+      return suggestion.item.name
 },
    
-    async getSuggestions(searchedElement) {
-    
+   // funzione TROPPO accoppiata con output opensearch di wikipedia
+    async searchWikiSuggestions(searchedElement) {
       let url =
       getDataEndpoint(
          this.language,
@@ -75,6 +74,7 @@ export default {
         ) + searchedElement
   
       let resource = await axiosGet(url)
+
        if (resource.data[1].length === 0) {
         url =
           getDataEndpoint('it', 'wikipedia', 'opensearch') +
@@ -82,12 +82,15 @@ export default {
         resource = await axiosGet(url)
 
       }
+
       this.shownSuggestions = this.mergeNamesDescriptions(
         resource.data[1],
         resource.data[2]
       )
     },
-    async handleSelected(item) {
+
+
+    async handleSelectedSuggestion(item) {
       
       this.selected = item.item.name
       console.log('this.selected : ', this.selected)
