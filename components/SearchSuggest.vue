@@ -5,7 +5,7 @@
       v-model="searchedElement"
       class="bg-green-400 w-full"
       :suggestions="shownSuggestions"
-      :get-suggestion-value="getSuggestionValue"
+      :get-suggestion-value="getSuggestionItemName"
       :input-props="{
         id: 'autosuggest_input',
         placeholder: 'Type here for Search'
@@ -50,7 +50,8 @@ export default {
   computed:{
 
 ...mapGetters({language : 'getLanguage'})
-   
+
+  
 
 
   },
@@ -59,9 +60,11 @@ export default {
     /**
      * This is what the <input/> value is set to when you are selecting a suggestion.
      */
-    getSuggestionValue(suggestion) {
-      return suggestion.item.name
-    },
+   getSuggestionItemName (suggestion) {
+ 
+  return suggestion.item.name
+},
+   
     async getSuggestions(searchedElement) {
     
       let url =
