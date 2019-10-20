@@ -25,7 +25,8 @@
 <script>
 import { VueAutosuggest } from 'vue-autosuggest'
 import { axiosGet,getDataEndpoint } from '~/components/helpersFunctions.js'
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
+
 export default {
   components: {
     'search-suggest': VueAutosuggest
@@ -48,8 +49,8 @@ export default {
     }
   },
   computed:{
+...mapState(['language']),
 
-...mapGetters({language : 'getLanguage'})
 
   
 
@@ -91,14 +92,16 @@ export default {
 
 
     async handleSelectedSuggestion(item) {
-      
-      this.selected = item.item.name
+      let wikiContent;
+      //this.selected = item.item.name
       this.$store.dispatch('setWikiSelectedElement',item.item.name)
-      console.log('this.selected : ', this.selected)
-      this.wikiContent = await this.getPlaceByName(
-       this.selected,
+      //console.log('this.selected : ', this.selected)
+      wikiContent = await this.getPlaceByName(
+       this.wikiSelectedElement,
       this.language
       )
+       this.$store.dispatch('setWikiSelectedElementDescription',wikiContent)
+
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
 
