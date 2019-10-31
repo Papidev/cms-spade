@@ -1,12 +1,15 @@
-/* eslint-disable prefer-const */
 <template>
   <div class="flex">
     <div class="bg-green-100 h-screen w-1/2">
-      <div class="bg-red-200 ">
-        <h1 v-if="selected">Hai selezionato {{ selected }}</h1>
-        <h1 v-else>Non hai selezionato nulla 😢</h1>
+      <div class="bg-red-200">
+        <h1 v-if="selected">
+          Hai selezionato {{ selected }}
+        </h1>
+        <h1 v-else>
+          Non hai selezionato nulla 😢
+        </h1>
       </div>
-      <br />
+      <br>
       <ul>
         <li
           v-for="(value, name, index) in cmsItem"
@@ -24,9 +27,7 @@
           Click Me!
         </button>
       </div>
-
-      <hr />
-
+      <hr>
       <search-suggest
         :search-string="searchString"
         :suggestions="suggestions"
@@ -36,7 +37,7 @@
       <!-- this component will only be rendered on client-side -->
       <main>
         <client-only placeholder="Loading...">
-          <new-markdown-editor v-model="wikiContent"></new-markdown-editor>
+          <new-markdown-editor v-model="wikiContent" />
         </client-only>
       </main>
     </div>
@@ -49,32 +50,21 @@
 </template>
 
 <script>
-// import newMarkdownEditor from ''
+
 import {
-  //   getDataEndpoint,
-  //   mergeNamesDescriptions,
   axiosGet
-  //   // eslint-disable-next-line no-unused-vars
-  //   // queryCms,
-  //   //getPlaceByName
 } from '~/components/helpersFunctions.js'
-// import markdownEditor from 'vue-simplemde/src/markdown-editor'
-// import { JSONView } from 'vue-json-component'
-// let newMarkdownEditor
+
 if (process.client) {
-  // newMarkdownEditor = require('~/components/MarkdownEditor.vue')
   require('easymde/dist/easymde.min.css')
 }
 
 export default {
   components: {
-    // 'markdown-editor': markdownEditor
-    // 'new-markdown-editor': newMarkdownEditor
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
     'search-suggest': () => import('~/components/SearchSuggest.vue')
-    // 'json-tree': JSONView
+   
   },
-
 
   data() {
     return {

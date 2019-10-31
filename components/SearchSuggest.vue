@@ -24,8 +24,8 @@
 </template>
 <script>
 import { VueAutosuggest } from 'vue-autosuggest'
-import { axiosGet,getDataEndpoint } from '~/components/helpersFunctions.js'
-import { mapState } from 'vuex'
+import { axiosGet, getDataEndpoint } from '~/components/helpersFunctions.js'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -48,40 +48,32 @@ export default {
       shownSuggestions: this.suggestions
     }
   },
-  computed:{
-...mapState(['language']),
-
-
-  
-
-
+  computed: {
+    ...mapState(['language'])
   },
   methods: {
-   
+    ...mapActions([
+      'setWikiElement' // map `this.setWikiElement(payload)` to `this.$store.dispatch('setWikiElement', payload)`
+    ]),
+
     /**
      * This is what the <input/> value is set to when you are selecting a suggestion.
      */
-   getSuggestionItemName (suggestion) {
+    getSuggestionItemName(suggestion) {
       return suggestion.item.name
-},
-   
-   // funzione TROPPO accoppiata con output opensearch di wikipedia
+    },
+
+    // funzione TROPPO accoppiata con output opensearch di wikipedia
     async searchWikiSuggestions(searchedElement) {
       let url =
-      getDataEndpoint(
-         this.language,
-          'wikipedia',
-          'opensearch'
-        ) + searchedElement
-  
+        getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
+        searchedElement
+
       let resource = await axiosGet(url)
 
-       if (resource.data[1].length === 0) {
-        url =
-          getDataEndpoint('it', 'wikipedia', 'opensearch') +
-          searchedElement
+      if (resource.data[1].length === 0) {
+        url = getDataEndpoint('it', 'wikipedia', 'opensearch') + searchedElement
         resource = await axiosGet(url)
-
       }
 
       this.shownSuggestions = this.mergeNamesDescriptions(
@@ -90,17 +82,12 @@ export default {
       )
     },
 
-
     async handleSelectedSuggestion(item) {
-      let wikiContent;
-      //this.selected = item.item.name
-      this.$store.dispatch('setWikiSelectedElement',item.item.name)
-      //console.log('this.selected : ', this.selected)
-      wikiContent = await this.getPlaceByName(
-       this.wikiSelectedElement,
-      this.language
-      )
-       this.$store.dispatch('setWikiSelectedElementDescription',wikiContent)
+      let wikiContent
+      this.setWikiElement(item.item.name)
+
+      wikiContent = await this.getPlaceByName(this.wikiElement, this.language)
+      this.$store.dispatch('setWikiSelectedElementDescription', wikiContent)
 
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
@@ -117,9 +104,9 @@ export default {
       return [{ data: result }]
     },
     async getPlaceByName(name, lang) {
-      console.log("getPlaceByName : " +name + ' ' + lang)
-     // let wikiResult
-     // const cmsResult = ''
+      console.log('getPlaceByName : ' + name + ' ' + lang)
+      // let wikiResult
+      // const cmsResult = ''
       //   cmsResult = await getPlaceByNameCms(name, lang)
 
       //   if (cmsResult !== null && cmsResult !== undefined) {
@@ -133,5 +120,4 @@ export default {
     }
   }
 }
-
 </script>

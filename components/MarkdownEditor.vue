@@ -1,13 +1,18 @@
 <template>
   <div>
-    <textarea id="my-text-area" ref="mytextarea"></textarea>
+    <textarea
+      id="my-text-area"
+      ref="mytextarea"
+    />
   </div>
 </template>
 
 
 <script>
 import EasyMDE from 'easymde'
+
 let easyMDE = {}
+
 export default {
   props: {
     value: {
@@ -30,7 +35,7 @@ export default {
   mounted() {
     easyMDE = new EasyMDE({
       autofocus: true,
-      element: this.$refs.mytextarea, // document.getElementById('my-text-area'),
+      element: this.$refs.mytextarea,
       autosave: {
         enabled: true,
         uniqueId: 'MyMDE'

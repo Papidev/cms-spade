@@ -1,31 +1,21 @@
-
 export const state = () => ({
-  wikiSelectedElement: '',
-  wikiSelectedElementDescription: ''
+  wikiElement: '',
+  wikiElementDescription: ''
 })
 
-
-
-
 export const mutations = {
-  setWikiSelectedElement(state, wikiSelectedElement) {
-    state.wikiSelectedElement = wikiSelectedElement
+  setWikiElement(state, wikiElement) {
+    state.wikiElement = wikiElement
   },
-  setWikiSelectedElementDescription(state, wikiSelectedElementDescription) {
-    state.wikiSelectedElementDescription = wikiSelectedElementDescription
+  setWikiElementDescription(state, wikiElementDescription) {
+    state.wikiElementDescription = wikiElementDescription
   }
 }
 export const actions = {
-  setWikiSelectedElement(vuexContext, wikiSelectedElement) {
-    vuexContext.commit('setWikiSelectedElement', wikiSelectedElement)
+  setWikiElement(vuexContext, wikiElement) {
+    vuexContext.commit('setWikiElement', wikiElement)
   },
-  setWikiSelectedElementDescription(
-    vuexContext,
-    wikiSelectedElementDescription
-  ) {
-    vuexContext.commit(
-      'setWikiSelectedElementDescription',
-      wikiSelectedElementDescription
-    )
+  setWikiElementDescription(vuexContext, wikiElementDescription) {
+    vuexContext.commit('setWikiElementDescription', wikiElementDescription)
   }
 }
