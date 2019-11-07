@@ -35,10 +35,14 @@ export default {
   props: {
     searchString: {
       required: false,
+      default: '',
       type: String
     },
     suggestions: {
       required: false,
+      default() {
+        return []
+      },
       type: Array
     }
   },
