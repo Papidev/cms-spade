@@ -1,16 +1,30 @@
-export const state = () => ({
-  language: 'en'
-})
+import Vuex from 'vuex'
+import wiki from '~/store/modules/wiki'
+import cms from '~/store/modules/cms'
 
-//  TODO implement changing language feature
-export const mutations = {
-  setLanguage(state, language) {
-    state.language = language
-  }
+const createStore = () => {
+  return new Vuex.Store({
+    namespaced: true,
+
+    state: () => ({
+      language: 'en'
+    }),
+
+    mutations: {
+      setLanguage(state, language) {
+        state.language = language
+      }
+    },
+    actions: {
+      setLanguage(vuexContext, language) {
+        vuexContext.commit('setLanguage', language)
+      }
+    },
+    modules: {
+      wiki,
+      cms
+    }
+  })
 }
 
-export const actions = {
-  setLanguage(vuexContext, language) {
-    vuexContext.commit('setLanguage', language)
-  }
-}
+export default createStore

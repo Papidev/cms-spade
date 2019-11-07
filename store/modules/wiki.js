@@ -1,9 +1,9 @@
-export const state = () => ({
+const state = () => ({
   wikiElement: '',
   wikiElementDescription: ''
 })
 
-export const mutations = {
+const mutations = {
   setWikiElement(state, wikiElement) {
     state.wikiElement = wikiElement
   },
@@ -11,11 +11,18 @@ export const mutations = {
     state.wikiElementDescription = wikiElementDescription
   }
 }
-export const actions = {
+const actions = {
   setWikiElement(vuexContext, wikiElement) {
     vuexContext.commit('setWikiElement', wikiElement)
   },
   setWikiElementDescription(vuexContext, wikiElementDescription) {
     vuexContext.commit('setWikiElementDescription', wikiElementDescription)
   }
+}
+
+export default {
+  state,
+  mutations,
+  actions
+  // getters
 }

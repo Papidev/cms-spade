@@ -1,9 +1,9 @@
-export const state = () => ({
+const state = () => ({
   cmsElement: '',
   cmsElementDescription: ''
 })
 
-export const mutations = {
+const mutations = {
   setCmsElement(state, cmsElement) {
     state.cmsElement = cmsElement
   },
@@ -12,11 +12,18 @@ export const mutations = {
     state.cmsElementDescription = cmsElementDescription
   }
 }
-export const actions = {
+const actions = {
   setCmsElement(vuexContext, cmsElement) {
     vuexContext.commit('setCmsElement', cmsElement)
   },
   setCmsElementDescription(vuexContext, cmsElementDescription) {
     vuexContext.commit('setCmsElementDescription', cmsElementDescription)
   }
+}
+
+export default {
+  state,
+  mutations,
+  actions
+  // getters
 }

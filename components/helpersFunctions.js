@@ -25,6 +25,11 @@ async function axiosGet(url) {
 }
 
 function getDataEndpoint(lang, source, operation) {
+  console.group
+  console.log(lang)
+  console.log(source)
+  console.log(operation)
+  // console.log(process.env.endpoints[source][lang][operation])
   return process.env.endpoints[source][lang][operation]
 }
 

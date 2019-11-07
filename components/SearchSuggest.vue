@@ -53,7 +53,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['language'])
+    ...mapState({
+      language: (state) => state.language
+    })
   },
   methods: {
     ...mapActions([
@@ -69,6 +71,8 @@ export default {
 
     // funzione TROPPO accoppiata con output opensearch di wikipedia
     async searchWikiSuggestions(searchedElement) {
+      console.log(this.language)
+      console.log(mapState)
       let url =
         getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
         searchedElement
