@@ -1,30 +1,46 @@
-import Vuex from 'vuex'
-import wiki from '~/store/modules/wiki'
-import cms from '~/store/modules/cms'
+export const state = () => ({
+  language: 'en'
+})
 
-const createStore = () => {
-  return new Vuex.Store({
-    namespaced: true,
-
-    state: () => ({
-      language: 'en'
-    }),
-
-    mutations: {
-      setLanguage(state, language) {
-        state.language = language
-      }
-    },
-    actions: {
-      setLanguage(vuexContext, language) {
-        vuexContext.commit('setLanguage', language)
-      }
-    },
-    modules: {
-      wiki,
-      cms
-    }
-  })
+export const mutations = {
+  setLanguage(state, language) {
+    state.language = language
+  }
 }
 
-export default createStore
+export const actions = {
+  setLanguage(vuexContext, language) {
+    vuexContext.commit('setLanguage', language)
+  }
+}
+
+// import Vuex from 'vuex'
+// import wiki from '~/store/modules/wiki'
+// import cms from '~/store/modules/cms'
+
+// const createStore = () => {
+//   return new Vuex.Store({
+//     namespaced: true,
+
+//     state: () => ({
+//       language: 'en'
+//     }),
+
+//     mutations: {
+//       setLanguage(state, language) {
+//         state.language = language
+//       }
+//     },
+//     actions: {
+//       setLanguage(vuexContext, language) {
+//         vuexContext.commit('setLanguage', language)
+//       }
+//     },
+//     modules: {
+//       wiki,
+//       cms
+//     }
+//   })
+// }
+
+// export default createStore

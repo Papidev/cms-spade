@@ -22,6 +22,9 @@
     </search-suggest>
   </div>
 </template>
+
+
+
 <script>
 import { VueAutosuggest } from 'vue-autosuggest'
 import { axiosGet, getDataEndpoint } from '~/components/helpersFunctions.js'
@@ -53,26 +56,21 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      language: (state) => state.language
-    })
+    ...mapState(['language', 'wikiElement'])
   },
   methods: {
-    ...mapActions([
-      'setWikiElement' // map `this.setWikiElement(payload)` to `this.$store.dispatch('setWikiElement', payload)`
-    ]),
+    ...mapActions({
+      setWikiElement: 'wiki/setWikiElement',
+      setWikiElementDescription: 'wiki/setWikiElementDescription' // map `this.setWikiElement(payload)` to `this.$store.dispatch('setWikiElement', payload)`
+    }),
 
-    /**
-     * This is what the <input/> value is set to when you are selecting a suggestion.
-     */
+    // This is what the <input/> value is set to when you are selecting a suggestion.
     getSuggestionItemName(suggestion) {
       return suggestion.item.name
     },
 
     // funzione TROPPO accoppiata con output opensearch di wikipedia
     async searchWikiSuggestions(searchedElement) {
-      console.log(this.language)
-      console.log(mapState)
       let url =
         getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
         searchedElement
@@ -92,10 +90,11 @@ export default {
 
     async handleSelectedSuggestion(item) {
       let wikiContent
-      this.setWikiElement(item.item.name)
+      this.setWikiElement(item.item.name) // put selected suggestion from wiki in store
 
       wikiContent = await this.getPlaceByName(this.wikiElement, this.language)
-      this.$store.dispatch('setWikiSelectedElementDescription', wikiContent)
+      console.log(wikiContent)
+      this.setWikiElementDescription(wikiContent)
 
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
