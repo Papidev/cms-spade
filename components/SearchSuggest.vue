@@ -56,8 +56,13 @@ export default {
     }
   },
   computed: {
-    ...mapState(['language', 'wikiElement'])
+    // ...mapState({
+    //   language
+    // }),
+    ...mapState('wiki', ['wikiElement']),
+    ...mapState(['language'])
   },
+
   methods: {
     ...mapActions({
       setWikiElement: 'wiki/setWikiElement',
