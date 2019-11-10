@@ -29,6 +29,8 @@
 import { VueAutosuggest } from 'vue-autosuggest'
 import { axiosGet, getDataEndpoint } from '~/components/helpersFunctions.js'
 import { mapState, mapActions } from 'vuex'
+import { queryPlacesByName } from './helpersGraph'
+import axios from 'axios'
 
 export default {
   components: {
@@ -56,9 +58,6 @@ export default {
     }
   },
   computed: {
-    // ...mapState({
-    //   language
-    // }),
     ...mapState('wiki', ['wikiElement']),
     ...mapState(['language'])
   },
@@ -93,13 +92,68 @@ export default {
       )
     },
 
+    async getPlaceByNameCms(name, lang) {
+      const query = queryPlacesByName(name)
+
+      try {
+        const url = getDataEndpoint(lang, 'cms', 'query') + '/graphql'
+
+        const response = await axios({
+          url,
+          method: 'post',
+          data: {
+            query
+          }
+        })
+
+        const content = response.data.places[0].Description
+
+        if (content !== null && content !== undefined) {
+          this.setCmsElementDescription(content)
+          return 'foundInCms'
+        } else {
+          return null
+        }
+      } catch (err) {
+        return null
+      }
+    },
+
+    async getPlaceByNameWiki(name, lang) {
+      try {
+        const url =
+          getDataEndpoint(
+            createStore().getters.getLanguage,
+            'wikipedia',
+            'query'
+          ) + name
+
+        const response = await axiosGet(url)
+
+        if (typeof response !== 'undefined') {
+          const page = Object.keys(response.data.query.pages)[0]
+          const wikiContent = response.data.query.pages[page].extract
+          this.setWikiElementDescription(wikiContent)
+        } else {
+        }
+      } catch (err) {}
+    },
+
+    async getPlaceByName(name, lang) {
+      let cmsResult = await this.getPlaceByNameCms(name, lang)
+
+      if (cmsResult === null) {
+        await this.getPlaceByNameWiki(name, lang)
+      }
+    },
+
     async handleSelectedSuggestion(item) {
       let wikiContent
       this.setWikiElement(item.item.name) // put selected suggestion from wiki in store
 
       wikiContent = await this.getPlaceByName(this.wikiElement, this.language)
-      console.log(wikiContent)
-      this.setWikiElementDescription(wikiContent)
+
+      this.setWikiElementDescription(this.wikiElement, this.language)
 
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
@@ -114,21 +168,6 @@ export default {
         })
       }
       return [{ data: result }]
-    },
-    async getPlaceByName(name, lang) {
-      console.log('getPlaceByName : ' + name + ' ' + lang)
-      // let wikiResult
-      // const cmsResult = ''
-      //   cmsResult = await getPlaceByNameCms(name, lang)
-
-      //   if (cmsResult !== null && cmsResult !== undefined) {
-      //     console.log('Trovato record su CMS')
-      //     return cmsResult
-      //   } else {
-      //     console.log('Non ho trovato niente su CMS')
-      //     wikiResult = await getPlaceByNameWiki(name, lang)
-      //     return wikiResult
-      //   }
     }
   }
 }

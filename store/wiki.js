@@ -16,7 +16,10 @@ export const actions = {
   setWikiElement(vuexContext, wikiElement) {
     vuexContext.commit('setWikiElement', wikiElement)
   },
-  setWikiElementDescription(vuexContext, wikiElementDescription) {
+
+  async setWikiElementDescription(vuexContext, wikiElement, language) {
+    let wikiElementDescription = await getPlaceByName(wikiElement, language)
+    console.log('wikiElementDescription ' + wikiElementDescription)
     vuexContext.commit('setWikiElementDescription', wikiElementDescription)
   }
 }
