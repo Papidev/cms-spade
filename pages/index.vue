@@ -37,7 +37,7 @@
       <!-- this component will only be rendered on client-side -->
       <main>
         <client-only placeholder="Loading...">
-          <new-markdown-editor v-model="this.wikiContent" />
+          <new-markdown-editor v-model="wikiElementDescription" />
         </client-only>
       </main>
     </div>
@@ -51,9 +51,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import {
-  axiosGet
-} from '~/components/helpersFunctions.js'
+import { axiosGet } from '~/components/helpersFunctions.js'
 
 if (process.client) {
   require('easymde/dist/easymde.min.css')
@@ -63,7 +61,6 @@ export default {
   components: {
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
     'search-suggest': () => import('~/components/SearchSuggest.vue')
-   
   },
 
   data() {
@@ -78,9 +75,12 @@ export default {
       searchString: '',
       selected: '',
       suggestions: [],
-      //wikiContent: '',
+      // wikiDesc: this.wikiContent,
       jsonSource: {}
     }
+  },
+  computed: {
+    ...mapState('wiki', ['wikiElementDescription'])
   },
   watch: {
     searchString(val) {
@@ -111,61 +111,10 @@ export default {
     onChangeJson(data) {
       this.jsonSource = data
     }
+  }
 }
-// computed:{
-//    wikiContent(){
-
-
-//    }
-
-}
-    // async handleSelected(item) {
-    //   console.log('item : ', item)
-    //   this.selected = item.item.name
-    //   console.log('this.selected : ', this.selected)
-    //   this.wikiContent = await getPlaceByName(
-    //     item.item.name,
-    //     this.$store.getters.getLanguage
-    //   )
-    //   this.$refs.autosuggest.$el.children.autosuggest_input.focus()
-    // },
-
-    // async getSuggestions(searchString) {
-    //   // console.log('getSuggestions ' + searchString)
-    //   let url =
-    //     getDataEndpoint(
-    //       this.$store.getters.getLanguage,
-    //       'wikipedia',
-    //       'opensearch'
-    //     ) + searchString
-    //   // console.log(url)
-    //   let resource = await axiosGet(url)
-    //   // console.log(resource)
-
-    //   if (resource.data[1].length === 0) {
-    //     url = getDataEndpoint('it', 'wikipedia', 'opensearch') + searchString
-    //     resource = await axiosGet(url)
-
-    //     // console.log('switchato it')
-    //     // console.log(resource)
-    //   }
-    //   this.suggestions = mergeNamesDescriptions(
-    //     resource.data[1],
-    //     resource.data[2]
-    //   )
-    // },
-
-    // /**
-    //  * This is what the <input/> value is set to when you are selecting a suggestion.
-    //  */
-    // getSuggestionValue(suggestion) {
-    //   return suggestion.item.name
-    // }
-
-    /* FocusEvent
+/* FocusEvent
     onFocus(e) {
-      console.log(e)
+      
     } */
-  
-}
 </script>

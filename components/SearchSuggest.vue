@@ -80,7 +80,6 @@ export default {
         searchedElement
 
       let resource = await axiosGet(url, 'get')
-      console.log(resource)
 
       if (resource.data[1].length === 0) {
         url = getDataEndpoint('it', 'wikipedia', 'opensearch') + searchedElement
@@ -125,7 +124,7 @@ export default {
       this.setWikiElement(item.item.name)
 
       // put selected suggestion from wiki in store
-      console.log('setWikiElement done')
+
       let cmsResult = await this.getPlaceByNameCms(
         this.wikiElement,
         this.language
