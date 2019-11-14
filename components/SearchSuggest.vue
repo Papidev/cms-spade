@@ -79,11 +79,12 @@ export default {
         getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
         searchedElement
 
-      let resource = await axiosGet(url)
+      let resource = await axiosGet(url, 'get')
+      console.log(resource)
 
       if (resource.data[1].length === 0) {
         url = getDataEndpoint('it', 'wikipedia', 'opensearch') + searchedElement
-        resource = await axiosGet(url)
+        resource = await axiosGet(url, 'get')
       }
 
       this.shownSuggestions = this.mergeNamesDescriptions(
@@ -119,42 +120,25 @@ export default {
       }
     },
 
-    async getPlaceByNameWiki(name, lang) {
-      try {
-        const url =
-          getDataEndpoint(
-            createStore().getters.getLanguage,
-            'wikipedia',
-            'query'
-          ) + name
+    async handleSelectedSuggestion(item) {
+      let wikiContent, payload
+      this.setWikiElement(item.item.name)
 
-        const response = await axiosGet(url)
-
-        if (typeof response !== 'undefined') {
-          const page = Object.keys(response.data.query.pages)[0]
-          const wikiContent = response.data.query.pages[page].extract
-          this.setWikiElementDescription(wikiContent)
-        } else {
-        }
-      } catch (err) {}
-    },
-
-    async getPlaceByName(name, lang) {
-      let cmsResult = await this.getPlaceByNameCms(name, lang)
+      // put selected suggestion from wiki in store
+      console.log('setWikiElement done')
+      let cmsResult = await this.getPlaceByNameCms(
+        this.wikiElement,
+        this.language
+      )
 
       if (cmsResult === null) {
-        await this.getPlaceByNameWiki(name, lang)
+        this.setWikiElementDescription(this.wikiElement)
+        //wikiContent = await this.getPlaceByNameWiki(this.wikiElement, this.language)
       }
-    },
+      //wikiContent = await this.getPlaceByName(this.wikiElement, this.language)
 
-    async handleSelectedSuggestion(item) {
-      let wikiContent
-      this.setWikiElement(item.item.name) // put selected suggestion from wiki in store
-
-      wikiContent = await this.getPlaceByName(this.wikiElement, this.language)
-
-      this.setWikiElementDescription(this.wikiElement, this.language)
-
+      // this.setWikiElementDescription(this.wikiElement, this.language)
+      // console.log ('setWikiElementDescription done')
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
 

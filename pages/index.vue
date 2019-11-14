@@ -37,7 +37,7 @@
       <!-- this component will only be rendered on client-side -->
       <main>
         <client-only placeholder="Loading...">
-          <new-markdown-editor v-model="wikiContent" />
+          <new-markdown-editor v-model="this.wikiContent" />
         </client-only>
       </main>
     </div>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-
+import { mapState } from 'vuex'
 import {
   axiosGet
 } from '~/components/helpersFunctions.js'
@@ -78,7 +78,7 @@ export default {
       searchString: '',
       selected: '',
       suggestions: [],
-      wikiContent: '',
+      //wikiContent: '',
       jsonSource: {}
     }
   },
@@ -111,7 +111,14 @@ export default {
     onChangeJson(data) {
       this.jsonSource = data
     }
+}
+// computed:{
+//    wikiContent(){
 
+
+//    }
+
+}
     // async handleSelected(item) {
     //   console.log('item : ', item)
     //   this.selected = item.item.name
@@ -159,6 +166,6 @@ export default {
     onFocus(e) {
       console.log(e)
     } */
-  }
+  
 }
 </script>
