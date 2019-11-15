@@ -29,7 +29,7 @@ import { VueAutosuggest } from 'vue-autosuggest'
 //import { axiosGet, getDataEndpoint } from '~/components/helpersFunctions.js'
 import { mapState, mapActions } from 'vuex'
 import { queryPlacesByName } from '~/mixins/helpersGraph'
-import axios from 'axios'
+//import axios from 'axios'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 
 export default {
@@ -100,13 +100,8 @@ export default {
 
       try {
         const url = this.getDataEndpoint(lang, 'cms', 'query') + '/graphql'
-
-        const response = await axios({
-          url,
-          method: 'post',
-          data: {
-            query
-          }
+        const response = axiosGet(url, 'post', {
+          query
         })
 
         const content = response.data.places[0].Description
