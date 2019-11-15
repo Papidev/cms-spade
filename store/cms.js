@@ -1,5 +1,5 @@
-import { queryPlacesByName } from '~/components/helpersGraph'
-import { getDataEndpoint, axiosGet } from '~/components/helpersFunctions'
+import { queryPlacesByName } from '~/mixins/helpersGraph'
+import helpersFunctions from '~/mixins/helpersFunctions'
 
 export const state = () => ({
   cmsElement: '',
@@ -28,8 +28,11 @@ export const actions = {
     const query = queryPlacesByName(nameToSearch)
     console.log(query)
     const url =
-      getDataEndpoint(vuexContext.rootState.language, 'cms', 'query') +
-      '/graphql'
+      helpersFunctions.getDataEndpoint(
+        vuexContext.rootState.language,
+        'cms',
+        'query'
+      ) + '/graphql'
     console.log(url)
     // const response = await axios({
     //   url,

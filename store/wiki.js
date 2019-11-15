@@ -1,4 +1,4 @@
-import { getDataEndpoint, axiosGet } from '~/components/helpersFunctions.js'
+import helperMixin from '~/mixins/helpersFunctions.js'
 
 export const state = () => ({
   wikiElement: '',
@@ -25,12 +25,17 @@ export const actions = {
     // console.log('wikiElement ', wikiElement)
     // console.log('language ', vuexContext.rootState.language)
 
+    let { methods: helpers } = helperMixin
     try {
+      console.log(helpers)
       const url =
-        getDataEndpoint(vuexContext.rootState.language, 'wikipedia', 'query') +
-        wikiElement
+        helpers.getDataEndpoint(
+          vuexContext.rootState.language,
+          'wikipedia',
+          'query'
+        ) + wikiElement
       console.log('url  ', url)
-      const response = await axiosGet(url)
+      const response = await helpers.axiosGet(url)
       console.log('response  ', response)
       if (typeof response !== 'undefined') {
         const page = Object.keys(response.data.query.pages)[0]

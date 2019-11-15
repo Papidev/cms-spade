@@ -51,7 +51,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { axiosGet } from '~/components/helpersFunctions.js'
+import helpersFunctions from '~/mixins/helpersFunctions.js'
 
 if (process.client) {
   require('easymde/dist/easymde.min.css')
@@ -62,6 +62,7 @@ export default {
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
     'search-suggest': () => import('~/components/SearchSuggest.vue')
   },
+  mixins: [helpersFunctions],
 
   data() {
     return {
@@ -92,9 +93,11 @@ export default {
   },
 
   created() {
-    axiosGet('/data/Chiese_Abbazie_ProvinciaMilano.json').then((response) => {
-      this.jsonSource = response.data
-    })
+    this.axiosGet('/data/Chiese_Abbazie_ProvinciaMilano.json', 'get').then(
+      (response) => {
+        this.jsonSource = response.data
+      }
+    )
   },
 
   methods: {

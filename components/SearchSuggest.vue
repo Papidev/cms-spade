@@ -24,18 +24,19 @@
 </template>
 
 
-
 <script>
 import { VueAutosuggest } from 'vue-autosuggest'
-import { axiosGet, getDataEndpoint } from '~/components/helpersFunctions.js'
+//import { axiosGet, getDataEndpoint } from '~/components/helpersFunctions.js'
 import { mapState, mapActions } from 'vuex'
-import { queryPlacesByName } from './helpersGraph'
+import { queryPlacesByName } from '~/mixins/helpersGraph'
 import axios from 'axios'
+import helpersFunctions from '~/mixins/helpersFunctions.js'
 
 export default {
   components: {
     'search-suggest': VueAutosuggest
   },
+  mixins: [helpersFunctions],
 
   props: {
     searchString: {
@@ -76,14 +77,16 @@ export default {
     // funzione TROPPO accoppiata con output opensearch di wikipedia
     async searchWikiSuggestions(searchedElement) {
       let url =
-        getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
+        this.getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
         searchedElement
 
-      let resource = await axiosGet(url, 'get')
+      let resource = await this.axiosGet(url, 'get')
 
       if (resource.data[1].length === 0) {
-        url = getDataEndpoint('it', 'wikipedia', 'opensearch') + searchedElement
-        resource = await axiosGet(url, 'get')
+        url =
+          this.getDataEndpoint('it', 'wikipedia', 'opensearch') +
+          searchedElement
+        resource = await this.axiosGet(url, 'get')
       }
 
       this.shownSuggestions = this.mergeNamesDescriptions(
@@ -96,7 +99,7 @@ export default {
       const query = queryPlacesByName(name)
 
       try {
-        const url = getDataEndpoint(lang, 'cms', 'query') + '/graphql'
+        const url = this.getDataEndpoint(lang, 'cms', 'query') + '/graphql'
 
         const response = await axios({
           url,
