@@ -51,7 +51,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import helpersFunctions from '~/mixins/helpersFunctions.js'
+import helpersMixin from '~/mixins/helpersFunctions.js'
 
 if (process.client) {
   require('easymde/dist/easymde.min.css')
@@ -62,7 +62,7 @@ export default {
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
     'search-suggest': () => import('~/components/SearchSuggest.vue')
   },
-  mixins: [helpersFunctions],
+  mixins: [helpersMixin],
 
   data() {
     return {
@@ -83,30 +83,33 @@ export default {
   computed: {
     ...mapState('wiki', ['wikiElementDescription'])
   },
-  watch: {
-    searchString(val) {
-      this.getSuggestions(val)
-      const inputField = this.$refs.autosuggest.$el.children.autosuggest_input
-      inputField.click()
-      inputField.focus()
-    }
-  },
 
-  created() {
-    this.axiosGet('/data/Chiese_Abbazie_ProvinciaMilano.json', 'get').then(
-      (response) => {
-        this.jsonSource = response.data
-      }
+  // watch: {
+  //   searchString(val) {
+  //     this.getSuggestions(val)
+  //     console.log(this.$refs)
+  //     const inputField = this.$refs.autosuggest.$el.children.autosuggest_input
+  //     inputField.click()
+  //     inputField.focus()
+  //   }
+  // },
+
+  async created() {
+    let response = await this.axiosGet(
+      '/data/Chiese_Abbazie_ProvinciaMilano.json',
+      'get'
     )
+    this.jsonSource = response.data
   },
 
   methods: {
-    clickHandler(event, searchString) {
-      this.$store.dispatch('getPlaceByName', {
-        name: searchString,
-        lang: this.$store.getters.getLanguage
-      })
-    },
+    // clickHandler(event, searchString) {
+    //   console.log('clickHandler running !!!')
+    //   this.$store.dispatch('getPlaceByName', {
+    //     name: searchString,
+    //     lang: this.$store.getters.getLanguage
+    //   })
+    // },
     itemSelected(event) {
       this.searchString = event.value
     },
@@ -116,8 +119,4 @@ export default {
     }
   }
 }
-/* FocusEvent
-    onFocus(e) {
-      
-    } */
 </script>

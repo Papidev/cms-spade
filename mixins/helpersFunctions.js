@@ -3,8 +3,7 @@ import axios from 'axios'
 export default {
   methods: {
     async axiosGet(url, method, data) {
-      console.group('axiosGet')
-      // console.group(this.$axios)
+      //
       let response
       try {
         if (method === 'get') {
@@ -17,7 +16,6 @@ export default {
           })
         }
       } catch (error) {
-        console.log('Fallita axiosGet')
         throw error
       }
 
@@ -25,7 +23,7 @@ export default {
     },
 
     getDataEndpoint(lang, source, operation) {
-      // console.log(process.env.endpoints[source][lang][operation])
+      //
       return process.env.endpoints[source][lang][operation]
     }
   }
