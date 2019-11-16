@@ -1,5 +1,5 @@
-import { queryPlacesByName } from '~/mixins/helpersGraph'
-import helpersFunctions from '~/mixins/helpersFunctions'
+import helperGraphMixin from '~/mixins/helpersGraph'
+import helperMixin from '~/mixins/helpersFunctions'
 
 export const state = () => ({
   // cmsElement: '',
@@ -23,21 +23,22 @@ export const actions = {
 
   async setCmsElementDescription(vuexContext, nameToSearch) {
     console.group('setCmsElementDescription')
-    console.log(vuexContext.rootState)
-    console.log(vuexContext.state)
-    const query = queryPlacesByName(nameToSearch)
-    console.log(query)
-    const url =
-      helpersFunctions.getDataEndpoint(
-        vuexContext.rootState.language,
-        'cms',
-        'query'
-      ) + '/graphql'
+    //console.log(vuexContext.rootState)
+    console.log(nameToSearch)
 
+    let { methods: helpers } = helperMixin
+    let { methods: helpersGraph } = helperGraphMixin
+
+    const query = helpersGraph.queryPlacesByName(nameToSearch)
+
+    const url =
+      helpers.getDataEndpoint(vuexContext.rootState.language, 'cms', 'query') +
+      '/graphql'
+    console.log(query)
     console.log(url)
 
     try {
-      const response = await helpersFunctions.axiosGet(url, 'post', { query })
+      const response = await helpers.axiosGet(url, 'post', { query })
       console.log(`ECCA A' risposta :  ${response}`)
       console.log(response)
       const content = response.data.places[0].Description

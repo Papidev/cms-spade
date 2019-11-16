@@ -7,8 +7,7 @@
           class="rounded mx-auto px-10"
           type="button"
         >
-          <!-- @click="clickHandler(searchString)" -->
-        
+          <!-- @click="clickHandler(searchString)" -->     
           Click Me!
         </button>
       </div>

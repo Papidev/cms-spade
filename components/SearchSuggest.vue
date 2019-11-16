@@ -67,8 +67,8 @@ export default {
   methods: {
     ...mapActions({
       setSelectedElement: 'setSelectedElement',
-      setWikiElementDescription: 'wiki/setWikiElementDescription'
-      // map `this.setWikiElement(payload)` to `this.$store.dispatch('setWikiElement', payload)`
+      setWikiElementDescription: 'wiki/setWikiElementDescription',
+      setCmsElementDescription: 'cms/setCmsElementDescription'
     }),
 
     // This is what the <input/> value is set to when you are selecting a suggestion.
@@ -78,12 +78,10 @@ export default {
 
     // funzione TROPPO accoppiata con output opensearch di wikipedia
     async searchWikiSuggestions(searchedElement) {
-      console.log('searchedElement')
-      console.log(searchedElement)
       let url =
         this.getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
         searchedElement
-      console.log(url)
+
       let resource = await this.axiosGet(url, 'get')
 
       if (resource.data[1].length === 0) {
@@ -122,19 +120,16 @@ export default {
     },
 
     async handleSelectedSuggestion(item) {
-      console.log('handleSelectedSuggestion')
-      console.log(item.item.name)
-
       this.setSelectedElement(item.item.name)
 
       // put selected suggestion from wiki in store
       this.setCmsElementDescription(this.selectedElement)
 
+      this.cmsElementDescription
       if (
         typeof this.cmsElementDescription !== 'undefined' &&
         this.cmsElementDescription !== null
       ) {
-        console.log('found something in cms')
         return
         //wikiContent = await this.getPlaceByNameWiki(this.wikiElement, this.language)
       }

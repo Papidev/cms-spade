@@ -1,5 +1,7 @@
-function queryPlacesByName(name) {
-  return `query {
+export default {
+  methods: {
+    queryPlacesByName(name) {
+      return `query {
     places(where: { Name: "${name}" }) {
       id
       Identifier
@@ -7,9 +9,9 @@ function queryPlacesByName(name) {
       Description
     }
   }`
-}
-function queryPlacesByIdentifier(identifier) {
-  return `query {
+    },
+    queryPlacesByIdentifier(identifier) {
+      return `query {
     places(where: { Identifier: "${identifier}" }) {
       id
       Identifier
@@ -17,6 +19,6 @@ function queryPlacesByIdentifier(identifier) {
       Description
     }
   }`
+    }
+  }
 }
-
-export { queryPlacesByName, queryPlacesByIdentifier }
