@@ -1,24 +1,16 @@
 import helperMixin from '~/mixins/helpersFunctions.js'
 
 export const state = () => ({
-  wikiElement: '',
   wikiElementDescription: ''
 })
 
 export const mutations = {
-  setWikiElement(state, wikiElement) {
-    state.wikiElement = wikiElement
-  },
   setWikiElementDescription(state, wikiElementDescription) {
     state.wikiElementDescription = wikiElementDescription
   }
 }
 
 export const actions = {
-  setWikiElement(vuexContext, wikiElement) {
-    vuexContext.commit('setWikiElement', wikiElement)
-  },
-
   async setWikiElementDescription(vuexContext, wikiElement) {
     let wikiContent
     // console.group('wikiElementDescription')

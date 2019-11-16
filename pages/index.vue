@@ -1,29 +1,14 @@
 <template>
   <div class="flex">
     <div class="bg-green-100 h-screen w-1/2">
-      <div class="bg-red-200">
-        <h1 v-if="selected">
-          Hai selezionato {{ selected }}
-        </h1>
-        <h1 v-else>
-          Non hai selezionato nulla 😢
-        </h1>
-      </div>
-      <br>
-      <ul>
-        <li
-          v-for="(value, name, index) in cmsItem"
-          :key="(value, name, index).index"
-        >
-          {{ index }}. {{ name }}: {{ value }}
-        </li>
-      </ul>
+      <cms-panel />
       <div class="bg-gray-400">
         <button
           class="rounded mx-auto px-10"
           type="button"
-          @click="clickHandler(searchString)"
         >
+          <!-- @click="clickHandler(searchString)" -->
+        
           Click Me!
         </button>
       </div>
@@ -60,46 +45,48 @@ if (process.client) {
 export default {
   components: {
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
-    'search-suggest': () => import('~/components/SearchSuggest.vue')
+    'search-suggest': () => import('~/components/SearchSuggest.vue'),
+    'cms-panel': () => import('~/components/CmsPanel.vue')
   },
   mixins: [helpersMixin],
 
   data() {
     return {
-      cmsItem: {
-        id: '',
-        Identifier: '',
-        Name: '',
-        Description: ''
-      },
+      // cmsItem: {
+      //   id: '',
+      //   Identifier: '',
+      //   Name: '',
+      //   Description: ''
+      // },
 
       searchString: '',
-      selected: '',
+      //selected: '',
       suggestions: [],
       // wikiDesc: this.wikiContent,
       jsonSource: {}
     }
   },
   computed: {
+    ...mapState(['selectedElement']),
     ...mapState('wiki', ['wikiElementDescription'])
   },
 
-  // watch: {
-  //   searchString(val) {
-  //     this.getSuggestions(val)
-  //     console.log(this.$refs)
-  //     const inputField = this.$refs.autosuggest.$el.children.autosuggest_input
-  //     inputField.click()
-  //     inputField.focus()
-  //   }
-  // },
+  watch: {
+    searchString(val) {
+      this.getSuggestions(val)
+      console.log(this.$refs)
+      const inputField = this.$refs.autosuggest.$el.children.autosuggest_input
+      inputField.click()
+      inputField.focus()
+    }
+  },
 
   async created() {
-    let response = await this.axiosGet(
-      '/data/Chiese_Abbazie_ProvinciaMilano.json',
-      'get'
-    )
-    this.jsonSource = response.data
+    // let response = await this.axiosGet(
+    //   '/data/Chiese_Abbazie_ProvinciaMilano.json',
+    //   'get'
+    // )
+    // this.jsonSource = response.data
   },
 
   methods: {
