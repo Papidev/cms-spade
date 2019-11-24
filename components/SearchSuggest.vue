@@ -67,8 +67,7 @@ export default {
   methods: {
     ...mapActions({
       setSelectedElement: 'setSelectedElement',
-      setWikiElementDescription: 'wiki/setWikiElementDescription',
-      setCmsElementDescription: 'cms/setCmsElementDescription'
+      setWikiElementDescription: 'wiki/setWikiElementDescription'
     }),
 
     // This is what the <input/> value is set to when you are selecting a suggestion.
@@ -101,32 +100,38 @@ export default {
       }
     },
 
-    async getPlaceByNameCms(name, lang) {
-      const query = this.queryPlacesByName(name)
+    // async getPlaceByNameCms(name, lang) {
+    //   const query = this.queryPlacesByName(name)
 
-      try {
-        const url = this.getDataEndpoint(lang, 'cms', 'query') + '/graphql'
-        const response = axiosGet(url, 'post', {
-          query
-        })
+    //   try {
+    //     const url = this.getDataEndpoint(lang, 'cms', 'query') + '/graphql'
+    //     const response = axiosGet(url, 'post', {
+    //       query
+    //     })
 
-        const content = response.data.places[0].Description
+    //     const content = response.data.places[0].Description
 
-        if (content !== null && content !== undefined) {
-          this.setCmsElementDescription(content)
-          return 'foundInCms'
-        } else {
-          return null
-        }
-      } catch (err) {
-        return null
-      }
-    },
+    //     if (content !== null && content !== undefined) {
+    //       this.setCmsElementDescription(content)
+    //       return 'foundInCms'
+    //     } else {
+    //       return null
+    //     }
+    //   } catch (err) {
+    //     return null
+    //   }
+    // },
 
-    async handleSelectedSuggestion(item) {
+    handleSelectedSuggestion(item) {
       console.group('handleSelectedSuggestion')
-      console.log(item)
-      if (item.length) {
+
+      if (typeof item === 'undefined') {
+        console.log('item === undefined')
+        return
+      }
+      const itemName = item.item.name
+      console.log(itemName)
+      if (itemName.length) {
         console.log('Entrato nell IF')
         this.setSelectedElement(item.item.name)
         this.setWikiElementDescription(this.selectedElement)

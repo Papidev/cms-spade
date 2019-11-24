@@ -33,7 +33,6 @@ export default {
   data() {
     return {
       cmsItem: {
-        id: '',
         Identifier: '',
         Name: '',
         Description: ''
@@ -48,9 +47,7 @@ export default {
   watch: {
     selectedElement: async function(newSelectedElement) {
       console.group('watcher selectedElement')
-      console.log('start watcher selectedElement')
-      // let { methods: helpers } = helperMixin
-      // let { methods: helpersGraph } = helperGraphMixin
+      console.log('start ')
 
       const query = this.queryPlacesByName(newSelectedElement)
 
@@ -59,11 +56,12 @@ export default {
 
       try {
         const response = await this.axiosGet(url, 'post', { query })
-        console.log(response.data.data.places)
-        if (response.data.data.places.length) {
-          this.cmsItem.Description = response.data.places[0].Description
-
-          //vuexContext.commit('setCmsElementDescription', content)
+        const placesFound = response.data.data.places
+        if (placesFound.length) {
+          console.log(placesFound[0])
+          this.cmsItem.Identifier = placesFound[0].Identifier
+          this.cmsItem.Name = placesFound[0].Name
+          this.cmsItem.Description = placesFound[0].Description
         } else {
           console.log('Non ho trovato niente su CMS')
         }
