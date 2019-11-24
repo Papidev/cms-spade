@@ -2,7 +2,7 @@
   <div>
     <search-suggest
       ref="autosuggest"
-      v-model="searchedElement"
+      v-model="elementToSearch"
       class="bg-green-400 w-full"
       :suggestions="shownSuggestions"
       :get-suggestion-value="getSuggestionItemName"
@@ -10,7 +10,7 @@
         id: 'autosuggest_input',
         placeholder: 'Type here for Search'
       }"
-      @input="searchWikiSuggestions"
+      @input="searchWiki"
       @selected="handleSelectedSuggestion"
     >
       <template v-slot:default="{ suggestion }">
@@ -54,14 +54,14 @@ export default {
   },
   data() {
     return {
-      searchedElement: this.searchString,
+      elementToSearch: this.searchString,
       shownSuggestions: this.suggestions
     }
   },
   computed: {
-    ...mapState(['selectedElement']),
-    ...mapState(['language']),
-    ...mapState('cms', ['cmsElementDescription'])
+    // ...mapState(['selectedElement']),
+    ...mapState(['language'])
+    // ...mapState('cms', ['cmsElementDescription'])
   },
 
   methods: {
@@ -76,27 +76,32 @@ export default {
     },
 
     // funzione TROPPO accoppiata con output opensearch di wikipedia
-    async searchWikiSuggestions(searchedElement) {
-      if (searchedElement.length) {
-        let url =
-          this.getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
-          searchedElement
+    async searchWiki(elementToSearch) {
+      console.group('searchWiki')
+      console.log(elementToSearch)
+      if (!elementToSearch.length) {
+        console.log('Elemento vuoto nella form')
+        return
+      }
 
-        let resource = await this.axiosGet(url, 'get')
+      let url =
+        this.getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
+        elementToSearch
 
-        if (resource.data[1].length === 0) {
-          url =
-            this.getDataEndpoint('it', 'wikipedia', 'opensearch') +
-            searchedElement
-          resource = await this.axiosGet(url, 'get')
-        }
+      let resource = await this.axiosGet(url, 'get')
 
+      if (!Array.isArray(resource.data) || !resource.data.length) {
+        console.log('Cerco su Wikipedia ITA')
+        url =
+          this.getDataEndpoint('it', 'wikipedia', 'opensearch') +
+          elementToSearch
+        resource = await this.axiosGet(url, 'get')
+      }
+      if (Array.isArray(resource.data) && resource.data.length) {
         this.shownSuggestions = this.mergeNamesDescriptions(
           resource.data[1],
           resource.data[2]
         )
-      } else {
-        console.log('Elemento vuoto nella form')
       }
     },
 
@@ -132,14 +137,10 @@ export default {
       const itemName = item.item.name
       console.log(itemName)
       if (itemName.length) {
-        console.log('Entrato nell IF')
-        this.setSelectedElement(item.item.name)
-        this.setWikiElementDescription(this.selectedElement)
+        this.setSelectedElement(itemName)
+        this.setWikiElementDescription(itemName)
       }
-      //wikiContent = await this.getPlaceByName(this.wikiElement, this.language)
 
-      // this.setWikiElementDescription(this.wikiElement, this.language)
-      // console.log ('setWikiElementDescription done')
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
 

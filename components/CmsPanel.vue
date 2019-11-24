@@ -56,7 +56,9 @@ export default {
 
       try {
         const response = await this.axiosGet(url, 'post', { query })
+
         const placesFound = response.data.data.places
+
         if (placesFound.length) {
           console.log(placesFound[0])
           this.cmsItem.Identifier = placesFound[0].Identifier
