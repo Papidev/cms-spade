@@ -24,7 +24,6 @@ export const actions = {
   async setCmsElementDescription(vuexContext, nameToSearch) {
     console.group('setCmsElementDescription')
     //console.log(vuexContext.rootState)
-    console.log(nameToSearch)
 
     let { methods: helpers } = helperMixin
     let { methods: helpersGraph } = helperGraphMixin
@@ -34,15 +33,16 @@ export const actions = {
     const url =
       helpers.getDataEndpoint(vuexContext.rootState.language, 'cms', 'query') +
       '/graphql'
-    console.log(query)
-    console.log(url)
 
     try {
       const response = await helpers.axiosGet(url, 'post', { query })
-      console.log(`ECCA A' risposta :  ${response}`)
-      console.log(response)
-      const content = response.data.places[0].Description
-      vuexContext.commit('setCmsElementDescription', content)
+      console.log(response.data.data.places)
+      if (response.data.data.places.length) {
+        const content = response.data.places[0].Description
+        vuexContext.commit('setCmsElementDescription', content)
+      } else {
+        console.log('Non ho trovato niente su CMS')
+      }
     } catch (error) {
       console.log('Fallita action setCmsElementDescription')
       throw error

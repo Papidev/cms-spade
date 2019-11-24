@@ -28,7 +28,7 @@
 import { VueAutosuggest } from 'vue-autosuggest'
 //import { axiosGet, getDataEndpoint } from '~/components/helpersFunctions.js'
 import { mapState, mapActions } from 'vuex'
-import { queryPlacesByName } from '~/mixins/helpersGraph'
+import helpersGraph from '~/mixins/helpersGraph'
 //import axios from 'axios'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 
@@ -36,7 +36,7 @@ export default {
   components: {
     'search-suggest': VueAutosuggest
   },
-  mixins: [helpersFunctions],
+  mixins: [helpersFunctions, helpersGraph],
 
   props: {
     searchString: {
@@ -98,7 +98,7 @@ export default {
     },
 
     async getPlaceByNameCms(name, lang) {
-      const query = queryPlacesByName(name)
+      const query = this.queryPlacesByName(name)
 
       try {
         const url = this.getDataEndpoint(lang, 'cms', 'query') + '/graphql'
