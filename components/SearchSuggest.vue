@@ -78,23 +78,27 @@ export default {
 
     // funzione TROPPO accoppiata con output opensearch di wikipedia
     async searchWikiSuggestions(searchedElement) {
-      let url =
-        this.getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
-        searchedElement
-
-      let resource = await this.axiosGet(url, 'get')
-
-      if (resource.data[1].length === 0) {
-        url =
-          this.getDataEndpoint('it', 'wikipedia', 'opensearch') +
+      if (searchedElement.length) {
+        let url =
+          this.getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
           searchedElement
-        resource = await this.axiosGet(url, 'get')
-      }
 
-      this.shownSuggestions = this.mergeNamesDescriptions(
-        resource.data[1],
-        resource.data[2]
-      )
+        let resource = await this.axiosGet(url, 'get')
+
+        if (resource.data[1].length === 0) {
+          url =
+            this.getDataEndpoint('it', 'wikipedia', 'opensearch') +
+            searchedElement
+          resource = await this.axiosGet(url, 'get')
+        }
+
+        this.shownSuggestions = this.mergeNamesDescriptions(
+          resource.data[1],
+          resource.data[2]
+        )
+      } else {
+        console.log('Elemento vuoto nella form')
+      }
     },
 
     async getPlaceByNameCms(name, lang) {
@@ -120,20 +124,13 @@ export default {
     },
 
     async handleSelectedSuggestion(item) {
-      this.setSelectedElement(item.item.name)
-
-      // put selected suggestion from wiki in store
-      this.setCmsElementDescription(this.selectedElement)
-
-      this.cmsElementDescription
-      if (
-        typeof this.cmsElementDescription !== 'undefined' &&
-        this.cmsElementDescription !== null
-      ) {
-        return
-        //wikiContent = await this.getPlaceByNameWiki(this.wikiElement, this.language)
+      console.group('handleSelectedSuggestion')
+      console.log(item)
+      if (item.length) {
+        console.log('Entrato nell IF')
+        this.setSelectedElement(item.item.name)
+        this.setWikiElementDescription(this.selectedElement)
       }
-      this.setWikiElementDescription(this.selectedElement)
       //wikiContent = await this.getPlaceByName(this.wikiElement, this.language)
 
       // this.setWikiElementDescription(this.wikiElement, this.language)
