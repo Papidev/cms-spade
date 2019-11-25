@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 export default {
   methods: {
     async axiosGet(url, method, data) {
@@ -7,9 +5,9 @@ export default {
       let response
       try {
         if (method === 'get') {
-          response = await axios.get(url)
+          response = await this.$axios.$get(url)
         } else {
-          response = await axios({
+          response = await this.$axios.$post({
             url,
             method: 'post',
             data
