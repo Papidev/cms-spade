@@ -74,6 +74,7 @@ export default {
 
     // funzione TROPPO accoppiata con output opensearch di wikipedia
     async searchWiki(elementToSearch) {
+      console.log('start searchWiki')
       if (!elementToSearch.length) {
         return
       }
@@ -82,12 +83,16 @@ export default {
       let url =
         this.getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
         elementToSearch
+       
       try {
         resource = await this.axiosGet(url, 'get')
-        if (Array.isArray(resource.data) && resource.data.length) {
+        console.dir(resource)
+    
+        if (Array.isArray(resource) && resource.length) {
+           console.log('TROVATO QUALCOSA')
           this.shownSuggestions = this.suggestionsSetup(
-            resource.data[1],
-            resource.data[2]
+            resource[1],
+            resource[2]
           )
           console.log(
             `shownSuggestions riempita con searchWiki (${elementToSearch}, ${this.language})`
@@ -98,9 +103,12 @@ export default {
         console.log(`Error searchWiki (${elementToSearch}, ${this.language})`)
       }
 
-      if (!Array.isArray(resource.data) || !resource.data.length) {
+      if ((!Array.isArray(resource.data) || !resource.data.length) && this.language !== 'it') {
         this.setLanguage('it')
-        searchWiki(elementToSearch, 'it')
+        this.searchWiki(elementToSearch)
+      }else{
+        console.log('Trovato nulla neanche in it')
+       return
       }
     },
 
