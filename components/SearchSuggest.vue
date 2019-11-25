@@ -26,10 +26,8 @@
 
 <script>
 import { VueAutosuggest } from 'vue-autosuggest'
-//import { axiosGet, getDataEndpoint } from '~/components/helpersFunctions.js'
 import { mapState, mapActions } from 'vuex'
 import helpersGraph from '~/mixins/helpersGraph'
-//import axios from 'axios'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 
 export default {
@@ -59,15 +57,14 @@ export default {
     }
   },
   computed: {
-    // ...mapState(['selectedElement']),
     ...mapState(['language'])
-    // ...mapState('cms', ['cmsElementDescription'])
   },
 
   methods: {
     ...mapActions({
       setSelectedElement: 'setSelectedElement',
-      setWikiElementDescription: 'wiki/setWikiElementDescription'
+      setWikiElementDescription: 'wiki/setWikiElementDescription',
+      setLanguage: 'setLanguage'
     }),
 
     // This is what the <input/> value is set to when you are selecting a suggestion.
@@ -77,65 +74,42 @@ export default {
 
     // funzione TROPPO accoppiata con output opensearch di wikipedia
     async searchWiki(elementToSearch) {
-      console.group('searchWiki')
-      console.log(elementToSearch)
       if (!elementToSearch.length) {
-        console.log('Elemento vuoto nella form')
         return
       }
 
+      let resource
       let url =
         this.getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
         elementToSearch
-
-      let resource = await this.axiosGet(url, 'get')
+      try {
+        resource = await this.axiosGet(url, 'get')
+        if (Array.isArray(resource.data) && resource.data.length) {
+          this.shownSuggestions = this.suggestionsSetup(
+            resource.data[1],
+            resource.data[2]
+          )
+          console.log(
+            `shownSuggestions riempita con searchWiki (${elementToSearch}, ${this.language})`
+          )
+          return
+        }
+      } catch (error) {
+        console.log(`Error searchWiki (${elementToSearch}, ${this.language})`)
+      }
 
       if (!Array.isArray(resource.data) || !resource.data.length) {
-        console.log('Cerco su Wikipedia ITA')
-        url =
-          this.getDataEndpoint('it', 'wikipedia', 'opensearch') +
-          elementToSearch
-        resource = await this.axiosGet(url, 'get')
-      }
-      if (Array.isArray(resource.data) && resource.data.length) {
-        this.shownSuggestions = this.mergeNamesDescriptions(
-          resource.data[1],
-          resource.data[2]
-        )
+        this.setLanguage('it')
+        searchWiki(elementToSearch, 'it')
       }
     },
 
-    // async getPlaceByNameCms(name, lang) {
-    //   const query = this.queryPlacesByName(name)
-
-    //   try {
-    //     const url = this.getDataEndpoint(lang, 'cms', 'query') + '/graphql'
-    //     const response = axiosGet(url, 'post', {
-    //       query
-    //     })
-
-    //     const content = response.data.places[0].Description
-
-    //     if (content !== null && content !== undefined) {
-    //       this.setCmsElementDescription(content)
-    //       return 'foundInCms'
-    //     } else {
-    //       return null
-    //     }
-    //   } catch (err) {
-    //     return null
-    //   }
-    // },
-
     handleSelectedSuggestion(item) {
-      console.group('handleSelectedSuggestion')
-
       if (typeof item === 'undefined') {
-        console.log('item === undefined')
         return
       }
       const itemName = item.item.name
-      console.log(itemName)
+
       if (itemName.length) {
         this.setSelectedElement(itemName)
         this.setWikiElementDescription(itemName)
@@ -144,7 +118,7 @@ export default {
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
     },
 
-    mergeNamesDescriptions(names, descriptions) {
+    suggestionsSetup(names, descriptions) {
       const result = []
       for (let i = 0; i < names.length; i++) {
         result.push({

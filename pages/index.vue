@@ -51,17 +51,10 @@ export default {
 
   data() {
     return {
-      // cmsItem: {
-      //   id: '',
-      //   Identifier: '',
-      //   Name: '',
-      //   Description: ''
-      // },
-
       searchString: '',
-      //selected: '',
+
       suggestions: [],
-      // wikiDesc: this.wikiContent,
+
       jsonSource: {}
     }
   },
@@ -89,13 +82,6 @@ export default {
   },
 
   methods: {
-    // clickHandler(event, searchString) {
-    //   console.log('clickHandler running !!!')
-    //   this.$store.dispatch('getPlaceByName', {
-    //     name: searchString,
-    //     lang: this.$store.getters.getLanguage
-    //   })
-    // },
     itemSelected(event) {
       this.searchString = event.value
     },
