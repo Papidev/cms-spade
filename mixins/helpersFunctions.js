@@ -1,6 +1,6 @@
 export default {
   methods: {
-    async axiosGet(url, method, data) {
+    async axiosCall(url, method, data) {
       //
       let response
       try {
@@ -27,4 +27,4 @@ export default {
   }
 }
 
-// export { axiosGet, getDataEndpoint }
+
