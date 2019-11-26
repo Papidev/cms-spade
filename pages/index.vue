@@ -74,7 +74,7 @@ export default {
   },
 
   async created() {
-    // let response = await this.axiosGet(
+    // let response = await this.axiosCall(
     //   '/data/Chiese_Abbazie_ProvinciaMilano.json',
     //   'get'
     // )
