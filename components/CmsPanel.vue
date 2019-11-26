@@ -26,7 +26,7 @@
 import { mapState } from 'vuex'
 import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
-
+import { CMS ,QUERY,GRAPHQL_URI} from '~/constants/'
 export default {
   mixins: [helpersFunctions, helpersGraph],
 
@@ -46,17 +46,14 @@ export default {
   },
   watch: {
     selectedElement: async function(newSelectedElement) {
-      console.group('watcher selectedElement')
-      console.log('start ')
-
+      console.group ('watch selectedElement')
       const query = this.queryPlacesByName(newSelectedElement)
-
       const url =
-        this.getDataEndpoint(this.language, 'cms', 'query') + '/graphql'
-
+        this.getDataEndpoint(this.language, CMS, QUERY) + GRAPHQL_URI
+     
       try {
-        const response = await this.axiosGet(url, 'post', { query })
-
+        const response = await this.axiosCall(url, 'post', { query })
+        console.dir(response)
         const placesFound = response.data.data.places
 
         if (placesFound.length) {
