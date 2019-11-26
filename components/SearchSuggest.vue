@@ -29,6 +29,9 @@ import { VueAutosuggest } from 'vue-autosuggest'
 import { mapState, mapActions } from 'vuex'
 import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
+import { WIKIPEDIA ,SUGGEST_SEARCH,SUGGEST_SEARCH_CHARS} from '~/constants/'
+
+
 
 export default {
   components: {
@@ -72,20 +75,21 @@ export default {
       return suggestion.item.name
     },
 
-    // funzione TROPPO accoppiata con output opensearch di wikipedia
+    // funzione TROPPO accoppiata con output SUGGEST_SEARCH di wikipedia
     async searchWiki(elementToSearch) {
       console.log('start searchWiki')
-      if (!elementToSearch.length) {
+      if (!elementToSearch.length || elementToSearch.length < SUGGEST_SEARCH_CHARS ) {
         return
       }
-
-      let resource
+      console.group('MUUUU')
+     console.log(WIKIPEDIA)
+     console.log(SUGGEST_SEARCH)
       let url =
-        this.getDataEndpoint(this.language, 'wikipedia', 'opensearch') +
+        this.getDataEndpoint(this.language, WIKIPEDIA, SUGGEST_SEARCH) +
         elementToSearch
        
       try {
-        resource = await this.axiosGet(url, 'get')
+        let resource = await this.axiosCall(url, 'get')
         console.dir(resource)
     
         if (Array.isArray(resource) && resource.length) {
