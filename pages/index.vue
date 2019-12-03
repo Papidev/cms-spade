@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <div class="bg-green-100 h-screen w-1/2">
-      <cms-panel />
+      <element-panel />
       <div class="bg-gray-400">
         <button
           class="rounded mx-auto px-10"
@@ -45,7 +45,7 @@ export default {
   components: {
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
     'search-suggest': () => import('~/components/SearchSuggest.vue'),
-    'cms-panel': () => import('~/components/CmsPanel.vue')
+    'element-panel': () => import('~/components/ElementPanel.vue')
   },
   mixins: [helpersMixin],
 
