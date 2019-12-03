@@ -26,13 +26,18 @@
 import { mapState } from 'vuex'
 import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
-import { CMS ,QUERY,GRAPHQL_URI} from '~/constants/'
+import { CMS ,QUERY,GRAPHQL_URI,WIKIPEDIA,CONTENT_SEARCH} from '~/constants/'
 export default {
   mixins: [helpersFunctions, helpersGraph],
 
   data() {
     return {
       cmsItem: {
+        Identifier: '',
+        Name: '',
+        Description: ''
+      },
+       wikiItem: {
         Identifier: '',
         Name: '',
         Description: ''
@@ -63,6 +68,21 @@ export default {
           this.cmsItem.Description = placesFound[0].Description
         } else {
           console.log('Non ho trovato niente su CMS')
+          const url =
+        this.getDataEndpoint(
+          this.language,
+          WIKIPEDIA,
+          CONTENT_SEARCH
+        ) + newSelectedElement
+
+      const response = await this.axiosCall(url,'get')
+
+      if (typeof response !== 'undefined') {
+        const page = Object.keys(response.data.query.pages)[0]
+
+        this.wikiItem.Description = response.data.query.pages[page].extract
+      } else {
+      }
         }
       } catch (error) {
         console.log('ramo catch watcher selectedElement')
