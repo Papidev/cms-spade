@@ -27,9 +27,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
- plugins: [
-    '~/plugins/axios'
-  ],
+  plugins: ['~/plugins/axios'],
   /*
    ** Nuxt.js dev-modules
    */
@@ -59,14 +57,14 @@ export default {
     endpoints: {
       wikipedia: {
         en: {
-          query:
-            'https://en.wikipedia.org/w/api.php?format=json&action=query&origin=*&prop=extracts&explaintext&titles=',
+          // query:
+          //   'https://en.wikipedia.org/w/api.php?format=json&action=query&origin=*&prop=extracts&explaintext&titles=',
           opensearch:
             'https://en.wikipedia.org/w/api.php?action=opensearch&limit=10&origin=*&namespace=0&format=json&search='
         },
         it: {
-          query:
-            'https://it.wikipedia.org/w/api.php?format=json&action=query&origin=*&prop=extracts&explaintext&titles=',
+          // query:
+          //   'https://it.wikipedia.org/w/api.php?format=json&action=query&origin=*&prop=extracts&explaintext&titles=',
           opensearch:
             'https://it.wikipedia.org/w/api.php?action=opensearch&limit=10&origin=*&namespace=0&format=json&search='
         }

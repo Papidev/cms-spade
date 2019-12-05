@@ -10,7 +10,6 @@ export default {
           response = await this.$axios.$post(url, data)
         }
       } catch (error) {
-        console.log(error)
         throw error
       }
 
@@ -32,6 +31,20 @@ export default {
       return prop.split('.').reduce(function(prev, curr) {
         return prev ? prev[curr] : undefined
       }, obj || self)
+    },
+
+    removeVoidProps(obj) {
+      const keys = Object.keys(obj)
+
+      const newObj = keys.reduce((accum, prop) => {
+        if (obj[prop] != null) {
+          accum[prop] = obj[prop]
+        }
+        return accum
+      }, {})
+      console.group('removeVoidProps')
+      console.dir(newObj)
+      return newObj
     }
   }
 }

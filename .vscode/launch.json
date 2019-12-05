@@ -9,12 +9,12 @@
       "webRoot": "${workspaceFolder}",
       "breakOnLoad": true,
       "sourceMapPathOverrides": {
+        "webpack:///components/*": "${webRoot}/components/*",
+        "webpack:///pages/*": "${webRoot}/pages/*",
         "webpack:///./src/*": "${webRoot}/*",
         "webpack:///src/*": "${webRoot}/*",
-        "webpack:///*": "*",
-        "webpack:///./~/*": "${webRoot}/node_modules/*",
-        "webpack:///components/*": "${webRoot}/components/*",
-        "webpack:///pages/*": "${webRoot}/pages/*"
+        //"webpack:///*": "*",
+        "webpack:///./~/*": "${webRoot}/node_modules/*"
       }
     },
     {
