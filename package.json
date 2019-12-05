@@ -18,7 +18,8 @@
     "nuxt": "^2.10.2",
     "nuxt-rfg-icon": "^0.6.4",
     "strapi-sdk-javascript": "^0.3.3",
-    "vue-autosuggest": "^2.0.4"
+    "vue-autosuggest": "^2.0.4",
+    "wtf_wikipedia": "^7.8.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^1.0.1",
@@ -26,7 +27,7 @@
     "@nuxtjs/tailwindcss": "^1.0.0",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.5.1",
-    "eslint-config-prettier": "^4.3.0",
+    "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-nuxt": ">=0.4.2",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.2.3",

@@ -7,13 +7,10 @@ export default {
         if (method === 'get') {
           response = await this.$axios.$get(url)
         } else {
-          response = await this.$axios.$post({
-            url,
-            method: 'post',
-            data
-          })
+          response = await this.$axios.$post(url, data)
         }
       } catch (error) {
+        console.log(error)
         throw error
       }
 
