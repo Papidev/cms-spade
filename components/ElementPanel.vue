@@ -1,7 +1,8 @@
 
 <template>
   <div>
-    <div class="bg-red-200">
+
+    <div>
       <h1 v-if="selectedElement">
         Hai selezionato
         {{ selectedElement }}
@@ -20,7 +21,17 @@
         </li>
       </ul>
     </div>
+     <div>
+      <!-- this component will only be rendered on client-side -->
+      <main>
+        <client-only placeholder="Loading...">
+          <new-markdown-editor v-model="this.textareaContent" :source=this.showing />
+        </client-only>
+      </main>
+    </div>
+    
   </div>
+ 
 </template>
 <script>
 import wtf from 'wtf_wikipedia'
@@ -34,8 +45,13 @@ import {
   WIKIPEDIA,
   CONTENT_SEARCH
 } from '~/constants/'
+
 export default {
   mixins: [helpersFunctions, helpersGraph],
+
+  components: {
+    'new-markdown-editor': () => import('~/components/MarkdownEditor.vue')
+    },
 
   data() {
     return {
@@ -49,27 +65,25 @@ export default {
         Name: null,
         Description: null
       },
-      cleaned: {}
+      showing: CMS
     }
   },
 
   computed: {
     ...mapState(['selectedElement']),
-    ...mapState(['language'])
+    ...mapState(['language']),
+    textareaContent(){
+     return (this.showing === CMS) ? this.cmsItem.Description : this.wikiItem.Description
+    },
+    textareaColor(){
+     return (this.showing === CMS) ? 'green' : 'blue'
+    }
+
   },
   watch: {
     selectedElement: async function(newSelectedElement) {
-      let response = await this.getDataCms(QUERY)
-
-      if (!response) {
-        await this.getDataWiki()
-      }
-
-      this.cleaned = Object.assign(
-        {},
-        this.removeVoidProps(this.wikiItem),
-        this.removeVoidProps(this.cmsItem)
-      )
+      await this.getDataCms(QUERY)
+      await this.getDataWiki()
     }
   },
   methods: {
@@ -84,6 +98,7 @@ export default {
       try {
         response = await this.axiosCall(url, method, { query })
       } catch {
+        this.showing = WIKIPEDIA
         return false
       }
 
@@ -93,8 +108,10 @@ export default {
         this.cmsItem.Identifier = itemfound[0].Identifier
         this.cmsItem.Name = itemfound[0].Name
         this.cmsItem.Description = itemfound[0].Description
+         this.showing = CMS
         return true
       } else {
+         this.showing = WIKIPEDIA
         return false
       }
     },
@@ -106,6 +123,7 @@ export default {
         let content = await wtf.fetch(this.selectedElement, this.language)
 
         this.wikiItem.Description = content.text()
+        console.log('getDataWiki finito')
       } catch {
         return false
       }
