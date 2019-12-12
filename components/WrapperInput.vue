@@ -1,11 +1,15 @@
 <template>
   <div>
     {{ label }}
-    <input v-model="content.value">
+    <input
+      v-model="content.value"
+      :class="computedClasses"
+    >
   </div>
 </template>
 <script>
-//  {{ name }} --> {{ propValue.value }}   {{ propValue.source }}
+import { CMS, WIKIPEDIA } from '~/constants/'
+
 export default {
   props: {
     label: {
@@ -15,6 +19,14 @@ export default {
     content: {
       required: true,
       type: Object
+    }
+  },
+  computed: {
+    computedClasses() {
+      if (this.content.source === CMS) {
+        return 'input-cms'
+      } else if (this.content.source === WIKIPEDIA) return 'input-wiki'
+      else return ''
     }
   }
 }

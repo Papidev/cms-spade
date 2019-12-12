@@ -31,10 +31,10 @@ export default {
   },
   computed: {
     computedClasses() {
-      return {
-        'bg-red-600': this.source === CMS,
-        'bg-blue-600': this.source === WIKIPEDIA
-      }
+      if (this.source === CMS) {
+        return 'input-cms'
+      } else if (this.source === WIKIPEDIA) return 'input-wiki'
+      else return ''
     }
   },
 

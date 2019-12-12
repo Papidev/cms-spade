@@ -12,7 +12,7 @@
       }"
       @input="searchWiki"
       @selected="handleSelectedSuggestion"
-      @click="searchWiki"
+      @keydown="searchWiki"
     >
       <template v-slot:default="{ suggestion }">
         <div>
@@ -62,6 +62,13 @@ export default {
       setLanguage: 'setLanguage'
     }),
 
+    onKeyDown(e) {
+      console.log(e)
+
+      if (e.keyCode === 13) {
+        searchWiki(elementToSearch)
+      }
+    },
     // This is what the <input/> value is set to when you are selecting a suggestion.
     getSuggestionItemName(suggestion) {
       return suggestion.item.name
