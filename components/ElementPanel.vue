@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <div class="bg-red-200">
@@ -13,10 +12,13 @@
       <br>
       <ul>
         <li
-          v-for="(value, name, index) in cmsItem"
-          :key="(value, name, index).index"
+          v-for="(propValue, name, index) in mergedItemNoDesc"
+          :key="(propValue, name, index).index"
         >
-          {{ index }}. {{ name }}: {{ value }}
+          <wrapper-input
+            :label="name"
+            :content="propValue"
+          />
         </li>
       </ul>
     </div>
@@ -27,6 +29,7 @@ import wtf from 'wtf_wikipedia'
 import { mapState } from 'vuex'
 import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
+
 import {
   CMS,
   QUERY,
@@ -35,6 +38,10 @@ import {
   CONTENT_SEARCH
 } from '~/constants/'
 export default {
+  components: {
+    'wrapper-input': () => import('~/components/WrapperInput.vue')
+  },
+
   mixins: [helpersFunctions, helpersGraph],
 
   data() {
@@ -49,26 +56,28 @@ export default {
         Name: null,
         Description: null
       },
-      cleaned: {}
+      mergedItem: {}
     }
   },
 
   computed: {
     ...mapState(['selectedElement']),
-    ...mapState(['language'])
+    ...mapState(['language']),
+    mergedItemNoDesc() {
+      const newObj = { ...this.mergedItem }
+      delete newObj.Description
+      return newObj
+    }
   },
   watch: {
     selectedElement: async function(newSelectedElement) {
-      let response = await this.getDataCms(QUERY)
+      await Promise.all([this.getDataCms(QUERY), this.getDataWiki()])
 
-      if (!response) {
-        await this.getDataWiki()
-      }
-
-      this.cleaned = Object.assign(
-        {},
-        this.removeVoidProps(this.wikiItem),
-        this.removeVoidProps(this.cmsItem)
+      this.mergedItem = this.mergeResultsProperties(
+        this.cmsItem,
+        this.wikiItem,
+        CMS,
+        WIKIPEDIA
       )
     }
   },

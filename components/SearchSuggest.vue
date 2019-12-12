@@ -29,9 +29,7 @@ import { VueAutosuggest } from 'vue-autosuggest'
 import { mapState, mapActions } from 'vuex'
 import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
-import { WIKIPEDIA ,SUGGEST_SEARCH,SUGGEST_SEARCH_CHARS} from '~/constants/'
-
-
+import { WIKIPEDIA, SUGGEST_SEARCH, SUGGEST_SEARCH_CHARS } from '~/constants/'
 
 export default {
   components: {
@@ -77,42 +75,38 @@ export default {
 
     // funzione TROPPO accoppiata con output SUGGEST_SEARCH di wikipedia
     async searchWiki(elementToSearch) {
-      console.log('start searchWiki')
-      if (!elementToSearch.length || elementToSearch.length < SUGGEST_SEARCH_CHARS ) {
+      if (
+        !elementToSearch.length ||
+        elementToSearch.length < SUGGEST_SEARCH_CHARS
+      ) {
         return
       }
-      console.group('MUUUU')
-     console.log(WIKIPEDIA)
-     console.log(SUGGEST_SEARCH)
+
       let url =
         this.getDataEndpoint(this.language, WIKIPEDIA, SUGGEST_SEARCH) +
         elementToSearch
-       
+
       try {
         let resource = await this.axiosCall(url, 'get')
-        console.dir(resource)
-    
+
         if (Array.isArray(resource) && resource.length) {
-           console.log('TROVATO QUALCOSA')
           this.shownSuggestions = this.suggestionsSetup(
             resource[1],
             resource[2]
           )
-          console.log(
-            `shownSuggestions riempita con searchWiki (${elementToSearch}, ${this.language})`
-          )
+
           return
         }
-      } catch (error) {
-        console.log(`Error searchWiki (${elementToSearch}, ${this.language})`)
-      }
+      } catch (error) {}
 
-      if ((!Array.isArray(resource.data) || !resource.data.length) && this.language !== 'it') {
+      if (
+        (!Array.isArray(resource.data) || !resource.data.length) &&
+        this.language !== 'it'
+      ) {
         this.setLanguage('it')
         this.searchWiki(elementToSearch)
-      }else{
-        console.log('Trovato nulla neanche in it')
-       return
+      } else {
+        return
       }
     },
 

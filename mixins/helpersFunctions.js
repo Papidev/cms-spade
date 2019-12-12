@@ -33,18 +33,35 @@ export default {
       }, obj || self)
     },
 
-    removeVoidProps(obj) {
-      const keys = Object.keys(obj)
+    // removeVoidProps(obj) {
+    //   const keys = Object.keys(obj)
 
-      const newObj = keys.reduce((accum, prop) => {
-        if (obj[prop] != null) {
-          accum[prop] = obj[prop]
-        }
-        return accum
-      }, {})
-      console.group('removeVoidProps')
-      console.dir(newObj)
-      return newObj
+    //   const newObj = keys.reduce((accum, prop) => {
+    //     if (obj[prop] != null) {
+    //       accum[prop] = obj[prop]
+    //     }
+    //     return accum
+    //   }, {})
+    //
+    //
+    //   return newObj
+    // }
+
+    mergeResultsProperties(
+      primaryObj,
+      secondaryObj,
+      primaryLabel,
+      secondaryLabel
+    ) {
+      let merged = {}
+      for (const prop in primaryObj) {
+        if (primaryObj[prop])
+          merged[prop] = { value: primaryObj[prop], source: primaryLabel }
+        else
+          merged[prop] = { value: secondaryObj[prop], source: secondaryLabel }
+      }
+
+      return merged
     }
   }
 }

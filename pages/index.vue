@@ -66,7 +66,7 @@ export default {
   watch: {
     searchString(val) {
       this.getSuggestions(val)
-      console.log(this.$refs)
+
       const inputField = this.$refs.autosuggest.$el.children.autosuggest_input
       inputField.click()
       inputField.focus()
