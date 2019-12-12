@@ -12,6 +12,7 @@
       }"
       @input="searchWiki"
       @selected="handleSelectedSuggestion"
+      @click="searchWiki"
     >
       <template v-slot:default="{ suggestion }">
         <div>
@@ -42,19 +43,12 @@ export default {
       required: false,
       default: '',
       type: String
-    },
-    suggestions: {
-      required: false,
-      default() {
-        return []
-      },
-      type: Array
     }
   },
   data() {
     return {
       elementToSearch: this.searchString,
-      shownSuggestions: this.suggestions
+      shownSuggestions: []
     }
   },
   computed: {
@@ -75,10 +69,7 @@ export default {
 
     // funzione TROPPO accoppiata con output SUGGEST_SEARCH di wikipedia
     async searchWiki(elementToSearch) {
-      if (
-        !elementToSearch.length ||
-        elementToSearch.length < SUGGEST_SEARCH_CHARS
-      ) {
+      if (!elementToSearch || elementToSearch.length < SUGGEST_SEARCH_CHARS) {
         return
       }
 

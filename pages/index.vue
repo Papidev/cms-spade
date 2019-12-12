@@ -2,7 +2,6 @@
   <div>
     <search-suggest
       :search-string="searchString"
-      :suggestions="suggestions"
     />
     <hr>
     <hr>
@@ -48,8 +47,6 @@ export default {
   data() {
     return {
       searchString: '',
-
-      suggestions: [],
 
       jsonSource: {}
     }
