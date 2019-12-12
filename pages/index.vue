@@ -1,12 +1,12 @@
 <template>
   <div>
-     <search-suggest
-        :search-string="searchString"
-        :suggestions="suggestions"
-      />
-      <hr/>
-      <hr/>
-      <hr/>
+    <search-suggest
+      :search-string="searchString"
+      :suggestions="suggestions"
+    />
+    <hr>
+    <hr>
+    <hr>
     <div class="bg-green-100 h-screen w-1/2">
       <element-panel />
       <div class="bg-gray-400">
@@ -19,7 +19,6 @@
         </button>
       </div>
       <hr>
-     
     </div>
     
     <!--
@@ -40,7 +39,7 @@ if (process.client) {
 
 export default {
   components: {
-   // 'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
+    // 'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
     'search-suggest': () => import('~/components/SearchSuggest.vue'),
     'element-panel': () => import('~/components/ElementPanel.vue')
   },
@@ -56,8 +55,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['selectedElement']),
-    ...mapState('wiki', ['wikiElementDescription'])
+    ...mapState(['selectedElement'])
+    // ...mapState('wiki', ['wikiElementDescription'])
   },
 
   watch: {

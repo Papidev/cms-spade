@@ -64,7 +64,7 @@ export default {
   methods: {
     ...mapActions({
       setSelectedElement: 'setSelectedElement',
-      setWikiElementDescription: 'wiki/setWikiElementDescription',
+      // setWikiElementDescription: 'wiki/setWikiElementDescription',
       setLanguage: 'setLanguage'
     }),
 
@@ -115,11 +115,12 @@ export default {
         console.log(`item falsy ${item} `)
         return
       }
+
       const itemName = item.item.name
 
       if (itemName.length) {
         this.setSelectedElement(itemName)
-        this.setWikiElementDescription(itemName)
+        // this.setWikiElementDescription(itemName)
       }
 
       this.$refs.autosuggest.$el.children.autosuggest_input.focus()
