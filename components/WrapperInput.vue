@@ -1,9 +1,9 @@
 <template>
-  <div>
-    {{ label }}
+  <div :class="inputWrapperClasses">
+    <div>{{ label }}</div>
     <input
       v-model="content.value"
-      :class="computedClasses"
+      :class="inputClasses"
     >
   </div>
 </template>
@@ -22,10 +22,18 @@ export default {
     }
   },
   computed: {
-    computedClasses() {
+    inputClasses() {
       if (this.content.source === CMS) {
-        return 'input-cms'
-      } else if (this.content.source === WIKIPEDIA) return 'input-wiki'
+        return ['input', 'input-cms']
+      } else if (this.content.source === WIKIPEDIA)
+        return ['input', 'input-wiki']
+      else return ''
+    },
+
+    inputWrapperClasses() {
+      if (this.content.source === CMS) {
+        return 'input-cms-wrapper '
+      } else if (this.content.source === WIKIPEDIA) return 'input-wiki-wrapper'
       else return ''
     }
   }

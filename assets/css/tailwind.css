@@ -1,12 +1,24 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 
+.input {
+  @apply m-2;
+}
+
 .input-wiki {
-  @apply bg-red-300;
+  @apply bg-red-100;
+}
+
+.input-wiki-wrapper {
+  @apply bg-red-200;
 }
 
 .input-cms {
-  @apply bg-blue-300;
+  @apply bg-blue-100;
+}
+
+.input-cms-wrapper {
+  @apply bg-blue-200;
 }
 
 .btn-blue {
