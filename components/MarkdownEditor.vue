@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="computedClasses" >
     <textarea
       id="my-text-area"
       ref="mytextarea"
@@ -10,6 +10,10 @@
 
 <script>
 import EasyMDE from 'easymde'
+import {
+  CMS,
+  WIKIPEDIA
+} from '~/constants/'
 
 let easyMDE = {}
 
@@ -18,11 +22,16 @@ export default {
     value: {
       required: true,
       type: String
+    },
+    source:{
+      required: true,
+      type: String
     }
+
   },
   data() {
     return {
-      // easyMDE: {}
+       
     }
   },
 
@@ -30,6 +39,15 @@ export default {
     value(newValue) {
       easyMDE.value(newValue)
     }
+  },
+  computed:{
+    computedClasses() {
+      return {
+        "bg-red-600": this.source === CMS ,
+        "bg-blue-600": this.source === WIKIPEDIA
+      };
+    }
+
   },
 
   mounted() {

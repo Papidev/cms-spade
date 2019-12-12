@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bg-red-200">
+    <div>
       <h1 v-if="selectedElement">
         Hai selezionato
         {{ selectedElement }}
@@ -22,6 +22,17 @@
         </li>
       </ul>
     </div>
+    <div>
+      <!-- this component will only be rendered on client-side -->
+      <main>
+        <client-only placeholder="Loading...">
+          <new-markdown-editor
+            v-model="textareaContent"
+            :source="showing"
+          />
+        </client-only>
+      </main>
+    </div>
   </div>
 </template>
 <script>
@@ -37,9 +48,14 @@ import {
   WIKIPEDIA,
   CONTENT_SEARCH
 } from '~/constants/'
+
 export default {
   components: {
     'wrapper-input': () => import('~/components/WrapperInput.vue')
+  },
+
+  components: {
+    'new-markdown-editor': () => import('~/components/MarkdownEditor.vue')
   },
 
   mixins: [helpersFunctions, helpersGraph],
@@ -67,6 +83,15 @@ export default {
       const newObj = { ...this.mergedItem }
       delete newObj.Description
       return newObj
+    },
+
+    textareaContent() {
+      return this.showing === CMS
+        ? this.cmsItem.Description
+        : this.wikiItem.Description
+    },
+    textareaColor() {
+      return this.showing === CMS ? 'green' : 'blue'
     }
   },
   watch: {
@@ -93,6 +118,7 @@ export default {
       try {
         response = await this.axiosCall(url, method, { query })
       } catch {
+        this.showing = WIKIPEDIA
         return false
       }
 
@@ -102,8 +128,10 @@ export default {
         this.cmsItem.Identifier = itemfound[0].Identifier
         this.cmsItem.Name = itemfound[0].Name
         this.cmsItem.Description = itemfound[0].Description
+        this.showing = CMS
         return true
       } else {
+        this.showing = WIKIPEDIA
         return false
       }
     },
@@ -115,6 +143,7 @@ export default {
         let content = await wtf.fetch(this.selectedElement, this.language)
 
         this.wikiItem.Description = content.text()
+        console.log('getDataWiki finito')
       } catch {
         return false
       }

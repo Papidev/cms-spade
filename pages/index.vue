@@ -1,5 +1,12 @@
 <template>
-  <div class="flex">
+  <div>
+     <search-suggest
+        :search-string="searchString"
+        :suggestions="suggestions"
+      />
+      <hr/>
+      <hr/>
+      <hr/>
     <div class="bg-green-100 h-screen w-1/2">
       <element-panel />
       <div class="bg-gray-400">
@@ -12,19 +19,9 @@
         </button>
       </div>
       <hr>
-      <search-suggest
-        :search-string="searchString"
-        :suggestions="suggestions"
-      />
+     
     </div>
-    <div class="bg-red-100 h-screen w-1/2 border-2 border-black">
-      <!-- this component will only be rendered on client-side -->
-      <main>
-        <client-only placeholder="Loading...">
-          <new-markdown-editor v-model="wikiElementDescription" />
-        </client-only>
-      </main>
-    </div>
+    
     <!--
     <div class="w-1/4">
       <json-tree :data="jsonSource" @selected="itemSelected" />
@@ -43,7 +40,7 @@ if (process.client) {
 
 export default {
   components: {
-    'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
+   // 'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
     'search-suggest': () => import('~/components/SearchSuggest.vue'),
     'element-panel': () => import('~/components/ElementPanel.vue')
   },
