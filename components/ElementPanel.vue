@@ -28,7 +28,7 @@
         <client-only placeholder="Loading...">
           <new-markdown-editor
             v-model="textareaContent"
-            :source="showing"
+            :source="mergedItem.Description ? mergedItem.Description.source : '' "
           />
         </client-only>
       </main>
@@ -51,10 +51,7 @@ import {
 
 export default {
   components: {
-    'wrapper-input': () => import('~/components/WrapperInput.vue')
-  },
-
-  components: {
+    'wrapper-input': () => import('~/components/WrapperInput.vue'),
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue')
   },
 
@@ -86,24 +83,36 @@ export default {
     },
 
     textareaContent() {
-      return this.showing === CMS
-        ? this.cmsItem.Description
-        : this.wikiItem.Description
-    },
-    textareaColor() {
-      return this.showing === CMS ? 'green' : 'blue'
+      return this.mergedItem.Description
+        ? this.mergedItem.Description.value
+        : this.cmsItem.Description
     }
+    // textareaColor() {
+    //   return this.showing === CMS ? 'green' : 'blue'
+    // }
   },
   watch: {
     selectedElement: async function(newSelectedElement) {
-      await Promise.all([this.getDataCms(QUERY), this.getDataWiki()])
+      this.cmsItem = {
+        Identifier: null,
+        Name: null,
+        Description: null
+      }
+      let results = await Promise.all([
+        this.getDataCms(QUERY),
+        this.getDataWiki()
+      ])
+      console.log(results)
 
-      this.mergedItem = this.mergeResultsProperties(
-        this.cmsItem,
-        this.wikiItem,
-        CMS,
-        WIKIPEDIA
-      )
+      if (results) {
+        console.log('entrato IF')
+        this.mergedItem = this.mergeResultsProperties(
+          this.cmsItem,
+          this.wikiItem,
+          CMS,
+          WIKIPEDIA
+        )
+      }
     }
   },
   methods: {
@@ -118,7 +127,7 @@ export default {
       try {
         response = await this.axiosCall(url, method, { query })
       } catch {
-        this.showing = WIKIPEDIA
+        // this.showing = WIKIPEDIA
         return false
       }
 
@@ -128,10 +137,10 @@ export default {
         this.cmsItem.Identifier = itemfound[0].Identifier
         this.cmsItem.Name = itemfound[0].Name
         this.cmsItem.Description = itemfound[0].Description
-        this.showing = CMS
+        // this.showing = CMS
         return true
       } else {
-        this.showing = WIKIPEDIA
+        // this.showing = WIKIPEDIA
         return false
       }
     },

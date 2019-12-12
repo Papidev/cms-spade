@@ -111,7 +111,8 @@ export default {
     },
 
     handleSelectedSuggestion(item) {
-      if (typeof item === 'undefined') {
+      if (!item) {
+        console.log(`item falsy ${item} `)
         return
       }
       const itemName = item.item.name
