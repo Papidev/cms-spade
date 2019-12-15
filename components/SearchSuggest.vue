@@ -12,7 +12,7 @@
       }"
       @input="searchWiki"
       @selected="handleSelectedSuggestion"
-      @keydown="searchWiki"
+      @keydown="onKeyDown"
     >
       <template v-slot:default="{ suggestion }">
         <div>
@@ -76,6 +76,7 @@ export default {
 
     // funzione TROPPO accoppiata con output SUGGEST_SEARCH di wikipedia
     async searchWiki(elementToSearch) {
+      console.log('elementToSearch', elementToSearch)
       if (!elementToSearch || elementToSearch.length < SUGGEST_SEARCH_CHARS) {
         return
       }

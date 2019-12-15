@@ -2,7 +2,7 @@
 @import 'tailwindcss/components';
 
 .input {
-  @apply m-2;
+  @apply m-2 w-48;
 }
 
 .input-wiki {

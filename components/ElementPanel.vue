@@ -1,13 +1,10 @@
 <template>
   <div>
     <div>
-      <h1 v-if="selectedElement">
-        Hai selezionato
-        {{ selectedElement }}
-      </h1>
-      <h1 v-else>
+      <h1 v-if="!selectedElement">
         Non hai selezionato nulla 😢
       </h1>
+     
 
       <br>
       <ul>
@@ -102,10 +99,8 @@ export default {
         this.getDataCms(QUERY),
         this.getDataWiki()
       ])
-      console.log(results)
 
       if (results) {
-        console.log('entrato IF')
         this.mergedItem = this.mergeResultsProperties(
           this.cmsItem,
           this.wikiItem,
@@ -150,9 +145,8 @@ export default {
 
       try {
         let content = await wtf.fetch(this.selectedElement, this.language)
-
+        this.wikiItem.Name = this.selectedElement
         this.wikiItem.Description = content.text()
-        console.log('getDataWiki finito')
       } catch {
         return false
       }
