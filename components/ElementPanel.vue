@@ -32,19 +32,19 @@
     </div>
   </div>
 </template>
+
 <script>
 import wtf from 'wtf_wikipedia'
 import { mapState } from 'vuex'
 import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
-
+import helpersGetData from '~/mixins/helpersGetData.js'
 import {
   CMS,
-  QUERY,
-  GRAPHQL_URI,
-  WIKIPEDIA,
-  CONTENT_SEARCH
-} from '~/constants/'
+  CMS_TARGET,
+  WIKI,
+  CMS_PLACES_ROOT
+  } from '~/constants/'
 
 export default {
   components: {
@@ -52,25 +52,26 @@ export default {
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue')
   },
 
-  mixins: [helpersFunctions, helpersGraph],
+  mixins: [helpersFunctions, helpersGraph,helpersGetData],
+
+
 
   data() {
     return {
-      cmsItem: {
+      cmsItem : {},
+      wikiItem: {
+        Name: null,
+        Description: null
+      },
+      mergedItem: {
         Identifier: null,
         Name: null,
         Description: null
-      },
-      wikiItem: {
-        // Identifier: null,
-        Name: null,
-        Description: null
-      },
-      mergedItem: {}
+      }
     }
   },
 
-  computed: {
+computed: {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
     mergedItemNoDesc() {
@@ -84,19 +85,13 @@ export default {
         ? this.mergedItem.Description.value
         : this.cmsItem.Description
     }
-    // textareaColor() {
-    //   return this.showing === CMS ? 'green' : 'blue'
-    // }
+    
   },
-  watch: {
+ watch: {
     selectedElement: async function(newSelectedElement) {
-      this.cmsItem = {
-        Identifier: null,
-        Name: null,
-        Description: null
-      }
+     this.resetCmsItem()
       let results = await Promise.all([
-        this.getDataCms(QUERY),
+        this.getDataCms(CMS_TARGET),
         this.getDataWiki()
       ])
 
@@ -105,46 +100,63 @@ export default {
           this.cmsItem,
           this.wikiItem,
           CMS,
-          WIKIPEDIA
+          WIKI
         )
       }
     }
   },
+
+mounted()  {
+this.resetCmsItem()
+},
+
+  
+ 
   methods: {
+    resetCmsItem(){
+     this.cmsItem = {
+        Identifier: null,
+        Name: null,
+        Description: null
+      }
+
+    },
+
+
     async getDataCms(operation) {
       let response
-      const uri = GRAPHQL_URI // using graphql
-      const url = this.getDataEndpoint(this.language, CMS, operation) + uri
-      let method = 'post'
-      let query = this.queryPlacesByName(this.selectedElement)
-      let responseFormat = 'data.places'
+      let responseFormat = CMS_PLACES_ROOT
+      
+      const method = 'post'
+      const url = this.getDataEndpoint(this.language, CMS, operation) 
+      const query = this.queryPlacesByName(this.selectedElement)
+      
 
       try {
         response = await this.axiosCall(url, method, { query })
       } catch {
-        // this.showing = WIKIPEDIA
+        
         return false
       }
-
+      
       let itemfound = this.getProp(response, responseFormat)
 
       if (itemfound.length > 0) {
-        this.cmsItem.Identifier = itemfound[0].Identifier
-        this.cmsItem.Name = itemfound[0].Name
-        this.cmsItem.Description = itemfound[0].Description
-        // this.showing = CMS
+            this.cmsItem.Identifier = itemfound[0].Identifier
+            this.cmsItem.Name = itemfound[0].Name
+            this.cmsItem.Description = itemfound[0].Description
+      
         return true
       } else {
-        // this.showing = WIKIPEDIA
         return false
       }
     },
 
     async getDataWiki() {
-      let response
 
       try {
         let content = await wtf.fetch(this.selectedElement, this.language)
+
         this.wikiItem.Name = this.selectedElement
         this.wikiItem.Description = content.text()
       } catch {
