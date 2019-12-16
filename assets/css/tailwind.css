@@ -1,5 +1,6 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 .input {
   @apply m-2 w-48;
@@ -28,4 +29,3 @@
   @apply bg-blue-700;
 }
 
-@import 'tailwindcss/utilities';
