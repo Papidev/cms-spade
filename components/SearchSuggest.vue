@@ -10,7 +10,7 @@
         id: 'autosuggest_input',
         placeholder: 'Type here for Search'
       }"
-      @input="searchWiki"
+      @input="searchWikiSuggestions"
       @selected="handleSelectedSuggestion"
       @keydown="onKeyDown"
     >
@@ -30,13 +30,15 @@ import { VueAutosuggest } from 'vue-autosuggest'
 import { mapState, mapActions } from 'vuex'
 import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
-import { WIKIPEDIA, SUGGEST_SEARCH, SUGGEST_SEARCH_CHARS } from '~/constants/'
+import helpersGetData from '~/mixins/helpersGetData.js'
+import helpersWiki from '~/mixins/helpersWiki.js'
+import { WIKI, WIKI_SUGGEST_SEARCH, WIKI_SUGG_SEARCH_CHARS } from '~/constants/'
 
 export default {
   components: {
     'search-suggest': VueAutosuggest
   },
-  mixins: [helpersFunctions, helpersGraph],
+  mixins: [helpersFunctions, helpersGraph,helpersGetData,helpersWiki],
 
   props: {
     searchString: {
@@ -52,13 +54,15 @@ export default {
     }
   },
   computed: {
-    ...mapState(['language'])
+    ...mapState(['language']),
+    autosuggestionInput(){
+    return this.$refs.autosuggest.$el.children.autosuggest_input
+    }
   },
 
   methods: {
     ...mapActions({
       setSelectedElement: 'setSelectedElement',
-      // setWikiElementDescription: 'wiki/setWikiElementDescription',
       setLanguage: 'setLanguage'
     }),
 
@@ -66,7 +70,7 @@ export default {
       console.log(e)
 
       if (e.keyCode === 13) {
-        searchWiki(elementToSearch)
+        this.searchWikiSuggestions(this.elementToSearch)
       }
     },
     // This is what the <input/> value is set to when you are selecting a suggestion.
@@ -74,68 +78,51 @@ export default {
       return suggestion.item.name
     },
 
-    // funzione TROPPO accoppiata con output SUGGEST_SEARCH di wikipedia
-    async searchWiki(elementToSearch) {
-      console.log('elementToSearch', elementToSearch)
-      if (!elementToSearch || elementToSearch.length < SUGGEST_SEARCH_CHARS) {
+    // funzione TROPPO accoppiata con output WIKI_SUGGEST_SEARCH di wikipedia
+     async searchWikiSuggestions(elementToSearch) {
+
+      let resource
+      if (!elementToSearch || elementToSearch.length < WIKI_SUGG_SEARCH_CHARS) {
+          console.log('searchWikiSuggestions exit right away : elementToSearch', elementToSearch)
         return
       }
 
       let url =
-        this.getDataEndpoint(this.language, WIKIPEDIA, SUGGEST_SEARCH) +
+        this.getDataEndpoint(this.language, WIKI, WIKI_SUGGEST_SEARCH) +
         elementToSearch
 
       try {
-        let resource = await this.axiosCall(url, 'get')
-
+         resource = await this.axiosCall(url, 'get')
+       } catch (error) {
+         console.log(error)
+         return
+      }
+  
         if (Array.isArray(resource) && resource.length) {
           this.shownSuggestions = this.suggestionsSetup(
-            resource[1],
-            resource[2]
-          )
-
-          return
+            resource[1], //names
+            resource[2]  //descriptions
+          )       
         }
-      } catch (error) {}
+      
+      return
 
-      if (
-        (!Array.isArray(resource.data) || !resource.data.length) &&
-        this.language !== 'it'
-      ) {
-        this.setLanguage('it')
-        this.searchWiki(elementToSearch)
-      } else {
-        return
-      }
     },
 
-    handleSelectedSuggestion(item) {
-      if (!item) {
-        console.log(`item falsy ${item} `)
+    handleSelectedSuggestion(suggestion) {
+      if (!suggestion) {    //suggestion void or null
+        console.log(`handleSelectedSuggestion : exit for suggestion falsy --> ${suggestion} `)
         return
       }
 
-      const itemName = item.item.name
+      const suggestionName = this.getSuggestionName(suggestion)
+      console.log(`handleSelectedSuggestion : suggestionName --> ${suggestionName}`)
+      this.setSelectedElement(suggestionName)
 
-      if (itemName.length) {
-        this.setSelectedElement(itemName)
-        // this.setWikiElementDescription(itemName)
-      }
-
-      this.$refs.autosuggest.$el.children.autosuggest_input.focus()
-    },
-
-    suggestionsSetup(names, descriptions) {
-      const result = []
-      for (let i = 0; i < names.length; i++) {
-        result.push({
-          id: i,
-          name: names[i],
-          description: descriptions[i]
-        })
-      }
-      return [{ data: result }]
+      this.autosuggestionInput.focus()
     }
+
+    
   }
 }
 </script>
