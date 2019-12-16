@@ -16,10 +16,10 @@ let easyMDE = {}
 
 export default {
   props: {
-    // eslint-disable-next-line vue/require-prop-types
+  
     value: {
-      required: true
-      // type: String
+      
+      type: String
     },
     source: {
       required: true,
@@ -49,7 +49,7 @@ export default {
       autofocus: true,
       element: this.$refs.mytextarea,
       autosave: {
-        enabled: true,
+        enabled: false,
         uniqueId: 'MyMDE'
       },
       minHeight: '700px',
