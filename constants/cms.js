@@ -1,4 +1,4 @@
 export const CMS = 'cms'
-export const QUERY = 'query'
-export const QUERY_CHARS = 4
-export const GRAPHQL_URI = '/graphql'
+export const CMS_TARGET = 'graphql'
+//export const CMS_QUERY_CHARS = 4
+export const CMS_PLACES_ROOT = 'places'
