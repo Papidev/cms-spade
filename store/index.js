@@ -1,6 +1,7 @@
 export const state = () => ({
   language: 'en',
-  selectedElement: ''
+  selectedElement: '',
+  currentCategory: ''
 })
 
 export const mutations = {
@@ -9,6 +10,9 @@ export const mutations = {
   },
   setSelectedElement(state, selectedElement) {
     state.selectedElement = selectedElement
+  },
+  setCurrentCategory(state, currentCategory) {
+    state.currentCategory = currentCategory
   }
 }
 
@@ -18,5 +22,14 @@ export const actions = {
   },
   setLanguage(vuexContext, language) {
     vuexContext.commit('setLanguage', language)
+  },
+  setCurrentCategory(vuexContext, currentCategory) {
+    vuexContext.commit('setCurrentCategory', currentCategory)
+  },
+  nuxtServerInit({ commit }, { req }) {
+    // get last id from cms for current category
+    // if (req.session.user) {
+    //   commit('user', req.session.user)
+    // }
   }
 }
