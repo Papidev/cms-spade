@@ -2,40 +2,60 @@
   <div :class="inputWrapperClasses">
     <div>{{ label }}</div>
     <input
-      v-model="content.value"
+      v-model="defaultContent.value"
       :class="inputClasses"
     >
   </div>
 </template>
 <script>
-import { CMS, WIKIPEDIA } from '~/constants/'
+import { CMS, WIKI } from '~/constants/'
 
 export default {
+
+
+
   props: {
     label: {
       required: true,
       type: String
     },
     content: {
-      required: true,
-      type: Object
+      type: Object,
+      //defautl: ()=>{return {value: ''}}
     }
   },
   computed: {
+
+    defaultContent(){
+      if(this.content)
+      return this.content
+      else
+          return {value: '', source: CMS}
+    },
+
+
     inputClasses() {
-      if (this.content.source === CMS) {
-        return ['input', 'input-cms']
-      } else if (this.content.source === WIKIPEDIA)
-        return ['input', 'input-wiki']
-      else return ''
+
+      
+          if (this.defaultContent.source === CMS) {
+                  return ['input', 'input-cms']
+                } else if (this.defaultContent.source === WIKI)
+                  return ['input', 'input-wiki']
+                else return ''
+      
+     
     },
 
     inputWrapperClasses() {
-      if (this.content.source === CMS) {
+   
+      if (this.defaultContent.source === CMS) {
         return 'input-cms-wrapper '
-      } else if (this.content.source === WIKIPEDIA) return 'input-wiki-wrapper'
-      else return ''
-    }
+      } else if (this.defaultContent.source === WIKI) return 'input-wiki-wrapper'
+      else      
+      return ''
+      
+}
+   
   }
 }
 </script>
