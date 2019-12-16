@@ -72,7 +72,8 @@ export default {
 
       cms: {
         en: {
-          query: process.env.CMS_URL || 'http://localhost:1337'
+          graphql:
+            process.env.CMS_GRAPHQL_URL || 'http://localhost:1337/graphql'
         }
       }
     }
