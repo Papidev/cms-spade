@@ -38,7 +38,7 @@ export default {
   components: {
     'search-suggest': VueAutosuggest
   },
-  mixins: [helpersFunctions, helpersGraph,helpersGetData,helpersWiki],
+  mixins: [helpersFunctions, helpersGraph, helpersGetData, helpersWiki],
 
   props: {
     searchString: {
@@ -55,8 +55,8 @@ export default {
   },
   computed: {
     ...mapState(['language']),
-    autosuggestionInput(){
-    return this.$refs.autosuggest.$el.children.autosuggest_input
+    autosuggestionInput() {
+      return this.$refs.autosuggest.$el.children.autosuggest_input
     }
   },
 
@@ -78,12 +78,13 @@ export default {
       return suggestion.item.name
     },
 
-    // funzione TROPPO accoppiata con output WIKI_SUGGEST_SEARCH di wikipedia
-     async searchWikiSuggestions(elementToSearch) {
-
+    async searchWikiSuggestions(elementToSearch) {
       let resource
       if (!elementToSearch || elementToSearch.length < WIKI_SUGG_SEARCH_CHARS) {
-          console.log('searchWikiSuggestions exit right away : elementToSearch', elementToSearch)
+        console.log(
+          'searchWikiSuggestions exit right away : elementToSearch',
+          elementToSearch
+        )
         return
       }
 
@@ -92,37 +93,39 @@ export default {
         elementToSearch
 
       try {
-         resource = await this.axiosCall(url, 'get')
-       } catch (error) {
-         console.log(error)
-         return
+        resource = await this.axiosCall(url, 'get')
+      } catch (error) {
+        console.log(error)
+        return
       }
-  
-        if (Array.isArray(resource) && resource.length) {
-          this.shownSuggestions = this.suggestionsSetup(
-            resource[1], //names
-            resource[2]  //descriptions
-          )       
-        }
-      
-      return
 
+      if (Array.isArray(resource) && resource.length) {
+        this.shownSuggestions = this.suggestionsSetup(
+          resource[1], //names
+          resource[2] //descriptions
+        )
+      }
+
+      return
     },
 
     handleSelectedSuggestion(suggestion) {
-      if (!suggestion) {    //suggestion void or null
-        console.log(`handleSelectedSuggestion : exit for suggestion falsy --> ${suggestion} `)
+      if (!suggestion) {
+        //suggestion void or null
+        console.log(
+          `handleSelectedSuggestion : exit for suggestion falsy --> ${suggestion} `
+        )
         return
       }
 
       const suggestionName = this.getSuggestionName(suggestion)
-      console.log(`handleSelectedSuggestion : suggestionName --> ${suggestionName}`)
+      console.log(
+        `handleSelectedSuggestion : suggestionName --> ${suggestionName}`
+      )
       this.setSelectedElement(suggestionName)
 
       this.autosuggestionInput.focus()
     }
-
-    
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div :class="computedClasses">
     <textarea
-      id="my-text-area"
+     
       ref="mytextarea"
     />
   </div>
@@ -10,16 +10,13 @@
 
 <script>
 import EasyMDE from 'easymde'
-import { CMS, WIKIPEDIA } from '~/constants/'
-
-let easyMDE = {}
+import { CMS, WIKI } from '~/constants/'
 
 export default {
   props: {
-  
     value: {
-      
-      type: String
+      type: String,
+      default: ''
     },
     source: {
       required: true,
@@ -27,25 +24,27 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      easyMDE: {}
+    }
   },
   computed: {
     computedClasses() {
       if (this.source === CMS) {
         return 'input-cms'
-      } else if (this.source === WIKIPEDIA) return 'input-wiki'
+      } else if (this.source === WIKI) return 'input-wiki'
       else return ''
     }
   },
 
   watch: {
     value(newValue) {
-      easyMDE.value(newValue)
+      this.easyMDE.value(newValue)
     }
   },
 
   mounted() {
-    easyMDE = new EasyMDE({
+    this.easyMDE = new EasyMDE({
       autofocus: true,
       element: this.$refs.mytextarea,
       autosave: {
@@ -53,9 +52,9 @@ export default {
         uniqueId: 'MyMDE'
       },
       minHeight: '700px',
-      spellChecker: false
+      spellChecker: false,
+      placeholder: 'Add Description'
     })
-  },
-  methods: {}
+  }
 }
 </script>
