@@ -12,25 +12,25 @@
     "lint": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.8.0",
+    "@nuxtjs/axios": "^5.9.0",
     "@nuxtjs/pwa": "^3.0.0-beta.19",
     "easymde": "^2.8.0",
-    "nuxt": "^2.10.2",
+    "nuxt": "^2.11.0",
     "nuxt-rfg-icon": "^0.6.4",
     "strapi-sdk-javascript": "^0.3.3",
     "vue-autosuggest": "^2.0.4",
     "wtf_wikipedia": "^7.8.1"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config": "^1.0.1",
+    "@nuxtjs/eslint-config": "^2.0.0",
     "@nuxtjs/eslint-module": "^1.1.0",
-    "@nuxtjs/tailwindcss": "^1.0.0",
+    "@nuxtjs/tailwindcss": "^1.2.0",
     "babel-eslint": "^10.0.3",
-    "eslint": "^6.5.1",
+    "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-nuxt": ">=0.4.2",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-vue": "^5.2.3",
-    "prettier": "^1.18.2"
+    "eslint-plugin-nuxt": "^0.5.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-vue": "^6.0.0",
+    "prettier": "^1.19.1"
   }
 }
