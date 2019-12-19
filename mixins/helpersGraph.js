@@ -19,6 +19,24 @@ export default {
       Description
     }
   }`
+    },
+
+    mutationInsertNewPlace(identifier, name, description) {
+      return `mutation {
+      createPlace(input: {
+        data: {
+          Identifier: "${identifier}",
+          Name: "${name}",
+          Description: "${description}"
+        }
+      }) {
+        place {
+          Identifier
+          Name
+          Description
+        }
+      }
+    }`
     }
   }
 }
