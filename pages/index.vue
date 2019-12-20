@@ -1,25 +1,20 @@
 <template>
   <div>
-    <search-suggest
-      :search-string="searchString"
-    />
-    <hr>
-    <hr>
-    <hr>
+    <search-suggest :search-string="searchString" />
+    <hr />
+    <hr />
+    <hr />
     <div class="bg-green-100 h-screen w-1/2">
       <element-panel />
       <div class="bg-gray-400">
-        <button
-          class="rounded mx-auto px-10"
-          type="button"
-        >
-          <!-- @click="clickHandler(searchString)" -->     
+        <button class="rounded mx-auto px-10" type="button">
+          <!-- @click="clickHandler(searchString)" -->
           Click Me!
         </button>
       </div>
-      <hr>
+      <hr />
     </div>
-    
+
     <!--
     <div class="w-1/4">
       <json-tree :data="jsonSource" @selected="itemSelected" />

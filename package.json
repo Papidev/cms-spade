@@ -9,14 +9,17 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "lint": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "lintfix": "eslint --fix --ext .js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
+    "@nuxtjs/apollo": "^4.0.0-rc19",
     "@nuxtjs/axios": "^5.9.0",
     "@nuxtjs/pwa": "^3.0.0-beta.19",
     "apollo-boost": "^0.4.7",
     "easymde": "^2.8.0",
     "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
     "nuxt": "^2.11.0",
     "nuxt-rfg-icon": "^0.6.4",
     "strapi-sdk-javascript": "^0.3.3",
@@ -31,9 +34,10 @@
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
+    "eslint-loader": "^3.0.3",
     "eslint-plugin-nuxt": "^0.5.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "eslint-plugin-vue": "^6.0.0",
+    "eslint-plugin-vue": "^6.0.1",
     "prettier": "^1.19.1"
   }
 }

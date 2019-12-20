@@ -2,33 +2,24 @@
   <div>
     <h1 v-if="!selectedElement">
       Non hai selezionato nulla 😢
-    </h1>  
-    <br>
-    <form
-      action=""
-      method="post"
-    >
+    </h1>
+    // eslint-disable-next-line vue/html-closing-bracket-spacing
+
+    <form action="" method="post">
       <div
         v-for="(propValue, name, index) in mergedItemNoDesc"
         :key="(propValue, name, index).index"
       >
-        <wrapper-input
-          :label="name"
-          :content="propValue"
-        />
+        <wrapper-input :label="name" :content="propValue" />
       </div>
-     
+
       <client-only placeholder="Loading...">
         <new-markdown-editor
           v-model="textareaContent"
-          :source="mergedItem.Description ? mergedItem.Description.source : '' "
+          :source="mergedItem.Description ? mergedItem.Description.source : ''"
         />
       </client-only>
-      <input
-        type="submit"
-        value="Submit"
-        @click="submit"
-      >
+      <input type="submit" value="Submit" @click="submit" />
     </form>
   </div>
 </template>
@@ -40,6 +31,7 @@ import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 import helpersGetData from '~/mixins/helpersGetData.js'
 import { CMS, CMS_TARGET, WIKI, CMS_PLACES_ROOT } from '~/constants/'
+import placesQuery from '~/apollo/queries/place/places'
 
 export default {
   components: {
@@ -51,6 +43,7 @@ export default {
 
   data() {
     return {
+      places: [],
       cmsItem: {},
       wikiItem: {
         Name: null,
@@ -61,6 +54,12 @@ export default {
         Name: null,
         Description: null
       }
+    }
+  },
+  apollo: {
+    places: {
+      prefetch: true,
+      query: placesQuery
     }
   },
 
@@ -80,9 +79,9 @@ export default {
     }
   },
   watch: {
-    selectedElement: async function(newSelectedElement) {
+    async selectedElement() {
       this.resetCmsItem()
-      let results = await Promise.all([
+      const results = await Promise.all([
         this.getDataCms(CMS_TARGET),
         this.getDataWiki()
       ])
@@ -129,7 +128,7 @@ export default {
 
     async getDataCms(operation) {
       let response
-      let responseFormat = CMS_PLACES_ROOT
+      const responseFormat = CMS_PLACES_ROOT
 
       const method = 'post'
       const url = this.getDataEndpoint(this.language, CMS, operation)
@@ -141,7 +140,7 @@ export default {
         return false
       }
 
-      let itemfound = this.getProp(response, responseFormat)
+      const itemfound = this.getProp(response, responseFormat)
 
       if (itemfound.length > 0) {
         this.cmsItem.Identifier = itemfound[0].Identifier
@@ -156,7 +155,7 @@ export default {
 
     async getDataWiki() {
       try {
-        let content = await wtf.fetch(this.selectedElement, this.language)
+        const content = await wtf.fetch(this.selectedElement, this.language)
 
         this.wikiItem.Name = this.selectedElement
         this.wikiItem.Description = content.text()

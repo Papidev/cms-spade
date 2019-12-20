@@ -24,7 +24,6 @@
   </div>
 </template>
 
-
 <script>
 import { VueAutosuggest } from 'vue-autosuggest'
 import { mapState, mapActions } from 'vuex'

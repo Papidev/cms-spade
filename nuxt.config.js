@@ -40,13 +40,15 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: [
-    'nuxt-rfg-icon',
-    // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
-    '@nuxtjs/pwa'
-  ],
-
+  modules: ['nuxt-rfg-icon', '@nuxtjs/apollo', '@nuxtjs/axios', '@nuxtjs/pwa'],
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint:
+          process.env.CMS_GRAPHQL_URL || 'http://localhost:1337/graphql'
+      }
+    }
+  },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
@@ -86,9 +88,20 @@ export default {
     /*
      ** You can extend webpack config here
      */
+
     extend(config, ctx) {
+      // Run ESLint on save
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
+
+      if (ctx.isDev && ctx.isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/
+        })
       }
     }
   }

@@ -25,11 +25,11 @@ export const actions = {
   },
   setCurrentCategory(vuexContext, currentCategory) {
     vuexContext.commit('setCurrentCategory', currentCategory)
-  },
-  nuxtServerInit({ commit }, { req }) {
-    // get last id from cms for current category
-    // if (req.session.user) {
-    //   commit('user', req.session.user)
-    // }
   }
+  // nuxtServerInit({ commit }, { req }) {
+  //   // get last id from cms for current category
+  //   // if (req.session.user) {
+  //   //   commit('user', req.session.user)
+  //   // }
+  // }
 }

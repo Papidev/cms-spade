@@ -1,24 +1,23 @@
 module.exports = {
+  root: true,
   env: {
-    browser: true,
-    es6: true,
     node: true
   },
   extends: [
-    //'eslint:recommended',
-    // "plugin:vue/essential",
-    'plugin:vue/recommended',
-    'prettier'
+    "plugin:vue/recommended",
+    "eslint:recommended",
+    "prettier/vue",
+    "plugin:prettier/recommended"
   ],
+  rules: {
+    "vue/component-name-in-template-casing": ["error", "PascalCase"],
+    "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off"
+  },
   globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly'
+    $nuxt: true
   },
   parserOptions: {
-    parser: 'babel-eslint',
-    ecmaVersion: 2018,
-    sourceType: 'module'
-  },
-  plugins: ['vue'],
-  rules: {}
-}
+    parser: "babel-eslint"
+  }
+};

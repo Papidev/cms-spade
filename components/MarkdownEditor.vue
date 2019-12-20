@@ -1,12 +1,8 @@
 <template>
   <div :class="computedClasses">
-    <textarea
-     
-      ref="mytextarea"
-    />
+    <textarea ref="mytextarea" />
   </div>
 </template>
-
 
 <script>
 import EasyMDE from 'easymde'

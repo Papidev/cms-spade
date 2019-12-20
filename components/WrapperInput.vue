@@ -7,7 +7,7 @@
       v-model="defaultContent.value"
       :class="inputClasses"
       placeholder="edit me"
-    >
+    />
   </div>
 </template>
 

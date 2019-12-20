@@ -9,8 +9,8 @@ export default {
         } else {
           response = await this.$axios.$post(url, data)
         }
-      } catch (error) {
-        throw error
+        // eslint-disable-next-line no-empty
+      } finally {
       }
 
       return response
