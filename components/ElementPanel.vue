@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       places: [],
-      cmsItem: {},
+
       wikiItem: {
         Name: null,
         Description: null
@@ -65,7 +65,10 @@ export default {
           name: this.selectedElement
         }
       },
-      fetchPolicy: 'cache-and-network'
+      fetchPolicy: 'cache-and-network',
+      skip() {
+        return this.selectedElement ? false : true
+      }
     }
   },
 
@@ -82,6 +85,15 @@ export default {
       return this.mergedItem.Description
         ? this.mergedItem.Description.value
         : this.cmsItem.Description
+    },
+
+    cmsItem: {
+      get() {
+        return this.places[0] || {}
+      },
+      set(newcmsItem) {
+        return newcmsItem
+      }
     }
   },
   watch: {
@@ -151,9 +163,9 @@ export default {
       if (!itemfound || itemfound.length == 0) {
         return false
       } else {
-        this.cmsItem.Identifier = itemfound[0].Identifier
-        this.cmsItem.Name = itemfound[0].Name
-        this.cmsItem.Description = itemfound[0].Description
+        // this.cmsItem.Identifier = itemfound[0].Identifier
+        // this.cmsItem.Name = itemfound[0].Name
+        // this.cmsItem.Description = itemfound[0].Description
         return true
       }
     },
