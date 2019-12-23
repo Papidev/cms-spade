@@ -12,7 +12,7 @@
       >
         <wrapper-input :label="name" :content="propValue" />
       </div>
-
+      <div v-if="$apollo.loading">Loading...</div>
       <client-only placeholder="Loading...">
         <new-markdown-editor
           v-model="textareaContent"
@@ -59,7 +59,13 @@ export default {
   apollo: {
     places: {
       prefetch: true,
-      query: placesQuery
+      query: placesQuery,
+      variables() {
+        return {
+          name: this.selectedElement
+        }
+      },
+      fetchPolicy: 'cache-and-network'
     }
   },
 
@@ -142,14 +148,13 @@ export default {
 
       const itemfound = this.getProp(response, responseFormat)
 
-      if (itemfound.length > 0) {
+      if (!itemfound || itemfound.length == 0) {
+        return false
+      } else {
         this.cmsItem.Identifier = itemfound[0].Identifier
         this.cmsItem.Name = itemfound[0].Name
         this.cmsItem.Description = itemfound[0].Description
-
         return true
-      } else {
-        return false
       }
     },
 
