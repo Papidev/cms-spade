@@ -1,0 +1,17 @@
+query schemaIntrospection($name: String!)
+ {
+    contentSchema: __type(name: $name) {
+    name
+    fields {
+      name
+      type {
+        name
+        kind
+        ofType {
+          name
+          kind
+        }
+      }
+    }
+  }
+  }

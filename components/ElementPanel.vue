@@ -28,7 +28,8 @@ import wtf from 'wtf_wikipedia'
 import { mapState } from 'vuex'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { CMS, WIKI } from '~/constants/'
-import placesQuery from '~/apollo/cms/queries/place/places'
+import { placesByName } from '~/apollo/cms/queries/place/places'
+import { schemaIntrospection } from '~/apollo/cms/queries/schemas'
 
 export default {
   components: {
@@ -40,6 +41,7 @@ export default {
 
   data() {
     return {
+      contentSchema: {},
       cmsItem: {},
       wikiItem: {},
       wikiLoading: false
@@ -130,7 +132,7 @@ export default {
   apollo: {
     cmsItem: {
       prefetch: false,
-      query: placesQuery,
+      query: placesByName,
 
       variables() {
         return {
@@ -140,6 +142,16 @@ export default {
 
       skip() {
         return this.cmsSkipQuery
+      }
+    },
+    contentSchema: {
+      prefetch: true,
+      query: schemaIntrospection,
+
+      variables() {
+        return {
+          name: 'Place' //TODO: make input dynamic when content type will be selectable
+        }
       }
     }
   }

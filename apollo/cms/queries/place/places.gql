@@ -1,4 +1,4 @@
- query PlacesByName($name: String!) {
+  query placesByName($name: String!) {
    
      cmsItem: places(where: { Name: $name }) {
       id
