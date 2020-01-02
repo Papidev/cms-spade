@@ -1,6 +1,6 @@
  query PlacesByName($name: String!) {
    
-    places(where: { Name: $name }) {
+     cmsItem: places(where: { Name: $name }) {
       id
       Identifier
       Name

@@ -42,10 +42,17 @@ export default {
    */
   modules: ['nuxt-rfg-icon', '@nuxtjs/apollo', '@nuxtjs/axios', '@nuxtjs/pwa'],
   apollo: {
+    tokenName: 'MyApollo',
     clientConfigs: {
       default: {
         httpEndpoint:
           process.env.CMS_GRAPHQL_URL || 'http://localhost:1337/graphql'
+      }
+    },
+    defaultOptions: {
+      $query: {
+        loadingKey: 'loading',
+        fetchPolicy: 'cache-and-network'
       }
     }
   },

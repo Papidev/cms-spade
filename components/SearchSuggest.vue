@@ -66,8 +66,6 @@ export default {
     }),
 
     onKeyDown(e) {
-      console.log(e)
-
       if (e.keyCode === 13) {
         this.searchWikiSuggestions(this.elementToSearch)
       }
@@ -94,7 +92,6 @@ export default {
       try {
         resource = await this.axiosCall(url, 'get')
       } catch (error) {
-        console.log(error)
         return
       }
 

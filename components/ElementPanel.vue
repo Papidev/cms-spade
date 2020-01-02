@@ -3,20 +3,19 @@
     <h1 v-if="!selectedElement">
       Non hai selezionato nulla 😢
     </h1>
-    // eslint-disable-next-line vue/html-closing-bracket-spacing
 
     <form action="" method="post">
       <div
-        v-for="(propValue, name, index) in mergedItemNoDesc"
+        v-for="(propValue, name, index) in cleanedMergedItem"
         :key="(propValue, name, index).index"
       >
         <wrapper-input :label="name" :content="propValue" />
       </div>
-      <div v-if="$apollo.loading">Loading...</div>
-      <client-only placeholder="Loading...">
+      <div v-if="$apollo.loading">Loading APOLLO...</div>
+      <client-only placeholder="Loading markdown-editor">
         <new-markdown-editor
           v-model="textareaContent"
-          :source="mergedItem.Description ? mergedItem.Description.source : ''"
+          :source="textAreaSource"
         />
       </client-only>
       <input type="submit" value="Submit" @click="submit" />
@@ -30,8 +29,8 @@ import { mapState } from 'vuex'
 import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 import helpersGetData from '~/mixins/helpersGetData.js'
-import { CMS, CMS_TARGET, WIKI, CMS_PLACES_ROOT } from '~/constants/'
-import placesQuery from '~/apollo/queries/place/places'
+import { CMS, WIKI } from '~/constants/'
+import placesQuery from '~/apollo/cms/queries/place/places'
 
 export default {
   components: {
@@ -43,31 +42,25 @@ export default {
 
   data() {
     return {
-      places: [],
-
-      wikiItem: {
-        Name: null,
-        Description: null
-      },
-      mergedItem: {
-        Identifier: null,
-        Name: null,
-        Description: null
-      }
+      cmsItem: {},
+      wikiItem: {},
+      wikiLoading: false
     }
   },
+
   apollo: {
-    places: {
-      prefetch: true,
+    cmsItem: {
+      prefetch: false,
       query: placesQuery,
+
       variables() {
         return {
           name: this.selectedElement
         }
       },
-      fetchPolicy: 'cache-and-network',
+
       skip() {
-        return this.selectedElement ? false : true
+        return this.cms_skipQuery
       }
     }
   },
@@ -75,109 +68,95 @@ export default {
   computed: {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
-    mergedItemNoDesc() {
+
+    textAreaSource() {
+      if (this.mergedItem) {
+        return this.mergedItem.Description
+          ? this.mergedItem.Description.source
+          : ''
+      } else return ''
+    },
+
+    cms_skipQuery() {
+      return !this.selectedElement
+    },
+
+    mergedItem() {
+      console.log(
+        `mergedItem ${this.wikiLoading} ${this.$apollo.queries.cmsItem.loading}`
+      )
+      if (
+        !this.selectedElement ||
+        this.wikiLoading ||
+        this.$apollo.queries.cmsItem.loading
+      ) {
+        console.log('mergedItem aborting')
+        return {}
+      }
+
+      console.log('mergedItem executing')
+      return this.mergeResultsProperties(
+        ['Identifier', 'Name', 'Description'],
+        this.cmsItem[0],
+        this.wikiItem,
+        CMS,
+        WIKI
+      )
+    },
+
+    // TODO: call a reusable function to clean undesired properties from an object
+    cleanedMergedItem() {
       const newObj = { ...this.mergedItem }
       delete newObj.Description
+      delete newObj.__typename
       return newObj
     },
 
     textareaContent() {
-      return this.mergedItem.Description
-        ? this.mergedItem.Description.value
-        : this.cmsItem.Description
-    },
+      let content = this.getProp(this.mergedItem, 'Description.value')
 
-    cmsItem: {
-      get() {
-        return this.places[0] || {}
-      },
-      set(newcmsItem) {
-        return newcmsItem
+      if (!content) {
+        content = this.getProp(this.cmsItem, 'Description')
       }
+      return content
     }
   },
+
   watch: {
     async selectedElement() {
-      this.resetCmsItem()
-      const results = await Promise.all([
-        this.getDataCms(CMS_TARGET),
-        this.getDataWiki()
-      ])
-
-      if (results) {
-        this.mergedItem = this.mergeResultsProperties(
-          this.cmsItem,
-          this.wikiItem,
-          CMS,
-          WIKI
-        )
-      }
+      await this.getDataWiki(this.selectedElement, this.language)
     }
   },
 
   mounted() {
-    this.resetCmsItem()
+    console.dir(this.$apollo)
   },
 
   methods: {
-    resetCmsItem() {
-      this.cmsItem = {
-        Identifier: null,
-        Name: null,
-        Description: null
-      }
+    // resetCmsItem() {
+    //   this.cmsItem = {
+    //     Identifier: null,
+    //     Name: null,
+    //     Description: null
+    //   }
+    // },
+
+    triggerCmsQuery() {
+      this.cms_skipQuery = false
     },
+    async submit() {},
 
-    async submit() {
-      // send cms item to strapi with axios
-      // const { firstName, lastName } = this;
-      // const opts = {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ firstName, lastName })
-      // };
-      // const res = await fetch('https://httpbin.org/post', opts).
-      //   then(res => res.json()).
-      //   then(res => JSON.parse(res.data));
-      // console.log('done', res.firstName, res.lastName);
-      // this.firstName = '';
-      // this.lastName = '';
-    },
-
-    async getDataCms(operation) {
-      let response
-      const responseFormat = CMS_PLACES_ROOT
-
-      const method = 'post'
-      const url = this.getDataEndpoint(this.language, CMS, operation)
-      const query = this.queryPlacesByName(this.selectedElement)
-
+    async getDataWiki(name, language) {
+      this.wikiLoading = true
       try {
-        response = await this.axiosCall(url, method, { query })
-      } catch {
-        return false
-      }
+        const content = await wtf.fetch(name, language)
 
-      const itemfound = this.getProp(response, responseFormat)
-
-      if (!itemfound || itemfound.length == 0) {
-        return false
-      } else {
-        // this.cmsItem.Identifier = itemfound[0].Identifier
-        // this.cmsItem.Name = itemfound[0].Name
-        // this.cmsItem.Description = itemfound[0].Description
-        return true
-      }
-    },
-
-    async getDataWiki() {
-      try {
-        const content = await wtf.fetch(this.selectedElement, this.language)
-
-        this.wikiItem.Name = this.selectedElement
+        this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
       } catch {
         return false
+      } finally {
+        this.wikiLoading = false
       }
     }
   }

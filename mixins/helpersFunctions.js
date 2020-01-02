@@ -6,7 +6,11 @@ export default {
     },
 
     getProp(obj, prop) {
-      if (typeof obj !== 'object') throw 'getProp: obj is not an object'
+      console.log(obj)
+      console.log(prop)
+      if (typeof obj !== 'object') {
+        return undefined
+      }
       if (typeof prop !== 'string') throw 'getProp: prop is not a string'
 
       // Replace [] notation with dot notation
@@ -32,19 +36,30 @@ export default {
     // }
 
     mergeResultsProperties(
+      schemaObject,
       primaryObj,
       secondaryObj,
       primaryLabel,
       secondaryLabel
     ) {
+      console.group('mergeResultsProperties')
+      console.log('secondaryObj')
+      console.dir(secondaryObj)
       let merged = {}
-      for (const prop in primaryObj) {
-        if (primaryObj[prop])
+      for (const prop of schemaObject) {
+        if (primaryObj && primaryObj[prop])
           merged[prop] = { value: primaryObj[prop], source: primaryLabel }
-        else
-          merged[prop] = { value: secondaryObj[prop], source: secondaryLabel }
-      }
+        else {
+          console.log('prop')
+          console.log(prop)
 
+          console.log('secondaryObject[prop]')
+          console.log(secondaryObj[prop])
+          merged[prop] = { value: secondaryObj[prop], source: secondaryLabel }
+        }
+      }
+      console.log('merged')
+      console.dir(merged)
       return merged
     }
   }
