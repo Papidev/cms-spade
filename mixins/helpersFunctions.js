@@ -1,7 +1,6 @@
 export default {
   methods: {
     getDataEndpoint(lang, source, operation) {
-      //
       return process.env.endpoints[source][lang][operation]
     },
 

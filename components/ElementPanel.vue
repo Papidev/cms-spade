@@ -26,9 +26,7 @@
 <script>
 import wtf from 'wtf_wikipedia'
 import { mapState } from 'vuex'
-import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
-import helpersGetData from '~/mixins/helpersGetData.js'
 import { CMS, WIKI } from '~/constants/'
 import placesQuery from '~/apollo/cms/queries/place/places'
 
@@ -38,30 +36,13 @@ export default {
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue')
   },
 
-  mixins: [helpersFunctions, helpersGraph, helpersGetData],
+  mixins: [helpersFunctions],
 
   data() {
     return {
       cmsItem: {},
       wikiItem: {},
       wikiLoading: false
-    }
-  },
-
-  apollo: {
-    cmsItem: {
-      prefetch: false,
-      query: placesQuery,
-
-      variables() {
-        return {
-          name: this.selectedElement
-        }
-      },
-
-      skip() {
-        return this.cms_skipQuery
-      }
     }
   },
 
@@ -77,19 +58,16 @@ export default {
       } else return ''
     },
 
-    cms_skipQuery() {
+    cmsSkipQuery() {
       return !this.selectedElement
     },
 
+    cmsLoading() {
+      return this.$apollo.queries.cmsItem.loading
+    },
     mergedItem() {
-      console.log(
-        `mergedItem ${this.wikiLoading} ${this.$apollo.queries.cmsItem.loading}`
-      )
-      if (
-        !this.selectedElement ||
-        this.wikiLoading ||
-        this.$apollo.queries.cmsItem.loading
-      ) {
+      console.log(`mergedItem ${this.wikiLoading} ${this.cmsLoading}`)
+      if (!this.selectedElement || this.wikiLoading || this.cmsLoading) {
         console.log('mergedItem aborting')
         return {}
       }
@@ -128,35 +106,40 @@ export default {
     }
   },
 
-  mounted() {
-    console.dir(this.$apollo)
-  },
-
   methods: {
-    // resetCmsItem() {
-    //   this.cmsItem = {
-    //     Identifier: null,
-    //     Name: null,
-    //     Description: null
-    //   }
+    // triggerCmsQuery() {
+    //   this.cmsSkipQuery = false
     // },
 
-    triggerCmsQuery() {
-      this.cms_skipQuery = false
-    },
     async submit() {},
 
     async getDataWiki(name, language) {
       this.wikiLoading = true
       try {
         const content = await wtf.fetch(name, language)
-
         this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
       } catch {
         return false
       } finally {
         this.wikiLoading = false
+      }
+    }
+  },
+
+  apollo: {
+    cmsItem: {
+      prefetch: false,
+      query: placesQuery,
+
+      variables() {
+        return {
+          name: this.selectedElement
+        }
+      },
+
+      skip() {
+        return this.cmsSkipQuery
       }
     }
   }
