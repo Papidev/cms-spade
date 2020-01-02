@@ -5,11 +5,11 @@
     </h1>
 
     <form action="" method="post">
-      <div
-        v-for="(propValue, name, index) in cleanedMergedItem"
-        :key="(propValue, name, index).index"
-      >
-        <wrapper-input :label="name" :content="propValue" />
+      <div v-for="(propValue, name) in panelFieldList" :key="name">
+        <wrapper-input
+          :label="propValue.name"
+          :content="cleanedMergedItem[propValue.name]"
+        />
       </div>
       <div v-if="$apollo.loading">Loading APOLLO...</div>
       <client-only placeholder="Loading markdown-editor">
@@ -52,6 +52,9 @@ export default {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
 
+    panelFieldList() {
+      return this.contentSchema ? this.contentSchema.fields : []
+    },
     textAreaSource() {
       if (this.mergedItem) {
         return this.mergedItem.Description
