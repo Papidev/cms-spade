@@ -4,6 +4,8 @@
       Non hai selezionato nulla 😢
     </h1>
 
+    <error-panel :errors="errors"></error-panel>
+
     <form action="" method="post">
       <div v-for="(propValue, name) in panelFieldList" :key="name">
         <wrapper-input
@@ -11,7 +13,8 @@
           :content="cleanedMergedItem[propValue.name]"
         />
       </div>
-      <div v-if="$apollo.loading">Loading APOLLO...</div>
+      <div v-if="cmsLoading">Loading content from CMS...</div>
+
       <client-only placeholder="Loading markdown-editor">
         <new-markdown-editor
           v-model="textareaContent"
@@ -34,17 +37,19 @@ import { schemaIntrospection } from '~/apollo/cms/queries/schemas'
 export default {
   components: {
     'wrapper-input': () => import('~/components/WrapperInput.vue'),
-    'new-markdown-editor': () => import('~/components/MarkdownEditor.vue')
+    'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
+    'error-panel': () => import('~/components/ErrorPanel.vue')
   },
 
   mixins: [helpersFunctions],
 
   data() {
     return {
-      contentSchema: {},
+      cmsContentSchema: null,
       cmsItem: {},
       wikiItem: {},
-      wikiLoading: false
+      wikiLoading: false,
+      errors: []
     }
   },
 
@@ -53,7 +58,7 @@ export default {
     ...mapState(['language']),
 
     panelFieldList() {
-      return this.contentSchema ? this.contentSchema.fields : []
+      return this.cmsContentSchema ? this.cmsContentSchema.fields : []
     },
     textAreaSource() {
       if (this.mergedItem) {
@@ -72,7 +77,12 @@ export default {
     },
     mergedItem() {
       console.log(`mergedItem ${this.wikiLoading} ${this.cmsLoading}`)
-      if (!this.selectedElement || this.wikiLoading || this.cmsLoading) {
+      if (
+        !this.selectedElement ||
+        !this.cmsContentSchema ||
+        this.wikiLoading ||
+        this.cmsLoading
+      ) {
         console.log('mergedItem aborting')
         return {}
       }
@@ -80,7 +90,7 @@ export default {
       console.log('mergedItem executing')
       return this.mergeResultsProperties(
         ['Identifier', 'Name', 'Description'],
-        this.cmsItem[0],
+        this.cmsItem ? this.cmsItem[0] : {},
         this.wikiItem,
         CMS,
         WIKI
@@ -115,7 +125,11 @@ export default {
     // triggerCmsQuery() {
     //   this.cmsSkipQuery = false
     // },
-
+    onErrorShown(toDeleteKey) {
+      console.log('toDeleteKey', toDeleteKey)
+      console.dir(this.errors[toDeleteKey])
+      //   this.errors.splice(toDeleteKey, 1)
+    },
     async submit() {},
 
     async getDataWiki(name, language) {
@@ -124,11 +138,18 @@ export default {
         const content = await wtf.fetch(name, language)
         this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
-      } catch {
+      } catch (error) {
+        this.pushError(JSON.stringify(error.message), 'getWikiContent')
         return false
       } finally {
         this.wikiLoading = false
       }
+    },
+    pushError(errorMessage, errorStep) {
+      this.errors.push({
+        errorMessage: JSON.stringify(errorMessage),
+        errorStep: errorStep
+      })
     }
   },
 
@@ -145,9 +166,12 @@ export default {
 
       skip() {
         return this.cmsSkipQuery
+      },
+      error(error) {
+        this.pushError(JSON.stringify(error.message), 'getCmsContent')
       }
     },
-    contentSchema: {
+    cmsContentSchema: {
       prefetch: true,
       query: schemaIntrospection,
 
@@ -155,6 +179,9 @@ export default {
         return {
           name: 'Place' //TODO: make input dynamic when content type will be selectable
         }
+      },
+      error(error) {
+        this.pushError(error.message, 'getCmsContentSchema')
       }
     }
   }
