@@ -5,10 +5,10 @@
     </h1>
 
     <error-panel :errors="errors"></error-panel>
-    <progress-panel msg="CmsLoading"></progress-panel>
+    <progress-panel :datasources="datasources"></progress-panel>
 
     <form action="" method="post">
-      <div v-for="(propValue, name) in panelFieldList" :key="name">
+      <div v-for="(propValue, name) in schemaFieldsList" :key="name">
         <wrapper-input
           :label="propValue.name"
           :content="cleanedMergedItem[propValue.name]"
@@ -46,18 +46,21 @@ export default {
 
   data() {
     return {
-      cmsContentSchema: null,
-      // cmsItem: null,
       errors: [],
+
+      // TODO : dynamically create this object on mount
       datasources: {
-        // TODO : dynamically create this object on mount
+        contentSchema: {
+          item: {},
+          loading: this.contentSchemaLoading
+        },
         wiki: {
           item: {},
           loading: false
         },
         cms: {
           item: {},
-          loading: false
+          loading: this.cmsItemLoading
         }
       }
     }
@@ -67,13 +70,45 @@ export default {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
 
-    wikiItem() {
-      return this.datasources.wiki.item
+    wikiItem: {
+      get: function() {
+        return this.datasources.wiki.item
+      },
+      set: function(newValue) {
+        this.datasources.wiki.item = newValue
+      }
     },
 
-    panelFieldList() {
+    cmsItem: {
+      get: function() {
+        return this.datasources.cms.item
+      },
+      set: function(newValue) {
+        this.datasources.cms.item = newValue
+      }
+    },
+    contentSchema: {
+      get: function() {
+        return this.datasources.contentSchema.item
+      },
+      set: function(newValue) {
+        this.datasources.contentSchema.item = newValue
+      }
+    },
+
+    contentSchemaLoading() {
+      return this.$apollo.queries
+        ? this.$apollo.queries.contentSchema.loading
+        : false
+    },
+
+    cmsItemLoading() {
+      return this.$apollo.queries ? this.$apollo.queries.cmsItem.loading : false
+    },
+
+    schemaFieldsList() {
       // content type schema
-      return this.cmsContentSchema ? this.cmsContentSchema.fields : []
+      return this.contentSchema ? this.contentSchema.fields : []
     },
 
     textAreaSource() {
@@ -93,23 +128,12 @@ export default {
       return content
     },
 
-    cmsSkipQuery() {
-      return !this.selectedElement
-    },
-
-    cmsLoading() {
-      return (
-        this.$apollo.queries.cmsItem.loading ||
-        this.$apollo.queries.cmsContentSchema.loading
-      )
-    },
-
     mergedItem() {
       if (
         !this.selectedElement ||
-        !this.cmsContentSchema ||
+        !this.contentSchema ||
         this.datasources.wiki.loading ||
-        this.cmsLoading
+        this.cmsItemLoading
       ) {
         console.log('mergedItem aborting')
         return {}
@@ -131,17 +155,6 @@ export default {
       delete newObj.Description
       delete newObj.__typename
       return newObj
-    },
-
-    cmsItem: {
-      // getter
-      get: function() {
-        return this.datasources.wiki.item
-      },
-      // setter
-      set: function(newValue) {
-        this.datasources.wiki.item = newValue
-      }
     }
   },
 
@@ -167,24 +180,26 @@ export default {
 
     async getDataWiki(name, language) {
       console.log('getDataWiki ci prova')
-      //this.toggleLoading(this.datasources.wiki, true)
+      this.toggleLoading(this.datasources.wiki, true)
 
       try {
         const content = await wtf.fetch(name, language)
         this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
       } catch (error) {
-        this.pushError(JSON.stringify(error.message), 'getWikiContent')
+        this.pushError(this.errors, error.message, 'getWikiContent')
         return false
       } finally {
         this.toggleLoading(this.datasources.wiki, false)
       }
     },
-    pushError(errorMessage, errorStep) {
-      this.errors.push({
-        errorMessage: JSON.stringify(errorMessage),
-        errorStep: errorStep
-      })
+
+    pushError(errorStore, errorMessage, errorStep) {
+      let newError
+      newError.description = errorMessage
+      newError.step = errorStep
+      newError.DateTime = this.getCurrentDateTime()
+      errorStore.push(newError)
     }
   },
 
@@ -200,13 +215,13 @@ export default {
       },
 
       skip() {
-        return this.cmsSkipQuery
+        return !this.selectedElement
       },
       error(error) {
-        this.pushError(JSON.stringify(error.message), 'getCmsContent')
+        this.pushError(this.errors, error.message, 'getCmsContent')
       }
     },
-    cmsContentSchema: {
+    contentSchema: {
       prefetch: true,
       query: schemaIntrospection,
 
@@ -216,7 +231,7 @@ export default {
         }
       },
       error(error) {
-        this.pushError(error.message, 'getCmsContentSchema')
+        this.pushError(this.errors, error.message, 'getCmsContentSchema')
       }
     }
   }

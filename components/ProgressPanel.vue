@@ -1,16 +1,17 @@
 <template>
   <div class="bg-blue-400">
-    <div v-if="msg">{{ msg }}</div>
+    <div v-for="(source, index) in datasources" :key="index">
+      {{ index }} : {{ source.loading }}
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    msg: {
-      required: false,
-      default: '',
-      type: String
+    datasources: {
+      required: true,
+      type: Object
     }
   }
 }
