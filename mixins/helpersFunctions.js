@@ -1,5 +1,9 @@
 export default {
   methods: {
+    getVarName(variable) {
+      return Object.keys(variable)[0]
+    },
+
     getDataEndpoint(lang, source, operation) {
       return process.env.endpoints[source][lang][operation]
     },

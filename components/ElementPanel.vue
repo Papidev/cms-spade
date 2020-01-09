@@ -4,6 +4,9 @@
       Non hai selezionato nulla 😢
     </h1>
 
+    <error-panel :errors="errors"></error-panel>
+    <progress-panel msg="CmsLoading"></progress-panel>
+
     <form action="" method="post">
       <div v-for="(propValue, name) in panelFieldList" :key="name">
         <wrapper-input
@@ -11,7 +14,7 @@
           :content="cleanedMergedItem[propValue.name]"
         />
       </div>
-      <div v-if="$apollo.loading">Loading APOLLO...</div>
+
       <client-only placeholder="Loading markdown-editor">
         <new-markdown-editor
           v-model="textareaContent"
@@ -34,17 +37,29 @@ import { schemaIntrospection } from '~/apollo/cms/queries/schemas'
 export default {
   components: {
     'wrapper-input': () => import('~/components/WrapperInput.vue'),
-    'new-markdown-editor': () => import('~/components/MarkdownEditor.vue')
+    'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
+    'error-panel': () => import('~/components/ErrorPanel.vue'),
+    'progress-panel': () => import('~/components/ProgressPanel.vue')
   },
 
   mixins: [helpersFunctions],
 
   data() {
     return {
-      contentSchema: {},
-      cmsItem: {},
-      wikiItem: {},
-      wikiLoading: false
+      cmsContentSchema: null,
+      // cmsItem: null,
+      errors: [],
+      datasources: {
+        // TODO : dynamically create this object on mount
+        wiki: {
+          item: {},
+          loading: false
+        },
+        cms: {
+          item: {},
+          loading: false
+        }
+      }
     }
   },
 
@@ -52,8 +67,13 @@ export default {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
 
+    wikiItem() {
+      return this.datasources.wiki.item
+    },
+
     panelFieldList() {
-      return this.contentSchema ? this.contentSchema.fields : []
+      // content type schema
+      return this.cmsContentSchema ? this.cmsContentSchema.fields : []
     },
 
     textAreaSource() {
@@ -64,16 +84,33 @@ export default {
       } else return ''
     },
 
+    textareaContent() {
+      let content = this.getProp(this.mergedItem, 'Description.value')
+
+      if (!content) {
+        content = this.getProp(this.cmsItem, 'Description')
+      }
+      return content
+    },
+
     cmsSkipQuery() {
       return !this.selectedElement
     },
 
     cmsLoading() {
-      return this.$apollo.queries.cmsItem.loading
+      return (
+        this.$apollo.queries.cmsItem.loading ||
+        this.$apollo.queries.cmsContentSchema.loading
+      )
     },
+
     mergedItem() {
-      console.log(`mergedItem ${this.wikiLoading} ${this.cmsLoading}`)
-      if (!this.selectedElement || this.wikiLoading || this.cmsLoading) {
+      if (
+        !this.selectedElement ||
+        !this.cmsContentSchema ||
+        this.datasources.wiki.loading ||
+        this.cmsLoading
+      ) {
         console.log('mergedItem aborting')
         return {}
       }
@@ -81,7 +118,7 @@ export default {
       console.log('mergedItem executing')
       return this.mergeResultsProperties(
         ['Identifier', 'Name', 'Description'],
-        this.cmsItem[0],
+        this.cmsItem ? this.cmsItem[0] : {},
         this.wikiItem,
         CMS,
         WIKI
@@ -96,13 +133,15 @@ export default {
       return newObj
     },
 
-    textareaContent() {
-      let content = this.getProp(this.mergedItem, 'Description.value')
-
-      if (!content) {
-        content = this.getProp(this.cmsItem, 'Description')
+    cmsItem: {
+      // getter
+      get: function() {
+        return this.datasources.wiki.item
+      },
+      // setter
+      set: function(newValue) {
+        this.datasources.wiki.item = newValue
       }
-      return content
     }
   },
 
@@ -113,23 +152,39 @@ export default {
   },
 
   methods: {
-    // triggerCmsQuery() {
-    //   this.cmsSkipQuery = false
-    // },
+    toggleLoading(source) {
+      console.log('toggleLoading iniziato')
 
+      source.loading = !source.loading
+      console.log('toggleLoading completato')
+    },
+    onErrorShown(toDeleteKey) {
+      console.log('toDeleteKey', toDeleteKey)
+      console.dir(this.errors[toDeleteKey])
+      //   this.errors.splice(toDeleteKey, 1)
+    },
     async submit() {},
 
     async getDataWiki(name, language) {
-      this.wikiLoading = true
+      console.log('getDataWiki ci prova')
+      //this.toggleLoading(this.datasources.wiki, true)
+
       try {
         const content = await wtf.fetch(name, language)
         this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
-      } catch {
+      } catch (error) {
+        this.pushError(JSON.stringify(error.message), 'getWikiContent')
         return false
       } finally {
-        this.wikiLoading = false
+        this.toggleLoading(this.datasources.wiki, false)
       }
+    },
+    pushError(errorMessage, errorStep) {
+      this.errors.push({
+        errorMessage: JSON.stringify(errorMessage),
+        errorStep: errorStep
+      })
     }
   },
 
@@ -146,9 +201,12 @@ export default {
 
       skip() {
         return this.cmsSkipQuery
+      },
+      error(error) {
+        this.pushError(JSON.stringify(error.message), 'getCmsContent')
       }
     },
-    contentSchema: {
+    cmsContentSchema: {
       prefetch: true,
       query: schemaIntrospection,
 
@@ -156,6 +214,9 @@ export default {
         return {
           name: 'Place' //TODO: make input dynamic when content type will be selectable
         }
+      },
+      error(error) {
+        this.pushError(error.message, 'getCmsContentSchema')
       }
     }
   }
