@@ -5,6 +5,7 @@
     </h1>
 
     <error-panel :errors="errors"></error-panel>
+    <progress-panel msg="CmsLoading"></progress-panel>
 
     <form action="" method="post">
       <div v-for="(propValue, name) in panelFieldList" :key="name">
@@ -13,7 +14,6 @@
           :content="cleanedMergedItem[propValue.name]"
         />
       </div>
-      <div v-if="cmsLoading">Loading content from CMS...</div>
 
       <client-only placeholder="Loading markdown-editor">
         <new-markdown-editor
@@ -38,7 +38,8 @@ export default {
   components: {
     'wrapper-input': () => import('~/components/WrapperInput.vue'),
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
-    'error-panel': () => import('~/components/ErrorPanel.vue')
+    'error-panel': () => import('~/components/ErrorPanel.vue'),
+    'progress-panel': () => import('~/components/ProgressPanel.vue')
   },
 
   mixins: [helpersFunctions],
@@ -46,10 +47,19 @@ export default {
   data() {
     return {
       cmsContentSchema: null,
-      cmsItem: {},
-      wikiItem: {},
-      wikiLoading: false,
-      errors: []
+      // cmsItem: null,
+      errors: [],
+      datasources: {
+        // TODO : dynamically create this object on mount
+        wiki: {
+          item: {},
+          loading: false
+        },
+        cms: {
+          item: {},
+          loading: false
+        }
+      }
     }
   },
 
@@ -57,9 +67,15 @@ export default {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
 
+    wikiItem() {
+      return this.datasources.wiki.item
+    },
+
     panelFieldList() {
+      // content type schema
       return this.cmsContentSchema ? this.cmsContentSchema.fields : []
     },
+
     textAreaSource() {
       if (this.mergedItem) {
         return this.mergedItem.Description
@@ -68,19 +84,31 @@ export default {
       } else return ''
     },
 
+    textareaContent() {
+      let content = this.getProp(this.mergedItem, 'Description.value')
+
+      if (!content) {
+        content = this.getProp(this.cmsItem, 'Description')
+      }
+      return content
+    },
+
     cmsSkipQuery() {
       return !this.selectedElement
     },
 
     cmsLoading() {
-      return this.$apollo.queries.cmsItem.loading
+      return (
+        this.$apollo.queries.cmsItem.loading ||
+        this.$apollo.queries.cmsContentSchema.loading
+      )
     },
+
     mergedItem() {
-      console.log(`mergedItem ${this.wikiLoading} ${this.cmsLoading}`)
       if (
         !this.selectedElement ||
         !this.cmsContentSchema ||
-        this.wikiLoading ||
+        this.datasources.wiki.loading ||
         this.cmsLoading
       ) {
         console.log('mergedItem aborting')
@@ -105,13 +133,15 @@ export default {
       return newObj
     },
 
-    textareaContent() {
-      let content = this.getProp(this.mergedItem, 'Description.value')
-
-      if (!content) {
-        content = this.getProp(this.cmsItem, 'Description')
+    cmsItem: {
+      // getter
+      get: function() {
+        return this.datasources.wiki.item
+      },
+      // setter
+      set: function(newValue) {
+        this.datasources.wiki.item = newValue
       }
-      return content
     }
   },
 
@@ -122,9 +152,12 @@ export default {
   },
 
   methods: {
-    // triggerCmsQuery() {
-    //   this.cmsSkipQuery = false
-    // },
+    toggleLoading(source) {
+      console.log('toggleLoading iniziato')
+
+      source.loading = !source.loading
+      console.log('toggleLoading completato')
+    },
     onErrorShown(toDeleteKey) {
       console.log('toDeleteKey', toDeleteKey)
       console.dir(this.errors[toDeleteKey])
@@ -133,7 +166,9 @@ export default {
     async submit() {},
 
     async getDataWiki(name, language) {
-      this.wikiLoading = true
+      console.log('getDataWiki ci prova')
+      //this.toggleLoading(this.datasources.wiki, true)
+
       try {
         const content = await wtf.fetch(name, language)
         this.wikiItem.Name = name
@@ -142,7 +177,7 @@ export default {
         this.pushError(JSON.stringify(error.message), 'getWikiContent')
         return false
       } finally {
-        this.wikiLoading = false
+        this.toggleLoading(this.datasources.wiki, false)
       }
     },
     pushError(errorMessage, errorStep) {

@@ -17,7 +17,7 @@ export default {
   props: {
     errors: {
       required: false,
-      defautl: () => {
+      default: () => {
         return { value: [] }
       },
       type: Array
