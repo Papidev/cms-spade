@@ -55,6 +55,7 @@ export default {
     panelFieldList() {
       return this.contentSchema ? this.contentSchema.fields : []
     },
+
     textAreaSource() {
       if (this.mergedItem) {
         return this.mergedItem.Description
