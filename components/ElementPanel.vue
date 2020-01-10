@@ -5,7 +5,7 @@
     </h1>
 
     <error-panel :errors="errors"></error-panel>
-    <progress-panel :datasources="datasources"></progress-panel>
+    <!-- <progress-panel :datasources="datasources"></progress-panel> -->
 
     <form action="" method="post">
       <div v-for="(propValue, name) in schemaFieldsList" :key="name">
@@ -38,31 +38,31 @@ export default {
   components: {
     'wrapper-input': () => import('~/components/WrapperInput.vue'),
     'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
-    'error-panel': () => import('~/components/ErrorPanel.vue'),
-    'progress-panel': () => import('~/components/ProgressPanel.vue')
+    'error-panel': () => import('~/components/ErrorPanel.vue') //,
+    //'progress-panel': () => import('~/components/ProgressPanel.vue')
   },
 
   mixins: [helpersFunctions],
 
   data() {
     return {
-      errors: [],
+      errors: []
 
       // TODO : dynamically create this object on mount
-      datasources: {
-        contentSchema: {
-          item: {},
-          loading: this.contentSchemaLoading
-        },
-        wiki: {
-          item: {},
-          loading: false
-        },
-        cms: {
-          item: {},
-          loading: this.cmsItemLoading
-        }
-      }
+      // datasources: [
+      //   contentSchema: {
+      //     item: {},
+      //     loading: this.contentSchemaLoading
+      //   },
+      //   wiki: {
+      //     item: {},
+      //     loading: false
+      //   },
+      //   cms: {
+      //     item: {},
+      //     loading: this.cmsItemLoading
+      //   }
+      // ]
     }
   },
 
@@ -72,27 +72,33 @@ export default {
 
     wikiItem: {
       get: function() {
-        return this.datasources.wiki.item
+        // return this.datasources.wiki.item
+        return true
       },
       set: function(newValue) {
-        this.datasources.wiki.item = newValue
+        console.log(newValue)
+        // this.datasources.wiki.item = newValue
       }
     },
 
     cmsItem: {
       get: function() {
-        return this.datasources.cms.item
+        return true
+        //return this.datasources.cms.item
       },
       set: function(newValue) {
-        this.datasources.cms.item = newValue
+        console.log(newValue)
+        //this.datasources.cms.item = newValue
       }
     },
     contentSchema: {
       get: function() {
-        return this.datasources.contentSchema.item
+        return true
+        //return this.datasources.contentSchema.item
       },
       set: function(newValue) {
-        this.datasources.contentSchema.item = newValue
+        console.log(newValue)
+        //this.datasources.contentSchema.item = newValue
       }
     },
 
@@ -132,7 +138,7 @@ export default {
       if (
         !this.selectedElement ||
         !this.contentSchema ||
-        this.datasources.wiki.loading ||
+        //  this.datasources.wiki.loading ||
         this.cmsItemLoading
       ) {
         console.log('mergedItem aborting')
@@ -180,7 +186,7 @@ export default {
 
     async getDataWiki(name, language) {
       console.log('getDataWiki ci prova')
-      this.toggleLoading(this.datasources.wiki, true)
+      // this.toggleLoading(this.datasources.wiki, true)
 
       try {
         const content = await wtf.fetch(name, language)
@@ -190,12 +196,12 @@ export default {
         this.pushError(this.errors, error.message, 'getWikiContent')
         return false
       } finally {
-        this.toggleLoading(this.datasources.wiki, false)
+        //this.toggleLoading(this.datasources.wiki, false)
       }
     },
 
     pushError(errorStore, errorMessage, errorStep) {
-      let newError
+      let newError = {}
       newError.description = errorMessage
       newError.step = errorStep
       newError.DateTime = this.getCurrentDateTime()

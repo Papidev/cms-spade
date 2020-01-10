@@ -25,6 +25,7 @@
 
 <script>
 import { mapState } from 'vuex'
+
 import helpersMixin from '~/mixins/helpersFunctions.js'
 
 if (process.client) {

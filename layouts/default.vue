@@ -1,8 +1,40 @@
 <template>
   <div>
+    <sidebar-slide right>
+      <span v-for="(sourceItem, index) in sidebarElements" :key="index">
+        {{ index }}
+        {{ sourceItem.name }}
+      </span>
+    </sidebar-slide>
     <nuxt />
   </div>
 </template>
+
+<script>
+import { Slide } from 'vue-burger-menu'
+import { mapState } from 'vuex'
+
+export default {
+  components: {
+    'sidebar-slide': Slide
+  },
+  data() {
+    return {
+      sidebarElements: this.$store.state.datasources
+    }
+  },
+  computed: {
+    ...mapState(['datasources'])
+  },
+  mounted() {
+    console.log('this.datasources')
+    console.log(this.datasources)
+
+    console.log('this.$store')
+    console.log(this.$store.state.datasources)
+  }
+}
+</script>
 
 <style>
 html {
