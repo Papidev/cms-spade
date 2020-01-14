@@ -1,35 +1,16 @@
 import { CMS, WIKI } from '~/constants/'
 
-import ErrorPanel from '~/components/ErrorPanel'
 export const state = () => ({
   sources: [
     {
-      header: true,
-      title: 'Main Navigation',
-      hiddenOnCollapse: true
+      name: getpuppy,
+      source: CMS,
+      isLoading: false
     },
     {
-      title: CMS,
-      icon: 'fa fa-user',
-      hiddenOnCollapse: false
-    },
-    {
-      component: ErrorPanel,
-      props: { errors: [{ errorStep: 'pipperostep' }] },
-      // hidden: false
-      hiddenOnCollapse: true
-    },
-    {
-      title: WIKI,
-      icon: 'fa fa-user',
-      hiddenOnCollapse: false
-    },
-
-    {
-      component: ErrorPanel,
-      props: { errors: [{ errorStep: 'pipperostep' }] },
-      // hidden: false
-      hiddenOnCollapse: true
+      name: gethappy,
+      source: WIKI,
+      isLoading: false
     }
   ]
 })
