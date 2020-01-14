@@ -1,26 +1,24 @@
 <template>
   <div>
-    <sidebar-slide right>
-      <span v-for="(sourceItem, index) in sidebarElements" :key="index">
-        {{ index }}
-        {{ sourceItem.name }}
-      </span>
-    </sidebar-slide>
+    <!--  <sidebar-menu :menu="menu" :collapsed="true" :rtl="true" /> -->
     <nuxt />
   </div>
 </template>
 
 <script>
-import { Slide } from 'vue-burger-menu'
+//import { SidebarMenu } from 'vue-sidebar-menu'
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+
 import { mapState } from 'vuex'
 
 export default {
   components: {
-    'sidebar-slide': Slide
+    //  'sidebar-menu': SidebarMenu
   },
   data() {
     return {
-      sidebarElements: this.$store.state.datasources
+      menu: this.$store.state.datasources.datasources.sources
+      // sidebarElements: this.$store.state.datasources
     }
   },
   computed: {
