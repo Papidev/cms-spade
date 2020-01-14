@@ -34,9 +34,9 @@ export default {
   data() {
     return {
       errors: [],
-      cmsItem: null,
-      wikiItem: null,
-      contentSchema: null
+      cmsItem: {},
+      wikiItem: {},
+      contentSchema: {}
     }
   },
 
