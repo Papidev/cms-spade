@@ -43,6 +43,7 @@ export default {
   computed: {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
+    ...mapState(['datasources/datasources/state/sources']),
 
     schemaFieldsList() {
       // content type schema
@@ -53,8 +54,8 @@ export default {
       if (
         !this.selectedElement ||
         !this.contentSchema ||
-        this.datasources.wiki.loading ||
-        this.cmsItemLoading
+        this.sources.find((x) => x.source === WIKI).isLoading ||
+        this.sources.find((x) => x.source === CMS).isLoading
       ) {
         return {}
       }
@@ -100,7 +101,7 @@ export default {
 
   methods: {
     toggleLoading(source) {
-      source.loading = !source.loading
+      source.isLoading = !source.isLoading
     },
     // onErrorShown(toDeleteKey) {
     //   //   this.errors.splice(toDeleteKey, 1)

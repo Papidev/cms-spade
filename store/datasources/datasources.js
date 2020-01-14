@@ -3,12 +3,12 @@ import { CMS, WIKI } from '~/constants/'
 export const state = () => ({
   sources: [
     {
-      name: getpuppy,
+      name: 'getpuppy',
       source: CMS,
       isLoading: false
     },
     {
-      name: gethappy,
+      name: 'gethappy',
       source: WIKI,
       isLoading: false
     }
