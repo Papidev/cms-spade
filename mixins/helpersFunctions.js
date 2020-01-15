@@ -9,8 +9,6 @@ export default {
     },
 
     getProp(obj, prop) {
-      console.log(obj)
-      console.log(prop)
       if (typeof obj !== 'object') {
         return undefined
       }
@@ -45,24 +43,27 @@ export default {
       primaryLabel,
       secondaryLabel
     ) {
-      console.group('mergeResultsProperties')
-      console.log('secondaryObj')
-      console.dir(secondaryObj)
       let merged = {}
       for (const prop of schemaObject) {
         if (primaryObj && primaryObj[prop])
           merged[prop] = { value: primaryObj[prop], source: primaryLabel }
         else {
-          console.log('prop')
-          console.log(prop)
-
-          console.log('secondaryObject[prop]')
+          console.log('Ramo else')
+          console.log('schemaObject')
+          console.dir(schemaObject)
+          console.log('primaryObj')
+          console.dir(primaryObj)
+          console.log('secondaryObj')
+          console.dir(secondaryObj)
+          console.log('PROP')
+          console.dir(prop)
+          console.log('secondaryObj[prop]')
           console.log(secondaryObj[prop])
+
           merged[prop] = { value: secondaryObj[prop], source: secondaryLabel }
         }
       }
-      console.log('merged')
-      console.dir(merged)
+
       return merged
     },
 

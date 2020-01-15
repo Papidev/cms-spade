@@ -43,7 +43,7 @@ export default {
   computed: {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
-    ...mapState(['datasources/datasources/state/sources']),
+    ...mapState('datasources/datasources', ['sources']),
 
     schemaFieldsList() {
       // content type schema
