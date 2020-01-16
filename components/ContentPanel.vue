@@ -209,7 +209,6 @@ export default {
       loadingKey: 'cmsLoading',
       // eslint-disable-next-line no-unused-vars
       watchLoading(isLoading, countModifier) {
-        console.log('laputtana di tua madre')
         console.log(this.cmsItem[0])
       }
     },
