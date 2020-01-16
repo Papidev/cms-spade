@@ -24,13 +24,7 @@ export default {
   computed: {
     ...mapState(['datasources'])
   },
-  mounted() {
-    console.log('this.datasources')
-    console.log(this.datasources)
-
-    console.log('this.$store')
-    console.log(this.$store.state.datasources)
-  }
+  mounted() {}
 }
 </script>
 

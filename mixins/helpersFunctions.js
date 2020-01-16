@@ -47,17 +47,19 @@ export default {
     // },
 
     mergeContentResults(schema, contents) {
+      console.log('Partito mergeContentResults')
       let mergedItem = {}
       let foundContentItem
-      console.log(' contents : ', contents)
+      //console.log(' contents : ', contents)
       for (const schemaField of schema) {
-        console.log(' schemaField : ', schemaField)
+        // console.log(' schemaField : ', schemaField)
         foundContentItem = contents.find(
           (contentItem) => contentItem[schemaField]
         )
-        console.log(' foundContentItem : ', foundContentItem)
+        // console.log(' foundContentItem : ', foundContentItem)
         if (foundContentItem) {
           console.log('What about this second IF ?')
+          console.log(foundContentItem[schemaField])
           mergedItem[schemaField] = {
             value: foundContentItem[schemaField],
             source: CMS

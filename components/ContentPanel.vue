@@ -18,7 +18,7 @@
 <script>
 import { mapState } from 'vuex'
 //import { mapMutations } from 'vuex'
-import { CMS, WIKI } from '~/constants/'
+import { WIKI } from '~/constants/'
 import wtf from 'wtf_wikipedia'
 import { placesByName } from '~/apollo/cms/queries/place/places'
 import { schemaIntrospection } from '~/apollo/cms/queries/schemas'
@@ -43,7 +43,8 @@ export default {
         //
         //priority: WIKI_PRIORITY
       },
-      contentSchema: {}
+      contentSchema: {},
+      cmsLoading: 0
     }
   },
 
@@ -52,14 +53,9 @@ export default {
     ...mapState(['language']),
     ...mapState('datasources/datasources', ['sources']),
 
-    cmsLoading() {
-      console.log(
-        '%c partita cmsLoading computed',
-        'background: #222; color: #bada55'
-      )
-
-      return this.$apollo.loading
-    },
+    // cmsLoading() {
+    //   return this.$apollo.loading
+    // },
 
     schemaFieldsList() {
       // content type schema
@@ -67,19 +63,31 @@ export default {
     },
 
     mergedItem() {
+      console.log('start computed mergedItem')
       if (
         !this.selectedElement ||
         !this.contentSchema ||
         this.getLoading(WIKI) ||
-        this.getLoading(CMS)
+        this.cmsLoading
       ) {
-        return {}
+        console.log(' computed MemergedItemrged : esco subito')
+        return
       }
-
+      console.log(
+        '%c dentro computed mergedItem loggo PIPPONI items',
+        'background: #222; color: #bada55'
+      )
+      console.log(
+        !this.selectedElement,
+        !this.contentSchema,
+        this.getLoading(WIKI),
+        !!this.cmsLoading
+      )
       console.log(this.wikiItem.Name)
+      console.log(this.cmsItem[0])
       return this.mergeContentResults(
         ['Identifier', 'Name', 'Description'],
-        [this.cmsItem, this.wikiItem]
+        [this.cmsItem[0], this.wikiItem]
       )
     },
     // TODO: call a reusable function to clean undesired properties from an object
@@ -105,11 +113,26 @@ export default {
         content = this.getProp(this.cmsItem, 'Description')
       }
       return content
+    },
+
+    cmsItemName() {
+      return this.cmsItem.Name
     }
   },
+
   watch: {
-    cmsLoading() {
-      this.toggleLoading(CMS, this.cmsLoading)
+    cmsItem() {
+      //   //   console.log('start watcher cms loading', value)
+      //   //   this.toggleLoading(CMS, this.cmsLoading)
+      //   //   if (
+      //   //     !this.cmsLoading &&
+      //   //     this.selectedElement &&
+      //   //     this.cmsItem &&
+      //   //     this.cmsItem.Name != ''
+      //   //   ) {
+      //   //     console.log('watcher cms loading: MERGIO')
+      //   //     this.mergedItem()
+      //   //   }
     },
 
     async selectedElement() {
@@ -181,6 +204,13 @@ export default {
       },
       error(error) {
         this.pushError(this.errors, error.message, 'getCmsContent')
+      },
+      // eslint-disable-next-line no-undef
+      loadingKey: 'cmsLoading',
+      // eslint-disable-next-line no-unused-vars
+      watchLoading(isLoading, countModifier) {
+        console.log('laputtana di tua madre')
+        console.log(this.cmsItem[0])
       }
     },
     contentSchema: {
