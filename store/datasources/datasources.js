@@ -14,3 +14,10 @@ export const state = () => ({
     }
   ]
 })
+
+export const mutations = {
+  setLoading(state, payload) {
+    state.sources.find((x) => x.source === payload.source).isLoading =
+      payload.loadingState
+  }
+}

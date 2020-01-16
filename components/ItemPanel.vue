@@ -89,15 +89,6 @@ export default {
     //   ) {
     //     return {}
     //   }
-
-    //   return this.mergeResultsProperties(
-    //     ['Identifier', 'Name', 'Description'],
-    //     this.cmsItem ? this.cmsItem[0] : {},
-    //     this.wikiItem,
-    //     CMS,
-    //     WIKI
-    //   )
-    // },
   }
 
   // watch: {

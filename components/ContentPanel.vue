@@ -17,6 +17,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+//import { mapMutations } from 'vuex'
 import { CMS, WIKI } from '~/constants/'
 import wtf from 'wtf_wikipedia'
 import { placesByName } from '~/apollo/cms/queries/place/places'
@@ -34,8 +35,14 @@ export default {
   data() {
     return {
       errors: [],
-      cmsItem: {},
-      wikiItem: {},
+      cmsItem: {
+        //
+        //priority: CMS_PRIORITY
+      },
+      wikiItem: {
+        //
+        //priority: WIKI_PRIORITY
+      },
       contentSchema: {}
     }
   },
@@ -44,6 +51,15 @@ export default {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
     ...mapState('datasources/datasources', ['sources']),
+
+    cmsLoading() {
+      console.log(
+        '%c partita cmsLoading computed',
+        'background: #222; color: #bada55'
+      )
+
+      return this.$apollo.loading
+    },
 
     schemaFieldsList() {
       // content type schema
@@ -54,18 +70,16 @@ export default {
       if (
         !this.selectedElement ||
         !this.contentSchema ||
-        this.sources.find((x) => x.source === WIKI).isLoading ||
-        this.sources.find((x) => x.source === CMS).isLoading
+        this.getLoading(WIKI) ||
+        this.getLoading(CMS)
       ) {
         return {}
       }
 
-      return this.mergeResultsProperties(
+      console.log(this.wikiItem.Name)
+      return this.mergeContentResults(
         ['Identifier', 'Name', 'Description'],
-        this.cmsItem ? this.cmsItem[0] : {},
-        this.wikiItem,
-        CMS,
-        WIKI
+        [this.cmsItem, this.wikiItem]
       )
     },
     // TODO: call a reusable function to clean undesired properties from an object
@@ -94,22 +108,41 @@ export default {
     }
   },
   watch: {
+    cmsLoading() {
+      this.toggleLoading(CMS, this.cmsLoading)
+    },
+
     async selectedElement() {
       await this.getDataWiki(this.selectedElement, this.language)
     }
   },
 
   methods: {
-    toggleLoading(source) {
-      source.isLoading = !source.isLoading
+    // eslint-disable-next-line no-unused-vars
+
+    getSourceByName(currentSourceName) {
+      return this.sources.find((x) => x.source == currentSourceName)
     },
-    // onErrorShown(toDeleteKey) {
-    //   //   this.errors.splice(toDeleteKey, 1)
-    // },
+
+    getLoading(currentSourceName) {
+      let source = this.getSourceByName(currentSourceName)
+      if (source) {
+        return source.isLoading
+      }
+    },
+
+    toggleLoading(source, value) {
+      this.$store.commit('datasources/datasources/setLoading', {
+        source: source,
+        loadingState: value
+      })
+      //source.isLoading = value
+    },
+
     async submit() {},
 
     async getDataWiki(name, language) {
-      // this.toggleLoading(this.datasources.wiki, true)
+      this.toggleLoading(WIKI, true)
 
       try {
         const content = await wtf.fetch(name, language)
@@ -119,7 +152,7 @@ export default {
         this.pushError(this.errors, error.message, 'getWikiContent')
         return false
       } finally {
-        //this.toggleLoading(this.datasources.wiki, false)
+        this.toggleLoading(WIKI, false)
       }
     },
 

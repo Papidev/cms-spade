@@ -1,3 +1,4 @@
+import { CMS } from '~/constants/'
 export default {
   methods: {
     getVarName(variable) {
@@ -36,35 +37,34 @@ export default {
     //   return newObj
     // }
 
-    mergeResultsProperties(
-      schemaObject,
-      primaryObj,
-      secondaryObj,
-      primaryLabel,
-      secondaryLabel
-    ) {
-      let merged = {}
-      for (const prop of schemaObject) {
-        if (primaryObj && primaryObj[prop])
-          merged[prop] = { value: primaryObj[prop], source: primaryLabel }
-        else {
-          console.log('Ramo else')
-          console.log('schemaObject')
-          console.dir(schemaObject)
-          console.log('primaryObj')
-          console.dir(primaryObj)
-          console.log('secondaryObj')
-          console.dir(secondaryObj)
-          console.log('PROP')
-          console.dir(prop)
-          console.log('secondaryObj[prop]')
-          console.log(secondaryObj[prop])
+    // calbback: (contentItem) => {
+    //   console.log('contentItem della calback')
+    //   console.log(contentItem)
 
-          merged[prop] = { value: secondaryObj[prop], source: secondaryLabel }
+    //   console.log("contentItem['Name']")
+    //   console.log(contentItem['Name'])
+    //   return contentItem['Name']
+    // },
+
+    mergeContentResults(schema, contents) {
+      let mergedItem = {}
+      let foundContentItem
+      console.log(' contents : ', contents)
+      for (const schemaField of schema) {
+        console.log(' schemaField : ', schemaField)
+        foundContentItem = contents.find(
+          (contentItem) => contentItem[schemaField]
+        )
+        console.log(' foundContentItem : ', foundContentItem)
+        if (foundContentItem) {
+          console.log('What about this second IF ?')
+          mergedItem[schemaField] = {
+            value: foundContentItem[schemaField],
+            source: CMS
+          }
         }
       }
-
-      return merged
+      return mergedItem
     },
 
     getCurrentDateTime() {
