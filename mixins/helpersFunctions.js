@@ -13,14 +13,16 @@ export default {
       if (typeof obj !== 'object') {
         return undefined
       }
-      if (typeof prop !== 'string') throw 'getProp: prop is not a string'
-
+      if (typeof prop !== 'string') {
+        throw 'getProp: prop is not a string'
+      }
       // Replace [] notation with dot notation
-      //prop = prop.replace(/\[["'`](.*)["'`]\]/g,".$1")
+      prop = prop.replace(/\[["'`](.*)["'`]\]/g, '.$1')
+      const returnValue = prop.split('.').reduce(function(acc, curr) {
+        return acc ? acc[curr] : undefined
+      }, obj)
 
-      return prop.split('.').reduce(function(prev, curr) {
-        return prev ? prev[curr] : undefined
-      }, obj || self)
+      return returnValue
     },
 
     // removeVoidProps(obj) {
@@ -47,11 +49,12 @@ export default {
     // },
 
     mergeContentResults(schema, contents) {
-      console.log('Partito mergeContentResults')
+      console.log('Start mergeContentResults')
       let mergedItem = {}
-      let foundContentItem
+
       //console.log(' contents : ', contents)
       for (const schemaField of schema) {
+        let foundContentItem
         // console.log(' schemaField : ', schemaField)
         foundContentItem = contents.find(
           (contentItem) => contentItem[schemaField]

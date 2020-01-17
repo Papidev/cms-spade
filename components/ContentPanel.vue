@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-row bg-gray-200 w-screen">
     <item-panel
-      :schema-fields="schemaFieldsList"
+      :schema-fields="schemaFields"
       :cleaned-merged-item="cleanedMergedItem"
       class="w-auto px-4 py-2 m-2"
     ></item-panel>
@@ -17,13 +17,13 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-//import { mapMutations } from 'vuex'
+import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { CMS, WIKI } from '~/constants/'
-import wtf from 'wtf_wikipedia'
+
 import { placesByName } from '~/apollo/cms/queries/place/places'
 import { schemaIntrospection } from '~/apollo/cms/queries/schemas'
 
-import helpersFunctions from '~/mixins/helpersFunctions.js'
+import wtf from 'wtf_wikipedia'
 
 export default {
   components: {
@@ -37,8 +37,7 @@ export default {
       errors: [],
       cmsItem: {},
       wikiItem: {},
-      contentSchema: {},
-      iswikiLoading: false
+      contentSchema: {}
     }
   },
 
@@ -48,16 +47,14 @@ export default {
     ...mapState('datasources/datasources', ['sources']),
 
     isCmsItemLoading() {
-      console.log('start isCmsItemLoading computed')
-      if (this.$apollo.queries) {
-        console.log(this.$apollo.queries.cmsItem)
-        return this.$apollo.queries.cmsItem
-          ? this.$apollo.queries.cmsItem.loading
-          : false
-      } else return false
+      return this.sources.find((x) => x.source === CMS).isLoading
     },
 
-    schemaFieldsList() {
+    isWikiItemLoading() {
+      return this.sources.find((x) => x.source === WIKI).isLoading
+    },
+
+    schemaFields() {
       // content type schema
       return this.contentSchema ? this.contentSchema.fields : []
     },
@@ -67,7 +64,7 @@ export default {
       if (
         !this.selectedElement ||
         !this.contentSchema ||
-        this.iswikiLoading ||
+        this.isWikiItemLoading ||
         this.isCmsItemLoading
       ) {
         console.log(' computed MemergedItemrged : esco subito')
@@ -116,20 +113,6 @@ export default {
   },
 
   watch: {
-    // cmsItem() {
-    //   //   //   console.log('start watcher cms loading', value)
-    //   //   //   this.toggleLoading(CMS, this.cmsLoading)
-    //   //   //   if (
-    //   //   //     !this.cmsLoading &&
-    //   //   //     this.selectedElement &&
-    //   //   //     this.cmsItem &&
-    //   //   //     this.cmsItem.Name != ''
-    //   //   //   ) {
-    //   //   //     console.log('watcher cms loading: MERGIO')
-    //   //   //     this.mergedItem()
-    //   //   //   }
-    // },
-
     isCmsItemLoading(value) {
       console.log('watcher isCmsItemLoading')
       this.toggleLoading(CMS, value)
@@ -195,25 +178,21 @@ export default {
     cmsItem: {
       prefetch: false,
       query: placesByName,
-
       variables() {
         return {
           name: this.selectedElement
         }
       },
-
       skip() {
         return !this.selectedElement
       },
       error(error) {
-        console.log('APOLLO HA ERRORATO')
+        console.log(' cmsItem Apollo error hook')
         this.pushError(this.errors, error.message, 'getCmsContent')
       },
-      // eslint-disable-next-line no-undef
 
-      // eslint-disable-next-line no-unused-vars
       result(data) {
-        console.log('APOLLO HA FINITO')
+        console.log(' cmsItem Apollo result hook')
         console.log(this.cmsItem ? this.cmsItem[0] : 'trovato niente')
         console.log(data)
       },
@@ -224,10 +203,10 @@ export default {
         this.toggleLoading(CMS, isLoading)
       }
     },
+
     contentSchema: {
       prefetch: true,
       query: schemaIntrospection,
-
       variables() {
         return {
           name: 'Place' //TODO: make input dynamic when content type will be selectable
@@ -237,7 +216,10 @@ export default {
         this.pushError(this.errors, error.message, 'getCmsContentSchema')
       },
       notifyOnNetworkStatusChange: true,
-      fetchPolicy: 'no-cache'
+      fetchPolicy: 'no-cache',
+      watchLoading(isLoading, countModifier) {
+        console.log('watch hook contentSchema : ', isLoading, countModifier)
+      }
     }
   }
 }
