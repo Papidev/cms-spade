@@ -48,23 +48,24 @@ export default {
     //   return contentItem['Name']
     // },
 
-    mergeContentResults(schema, contents) {
+    mergeContentResults(schema, contentItems) {
       console.log('Start mergeContentResults')
       let mergedItem = {}
 
-      //console.log(' contents : ', contents)
+      //console.log(' contentItems : ', contentItems)
       for (const schemaField of schema) {
         let foundContentItem
-        // console.log(' schemaField : ', schemaField)
-        foundContentItem = contents.find(
-          (contentItem) => contentItem[schemaField]
+
+        foundContentItem = contentItems.find(
+          (contentItem) => contentItem[schemaField] // cerco un contentItem che abbia schemaField non vuoto
         )
         // console.log(' foundContentItem : ', foundContentItem)
         if (foundContentItem) {
-          console.log('What about this second IF ?')
+          console.log('foundContentItem non vuoto')
           console.log(foundContentItem[schemaField])
+
           mergedItem[schemaField] = {
-            value: foundContentItem[schemaField],
+            value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
             source: CMS
           }
         }

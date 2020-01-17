@@ -47,16 +47,16 @@ export default {
     ...mapState('datasources/datasources', ['sources']),
 
     isCmsItemLoading() {
-      return this.sources.find((x) => x.source === CMS).isLoading
+      return this.getSourceByName(CMS)
     },
 
     isWikiItemLoading() {
-      return this.sources.find((x) => x.source === WIKI).isLoading
+      return this.getSourceByName(WIKI)
     },
 
     schemaFields() {
       // content type schema
-      return this.contentSchema ? this.contentSchema.fields : []
+      return this.getProp(this.contentSchema, 'fields')
     },
 
     mergedItem() {
@@ -67,16 +67,17 @@ export default {
         this.isWikiItemLoading ||
         this.isCmsItemLoading
       ) {
-        console.log(' computed MemergedItemrged : esco subito')
+        console.log(' computed mergedItem : esco subito')
         return
       }
       console.log(
-        '%c dentro computed mergedItem loggo PIPPONI items',
+        '%c computed mergedItem loggo gli items',
         'background: #222; color: #bada55'
       )
 
       console.log(this.wikiItem.Name)
       console.log(this.cmsItem[0])
+
       return this.mergeContentResults(
         ['Identifier', 'Name', 'Description'],
         [this.cmsItem[0], this.wikiItem]
@@ -119,6 +120,7 @@ export default {
     },
 
     iswikiLoading(value) {
+      console.log('watcher isWikiItemLoading')
       this.toggleLoading(WIKI, value)
     },
 
@@ -128,18 +130,9 @@ export default {
   },
 
   methods: {
-    // eslint-disable-next-line no-unused-vars
-
     getSourceByName(currentSourceName) {
       return this.sources.find((x) => x.source === currentSourceName)
     },
-
-    // getLoading(currentSourceName) {
-    //   let source = this.getSourceByName(currentSourceName)
-    //   if (source) {
-    //     return source.isLoading
-    //   }
-    // },
 
     toggleLoading(source, value) {
       this.$store.commit('datasources/datasources/setLoading', {
