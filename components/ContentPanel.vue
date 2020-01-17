@@ -49,11 +49,12 @@ export default {
 
     isCmsItemLoading() {
       console.log('start isCmsItemLoading computed')
-      if (this.$apollo.queries)
+      if (this.$apollo.queries) {
+        console.log(this.$apollo.queries.cmsItem)
         return this.$apollo.queries.cmsItem
           ? this.$apollo.queries.cmsItem.loading
           : false
-      else return false
+      } else return false
     },
 
     schemaFieldsList() {
@@ -217,7 +218,11 @@ export default {
         console.log(data)
       },
       notifyOnNetworkStatusChange: true,
-      fetchPolicy: 'cache-and-network'
+      fetchPolicy: 'no-cache',
+      watchLoading(isLoading, countModifier) {
+        console.log('watch hook cmsItem : ', isLoading, countModifier)
+        this.toggleLoading(CMS, isLoading)
+      }
     },
     contentSchema: {
       prefetch: true,
@@ -232,7 +237,7 @@ export default {
         this.pushError(this.errors, error.message, 'getCmsContentSchema')
       },
       notifyOnNetworkStatusChange: true,
-      fetchPolicy: 'cache-and-network'
+      fetchPolicy: 'no-cache'
     }
   }
 }
