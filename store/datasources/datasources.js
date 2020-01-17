@@ -3,12 +3,12 @@ import { CMS, WIKI } from '~/constants/'
 export const state = () => ({
   sources: [
     {
-      name: 'getpuppy',
+      name: 'cmsContent',
       source: CMS,
       isLoading: false
     },
     {
-      name: 'gethappy',
+      name: 'wikiContent',
       source: WIKI,
       isLoading: false
     }
@@ -18,10 +18,8 @@ export const state = () => ({
 export const mutations = {
   setLoading(state, payload) {
     console.log('setLoading mutation')
-    state.sources.find((x) => x.source === payload.source).isLoading =
-      payload.loadingState
-    console.log(
-      state.sources.find((x) => x.source === payload.source).isLoading
-    )
+    let foundSource = state.sources.find((x) => x.source === payload.source)
+    foundSource.isLoading = payload.loadingState
+    console.log(foundSource.isLoading)
   }
 }
