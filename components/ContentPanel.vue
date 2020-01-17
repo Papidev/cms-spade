@@ -18,7 +18,7 @@
 <script>
 import { mapState } from 'vuex'
 //import { mapMutations } from 'vuex'
-import { WIKI } from '~/constants/'
+import { CMS, WIKI } from '~/constants/'
 import wtf from 'wtf_wikipedia'
 import { placesByName } from '~/apollo/cms/queries/place/places'
 import { schemaIntrospection } from '~/apollo/cms/queries/schemas'
@@ -35,16 +35,10 @@ export default {
   data() {
     return {
       errors: [],
-      cmsItem: {
-        //
-        //priority: CMS_PRIORITY
-      },
-      wikiItem: {
-        //
-        //priority: WIKI_PRIORITY
-      },
+      cmsItem: {},
+      wikiItem: {},
       contentSchema: {},
-      cmsLoading: 0
+      iswikiLoading: false
     }
   },
 
@@ -53,9 +47,14 @@ export default {
     ...mapState(['language']),
     ...mapState('datasources/datasources', ['sources']),
 
-    // cmsLoading() {
-    //   return this.$apollo.loading
-    // },
+    isCmsItemLoading() {
+      console.log('start isCmsItemLoading computed')
+      if (this.$apollo.queries)
+        return this.$apollo.queries.cmsItem
+          ? this.$apollo.queries.cmsItem.loading
+          : false
+      else return false
+    },
 
     schemaFieldsList() {
       // content type schema
@@ -67,8 +66,8 @@ export default {
       if (
         !this.selectedElement ||
         !this.contentSchema ||
-        this.getLoading(WIKI) ||
-        this.cmsLoading
+        this.iswikiLoading ||
+        this.isCmsItemLoading
       ) {
         console.log(' computed MemergedItemrged : esco subito')
         return
@@ -77,12 +76,7 @@ export default {
         '%c dentro computed mergedItem loggo PIPPONI items',
         'background: #222; color: #bada55'
       )
-      console.log(
-        !this.selectedElement,
-        !this.contentSchema,
-        this.getLoading(WIKI),
-        !!this.cmsLoading
-      )
+
       console.log(this.wikiItem.Name)
       console.log(this.cmsItem[0])
       return this.mergeContentResults(
@@ -113,26 +107,35 @@ export default {
         content = this.getProp(this.cmsItem, 'Description')
       }
       return content
-    },
-
-    cmsItemName() {
-      return this.cmsItem.Name
     }
+
+    // cmsItemName() {
+    //   return this.cmsItem.Name
+    // }
   },
 
   watch: {
-    cmsItem() {
-      //   //   console.log('start watcher cms loading', value)
-      //   //   this.toggleLoading(CMS, this.cmsLoading)
-      //   //   if (
-      //   //     !this.cmsLoading &&
-      //   //     this.selectedElement &&
-      //   //     this.cmsItem &&
-      //   //     this.cmsItem.Name != ''
-      //   //   ) {
-      //   //     console.log('watcher cms loading: MERGIO')
-      //   //     this.mergedItem()
-      //   //   }
+    // cmsItem() {
+    //   //   //   console.log('start watcher cms loading', value)
+    //   //   //   this.toggleLoading(CMS, this.cmsLoading)
+    //   //   //   if (
+    //   //   //     !this.cmsLoading &&
+    //   //   //     this.selectedElement &&
+    //   //   //     this.cmsItem &&
+    //   //   //     this.cmsItem.Name != ''
+    //   //   //   ) {
+    //   //   //     console.log('watcher cms loading: MERGIO')
+    //   //   //     this.mergedItem()
+    //   //   //   }
+    // },
+
+    isCmsItemLoading(value) {
+      console.log('watcher isCmsItemLoading')
+      this.toggleLoading(CMS, value)
+    },
+
+    iswikiLoading(value) {
+      this.toggleLoading(WIKI, value)
     },
 
     async selectedElement() {
@@ -144,28 +147,27 @@ export default {
     // eslint-disable-next-line no-unused-vars
 
     getSourceByName(currentSourceName) {
-      return this.sources.find((x) => x.source == currentSourceName)
+      return this.sources.find((x) => x.source === currentSourceName)
     },
 
-    getLoading(currentSourceName) {
-      let source = this.getSourceByName(currentSourceName)
-      if (source) {
-        return source.isLoading
-      }
-    },
+    // getLoading(currentSourceName) {
+    //   let source = this.getSourceByName(currentSourceName)
+    //   if (source) {
+    //     return source.isLoading
+    //   }
+    // },
 
     toggleLoading(source, value) {
       this.$store.commit('datasources/datasources/setLoading', {
         source: source,
         loadingState: value
       })
-      //source.isLoading = value
     },
 
     async submit() {},
 
     async getDataWiki(name, language) {
-      this.toggleLoading(WIKI, true)
+      this.iswikiLoading = true
 
       try {
         const content = await wtf.fetch(name, language)
@@ -175,7 +177,7 @@ export default {
         this.pushError(this.errors, error.message, 'getWikiContent')
         return false
       } finally {
-        this.toggleLoading(WIKI, false)
+        this.iswikiLoading = false
       }
     },
 
@@ -203,14 +205,19 @@ export default {
         return !this.selectedElement
       },
       error(error) {
+        console.log('APOLLO HA ERRORATO')
         this.pushError(this.errors, error.message, 'getCmsContent')
       },
       // eslint-disable-next-line no-undef
-      loadingKey: 'cmsLoading',
+
       // eslint-disable-next-line no-unused-vars
-      watchLoading(isLoading, countModifier) {
-        console.log(this.cmsItem[0])
-      }
+      result(data) {
+        console.log('APOLLO HA FINITO')
+        console.log(this.cmsItem ? this.cmsItem[0] : 'trovato niente')
+        console.log(data)
+      },
+      notifyOnNetworkStatusChange: true,
+      fetchPolicy: 'cache-and-network'
     },
     contentSchema: {
       prefetch: true,
@@ -223,7 +230,9 @@ export default {
       },
       error(error) {
         this.pushError(this.errors, error.message, 'getCmsContentSchema')
-      }
+      },
+      notifyOnNetworkStatusChange: true,
+      fetchPolicy: 'cache-and-network'
     }
   }
 }
