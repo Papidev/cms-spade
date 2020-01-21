@@ -21,7 +21,7 @@ import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { CMS, WIKI } from '~/constants/'
 
 import { placesByName } from '~/apollo/cms/queries/place/places'
-import { schemaIntrospection } from '~/apollo/cms/queries/schemas'
+import { schemaIntrospection } from '~/apollo/cms/queries/schema'
 
 import wtf from 'wtf_wikipedia'
 

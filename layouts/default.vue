@@ -1,23 +1,32 @@
 <template>
   <div>
     <!--  <sidebar-menu :menu="menu" :collapsed="true" :rtl="true" /> -->
+    <div class="w-1/5">
+      <Multiselect v-model="value" :options="contentTypes"></Multiselect>
+    </div>
     <nuxt />
   </div>
 </template>
 
 <script>
 //import { SidebarMenu } from 'vue-sidebar-menu'
-import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+//import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
+
+import Multiselect from 'vue-multiselect'
 
 import { mapState } from 'vuex'
 
 export default {
   components: {
     //  'sidebar-menu': SidebarMenu
+    Multiselect
   },
   data() {
     return {
-      menu: this.$store.state.datasources.datasources.sources
+      menu: this.$store.state.datasources.datasources.sources,
+      value: null,
+      contentTypes: []
       // sidebarElements: this.$store.state.datasources
     }
   },
@@ -25,7 +34,36 @@ export default {
     ...mapState(['datasources'])
   },
   mounted() {}
-}
+},
+
+ apollo: {
+    contentTypes: {
+      prefetch: true,
+      query: placesByName,
+      // variables() {
+      //   return {
+      //     name: this.selectedElement
+      //   }
+      // },
+      // skip() {
+      //   return !this.selectedElement
+      // },
+      error(error) {
+        console.log(' contentTypes :  Apollo error hook')
+        this.pushError(this.errors, error.message, 'getContentTypes')
+      },
+
+      result(data) {
+        console.log(' contentTypes :  Apollo result hook')
+        console.log(data)
+      },
+      notifyOnNetworkStatusChange: true,
+      fetchPolicy: 'no-cache'
+      // watchLoading(isLoading, countModifier) {
+      //   console.log('watch hook cmsItem : ', isLoading, countModifier)
+      //   this.toggleLoading(CMS, isLoading)
+      // }
+    },
 </script>
 
 <style>
