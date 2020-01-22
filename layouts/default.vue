@@ -2,7 +2,11 @@
   <div>
     <!--  <sidebar-menu :menu="menu" :collapsed="true" :rtl="true" /> -->
     <div class="w-1/5">
-      <Multiselect v-model="value" :options="contentTypes"></Multiselect>
+      <Multiselect v-model="value" :options="contentTypes" 
+      :searchable="false" :close-on-select="true" :show-labels="true" placeholder="Pick a ContentType"></Multiselect>
+
+      
+    
     </div>
     <nuxt />
   </div>
