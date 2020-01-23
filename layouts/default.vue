@@ -2,11 +2,17 @@
   <div>
     <!--  <sidebar-menu :menu="menu" :collapsed="true" :rtl="true" /> -->
     <div class="w-1/5">
-      <Multiselect v-model="value" :options="contentTypes" 
-      :searchable="false" :close-on-select="true" :show-labels="true" placeholder="Pick a ContentType"></Multiselect>
-
-      
-    
+      <Multiselect
+        v-if="contentTypesToArray"
+        v-model="value"
+        :options="contentTypesToArray"
+        :searchable="false"
+        :close-on-select="true"
+        :show-labels="true"
+        placeholder="Pick a ContentType"
+        track-by="name"
+        label="name"
+      ></Multiselect>
     </div>
     <nuxt />
   </div>
@@ -20,6 +26,7 @@ import 'vue-multiselect/dist/vue-multiselect.min.css'
 import Multiselect from 'vue-multiselect'
 
 import { mapState } from 'vuex'
+import { allSchemaTypes } from '~/apollo/cms/queries/schema'
 
 export default {
   components: {
@@ -35,15 +42,17 @@ export default {
     }
   },
   computed: {
-    ...mapState(['datasources'])
+    ...mapState(['datasources']),
+    contentTypesToArray() {
+      return this.contentTypes ? Array.from(this.contentTypes.types) : []
+    }
   },
-  mounted() {}
-},
+  mounted() {},
 
- apollo: {
+  apollo: {
     contentTypes: {
       prefetch: true,
-      query: placesByName,
+      query: allSchemaTypes,
       // variables() {
       //   return {
       //     name: this.selectedElement
@@ -59,6 +68,7 @@ export default {
 
       result(data) {
         console.log(' contentTypes :  Apollo result hook')
+        console.log(this.contentTypes)
         console.log(data)
       },
       notifyOnNetworkStatusChange: true,
@@ -67,7 +77,9 @@ export default {
       //   console.log('watch hook cmsItem : ', isLoading, countModifier)
       //   this.toggleLoading(CMS, isLoading)
       // }
-    },
+    }
+  }
+}
 </script>
 
 <style>

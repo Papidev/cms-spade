@@ -15,3 +15,13 @@ query schemaIntrospection($name: String!)
     }
   }
   }
+
+  query allSchemaTypes {
+    contentTypes: __schema  {
+        types {
+            name 
+            kind
+            description
+        }
+    }
+}
