@@ -3,12 +3,13 @@
     <!--  <sidebar-menu :menu="menu" :collapsed="true" :rtl="true" /> -->
     <div class="w-1/5">
       <Multiselect
-        v-if="contentTypesToArray"
+        v-if="filteredContentTypes"
         v-model="value"
-        :options="contentTypesToArray"
+        :options="filteredContentTypes"
         :searchable="false"
         :close-on-select="true"
-        :show-labels="true"
+        :show-labels="false"
+        :allow-empty="false"
         placeholder="Pick a ContentType"
         track-by="name"
         label="name"
@@ -43,8 +44,18 @@ export default {
   },
   computed: {
     ...mapState(['datasources']),
-    contentTypesToArray() {
-      return this.contentTypes ? Array.from(this.contentTypes.types) : []
+    filteredContentTypes() {
+      if (this.contentTypes) {
+        let tempArray = Array.from(this.contentTypes.types)
+        let filteredArray = tempArray.filter((item) =>
+          item.description.startsWith('My')
+        )
+        console.log('filteredArray', filteredArray)
+        console.log('tempArray', tempArray)
+        return filteredArray
+      } else {
+        return []
+      }
     }
   },
   mounted() {},

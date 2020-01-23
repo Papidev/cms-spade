@@ -1,4 +1,3 @@
-import { CMS } from '~/constants/'
 export default {
   methods: {
     getVarName(variable) {
@@ -47,31 +46,6 @@ export default {
     //   console.log(contentItem['Name'])
     //   return contentItem['Name']
     // },
-
-    mergeContentResults(schema, contentItems) {
-      console.log('Start mergeContentResults')
-      let mergedItem = {}
-
-      //console.log(' contentItems : ', contentItems)
-      for (const schemaField of schema) {
-        let foundContentItem
-
-        foundContentItem = contentItems.find(
-          (contentItem) => contentItem[schemaField] // cerco un contentItem che abbia schemaField non vuoto
-        )
-        // console.log(' foundContentItem : ', foundContentItem)
-        if (foundContentItem) {
-          console.log('foundContentItem non vuoto')
-          console.log(foundContentItem[schemaField])
-
-          mergedItem[schemaField] = {
-            value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
-            source: CMS
-          }
-        }
-      }
-      return mergedItem
-    },
 
     getCurrentDateTime() {
       var today = new Date()
