@@ -4,7 +4,7 @@
     <div class="w-1/5">
       <Multiselect
         v-if="filteredContentTypes"
-        v-model="value"
+        v-model="selectedContentType"
         :options="filteredContentTypes"
         :searchable="false"
         :close-on-select="true"
@@ -23,9 +23,8 @@
 //import { SidebarMenu } from 'vue-sidebar-menu'
 //import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
-
 import Multiselect from 'vue-multiselect'
-
+import CMS_MYTYPES_PREFIX from '~/constants/cms'
 import { mapState } from 'vuex'
 import { allSchemaTypes } from '~/apollo/cms/queries/schema'
 
@@ -37,41 +36,30 @@ export default {
   data() {
     return {
       menu: this.$store.state.datasources.datasources.sources,
-      value: null,
+      selectedContentType: null,
       contentTypes: []
-      // sidebarElements: this.$store.state.datasources
     }
   },
   computed: {
     ...mapState(['datasources']),
+
     filteredContentTypes() {
       if (this.contentTypes) {
-        let tempArray = Array.from(this.contentTypes.types)
-        let filteredArray = tempArray.filter((item) =>
-          item.description.startsWith('My')
+        let castedToArrayTypes = Array.from(this.contentTypes.types)
+        let filteredArrayTypes = castedToArrayTypes.filter((item) =>
+          item.description.startsWith(CMS_MYTYPES_PREFIX)
         )
-        console.log('filteredArray', filteredArray)
-        console.log('tempArray', tempArray)
-        return filteredArray
+        return filteredArrayTypes
       } else {
         return []
       }
     }
   },
-  mounted() {},
 
   apollo: {
     contentTypes: {
       prefetch: true,
       query: allSchemaTypes,
-      // variables() {
-      //   return {
-      //     name: this.selectedElement
-      //   }
-      // },
-      // skip() {
-      //   return !this.selectedElement
-      // },
       error(error) {
         console.log(' contentTypes :  Apollo error hook')
         this.pushError(this.errors, error.message, 'getContentTypes')
@@ -84,17 +72,13 @@ export default {
       },
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache'
-      // watchLoading(isLoading, countModifier) {
-      //   console.log('watch hook cmsItem : ', isLoading, countModifier)
-      //   this.toggleLoading(CMS, isLoading)
-      // }
     }
   }
 }
 </script>
 
 <style>
-html {
+/* html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
@@ -140,5 +124,5 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
-}
+} */
 </style>
