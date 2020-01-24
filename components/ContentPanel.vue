@@ -165,6 +165,7 @@ export default {
       newError.DateTime = this.getCurrentDateTime()
       errorStore.push(newError)
     },
+
     mergeContentResults(schema, contentItems) {
       //merge contentItems depending on provided schema
 
