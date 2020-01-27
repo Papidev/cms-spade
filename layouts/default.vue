@@ -14,7 +14,7 @@
 // import CMS_MYTYPES_PREFIX from '~/constants/cms'
 // import { mapState } from 'vuex'
 // import { allSchemaTypes } from '~/apollo/cms/queries/schema'
-import  Header  from '~/components/Header.vue'
+import Header from '~/components/Header.vue'
 
 export default {
   components: {
