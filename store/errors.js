@@ -21,6 +21,6 @@ function pushError(errorStore, errorMessage, errorStep) {
   let newError = {}
   newError.description = errorMessage
   newError.step = errorStep
-  newError.DateTime = getCurrentDateTime()
+  newError.dateTime = getCurrentDateTime()
   errorStore.push(newError)
 }

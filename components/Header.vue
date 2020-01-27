@@ -15,7 +15,6 @@
         label="name"
       ></Multiselect>
     </div>
-    <nuxt />
   </div>
 </template>
 <script>
@@ -32,7 +31,7 @@ export default {
 
   data() {
     return {
-      menu: this.$store.state.datasources.datasources.sources,
+      menu: this.$store.state.datasources.sources,
       selectedContentType: null,
       contentTypes: []
     }

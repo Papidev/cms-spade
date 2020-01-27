@@ -45,7 +45,7 @@ export default {
   computed: {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
-    ...mapState('datasources/datasources', ['sources']),
+    ...mapState('datasources', ['sources']),
     ...mapMutations(['errors/addError']),
 
     isCmsItemLoading() {
@@ -137,7 +137,7 @@ export default {
     },
 
     toggleLoading(source, value) {
-      this.$store.commit('datasources/datasources/setLoading', {
+      this.$store.commit('datasources/setLoading', {
         source: source,
         loadingState: value
       })

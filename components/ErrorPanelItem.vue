@@ -1,6 +1,7 @@
 <template>
   <div class="bg-red-200">
-    {{ errorInfo.errorStep }} : {{ errorInfo.errorMessage }}
+    {{ errorInfo.dateTime }}==> {{ errorInfo.step }} :
+    {{ errorInfo.description }}
   </div>
 </template>
 <script>
