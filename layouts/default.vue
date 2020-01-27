@@ -22,6 +22,7 @@
 <script>
 //import { SidebarMenu } from 'vue-sidebar-menu'
 //import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+import helpersFunctions from '~/mixins/helpersFunctions.js'
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import Multiselect from 'vue-multiselect'
 import CMS_MYTYPES_PREFIX from '~/constants/cms'
@@ -33,6 +34,7 @@ export default {
     //  'sidebar-menu': SidebarMenu
     Multiselect
   },
+  mixins: [helpersFunctions],
   data() {
     return {
       menu: this.$store.state.datasources.datasources.sources,
@@ -61,8 +63,8 @@ export default {
       prefetch: true,
       query: allSchemaTypes,
       error(error) {
-        console.log(' contentTypes :  Apollo error hook')
-        this.pushError(this.errors, error.message, 'getContentTypes')
+        console.log(' contentTypes :  Apollo error hook', error)
+        // this.pushError(this.errors, error.message, 'getContentTypes')
       },
 
       result(data) {

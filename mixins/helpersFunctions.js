@@ -22,7 +22,7 @@ export default {
       }, obj)
 
       return returnValue
-    },
+    }
 
     // removeVoidProps(obj) {
     //   const keys = Object.keys(obj)
@@ -46,18 +46,5 @@ export default {
     //   console.log(contentItem['Name'])
     //   return contentItem['Name']
     // },
-
-    getCurrentDateTime() {
-      var today = new Date()
-      var date =
-        today.getFullYear() +
-        '-' +
-        (today.getMonth() + 1) +
-        '-' +
-        today.getDate()
-      var time =
-        today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
-      return date + ' ' + time
-    }
   }
 }

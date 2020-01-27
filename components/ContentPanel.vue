@@ -17,6 +17,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import { mapMutations } from 'vuex'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { CMS, WIKI } from '~/constants/'
 
@@ -45,6 +46,7 @@ export default {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
     ...mapState('datasources/datasources', ['sources']),
+    ...mapMutations(['errors/pushError']),
 
     isCmsItemLoading() {
       return this.getSourceByName(CMS)
@@ -151,19 +153,11 @@ export default {
         this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
       } catch (error) {
-        this.pushError(this.errors, error.message, 'getWikiContent')
+        //this.pushError(this.errors, error.message, 'getWikiContent')
         return false
       } finally {
         this.iswikiLoading = false
       }
-    },
-
-    pushError(errorStore, errorMessage, errorStep) {
-      let newError = {}
-      newError.description = errorMessage
-      newError.step = errorStep
-      newError.DateTime = this.getCurrentDateTime()
-      errorStore.push(newError)
     },
 
     mergeContentResults(schema, contentItems) {
@@ -208,7 +202,11 @@ export default {
       },
       error(error) {
         console.log(' cmsItem Apollo error hook')
-        this.pushError(this.errors, error.message, 'getCmsContent')
+        // this.pushError(this.errors, error.message, 'getCmsContent')
+        this.$store.commit('errors/pushError', {
+          description: error.message,
+          step: 'getCmsContent'
+        })
       },
 
       result(data) {
@@ -233,7 +231,11 @@ export default {
         }
       },
       error(error) {
-        this.pushError(this.errors, error.message, 'getCmsContentSchema')
+        //this.pushError(this.errors, error.message, 'getCmsContentSchema')
+        this.$store.commit('errors/pushError', {
+          description: error.message,
+          step: 'getCmsContentSchema'
+        })
       },
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache',
