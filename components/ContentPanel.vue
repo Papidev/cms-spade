@@ -46,7 +46,7 @@ export default {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
     ...mapState('datasources/datasources', ['sources']),
-    ...mapMutations(['errors/pushError']),
+    ...mapMutations(['errors/addError']),
 
     isCmsItemLoading() {
       return this.getSourceByName(CMS)
@@ -153,7 +153,10 @@ export default {
         this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
       } catch (error) {
-        //this.pushError(this.errors, error.message, 'getWikiContent')
+        this.$store.commit('errors/addError', {
+          description: error.message,
+          step: 'getWikiContent'
+        })
         return false
       } finally {
         this.iswikiLoading = false
@@ -202,8 +205,8 @@ export default {
       },
       error(error) {
         console.log(' cmsItem Apollo error hook')
-        // this.pushError(this.errors, error.message, 'getCmsContent')
-        this.$store.commit('errors/pushError', {
+
+        this.$store.commit('errors/addError', {
           description: error.message,
           step: 'getCmsContent'
         })
@@ -231,8 +234,7 @@ export default {
         }
       },
       error(error) {
-        //this.pushError(this.errors, error.message, 'getCmsContentSchema')
-        this.$store.commit('errors/pushError', {
+        this.$store.commit('errors/addError', {
           description: error.message,
           step: 'getCmsContentSchema'
         })

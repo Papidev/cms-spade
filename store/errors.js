@@ -3,13 +3,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-  pushError(state, error) {
-    console.group('pushError')
-    console.log('state')
-    console.log(state)
-    console.log('error')
-    console.log(error)
-
+  addError(state, error) {
     pushError(state.errors, error.description, error.step)
   }
 }
