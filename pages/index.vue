@@ -16,7 +16,6 @@ if (process.client) {
 
 export default {
   components: {
-    // 'new-markdown-editor': () => import('~/components/MarkdownEditor.vue'),
     'search-suggest': () => import('~/components/SearchSuggest.vue'),
     'content-panel': () => import('~/components/ContentPanel.vue')
   },
@@ -31,7 +30,6 @@ export default {
   },
   computed: {
     ...mapState(['selectedElement'])
-    // ...mapState('wiki', ['wikiElementDescription'])
   },
 
   watch: {

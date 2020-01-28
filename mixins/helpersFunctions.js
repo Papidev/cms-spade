@@ -38,13 +38,20 @@ export default {
     //   return newObj
     // }
 
-    // calbback: (contentItem) => {
-    //   console.log('contentItem della calback')
-    //   console.log(contentItem)
+    //       removeProps(obj,props) {
+    // for (let currentProp of obj){
 
-    //   console.log("contentItem['Name']")
-    //   console.log(contentItem['Name'])
-    //   return contentItem['Name']
-    // },
+    // }
+    //   const keys = Object.keys(obj)
+
+    //   const newObj = keys.reduce((accum, prop) => {
+    //     if (obj[prop] != null) {
+    //       accum[prop] = obj[prop]
+    //     }
+    //     return accum
+    //   }, {})
+    //
+    //
+    //   return newObj
   }
 }
