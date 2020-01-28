@@ -4,7 +4,8 @@
       :schema-fields="schemaFields"
       :cleaned-merged-item="cleanedMergedItem"
       class="w-auto px-4 py-2 m-2"
-    ></item-panel>
+    >
+    </item-panel>
 
     <client-only placeholder="Loading item-textarea">
       <item-textarea
@@ -15,6 +16,7 @@
     </client-only>
   </section>
 </template>
+
 <script>
 import { mapState } from 'vuex'
 import { mapMutations } from 'vuex'
@@ -35,7 +37,6 @@ export default {
 
   data() {
     return {
-      errors: [],
       cmsItem: {},
       wikiItem: {},
       contentSchema: {}
@@ -62,29 +63,21 @@ export default {
     },
 
     mergedItem() {
-      console.log('start computed mergedItem')
       if (
         !this.selectedElement ||
         !this.contentSchema ||
         this.isWikiItemLoading ||
         this.isCmsItemLoading
       ) {
-        console.log(' computed mergedItem : esco subito')
         return
       }
-      console.log(
-        '%c computed mergedItem loggo gli items',
-        'background: #222; color: #bada55'
-      )
-
-      console.log(this.wikiItem.Name)
-      console.log(this.cmsItem[0])
 
       return this.mergeContentResults(
         ['Identifier', 'Name', 'Description'],
         [this.cmsItem[0], this.wikiItem]
       )
     },
+
     // TODO: call a reusable function to clean undesired properties from an object
     cleanedMergedItem() {
       const newObj = { ...this.mergedItem }
@@ -98,7 +91,9 @@ export default {
         return this.mergedItem.Description
           ? this.mergedItem.Description.source
           : ''
-      } else return ''
+      } else {
+        return ''
+      }
     },
 
     textareaContent() {
@@ -109,10 +104,6 @@ export default {
       }
       return content
     }
-
-    // cmsItemName() {
-    //   return this.cmsItem.Name
-    // }
   },
 
   watch: {
@@ -166,7 +157,6 @@ export default {
     mergeContentResults(schema, contentItems) {
       //merge contentItems depending on provided schema
 
-      console.log('Start mergeContentResults')
       let mergedItem = {}
 
       //console.log(' contentItems : ', contentItems)

@@ -1,11 +1,10 @@
 <template>
   <div>
-    <!--  <sidebar-menu :menu="menu" :collapsed="true" :rtl="true" /> -->
     <div class="w-1/5">
-      <Multiselect
-        v-if="filteredContentTypes"
+      <multiselect
+        v-if="MyContentTypes"
         v-model="selectedContentType"
-        :options="filteredContentTypes"
+        :options="MyContentTypes"
         :searchable="false"
         :close-on-select="true"
         :show-labels="false"
@@ -13,7 +12,7 @@
         placeholder="Pick a ContentType"
         track-by="name"
         label="name"
-      ></Multiselect>
+      ></multiselect>
     </div>
   </div>
 </template>
@@ -26,12 +25,11 @@ import CMS_MYTYPES_PREFIX from '~/constants/cms'
 
 export default {
   components: {
-    Multiselect
+    multiselect: Multiselect
   },
 
   data() {
     return {
-      menu: this.$store.state.datasources.sources,
       selectedContentType: null,
       contentTypes: []
     }
@@ -39,10 +37,10 @@ export default {
   computed: {
     ...mapState(['datasources']),
 
-    filteredContentTypes() {
+    MyContentTypes() {
       if (this.contentTypes) {
-        let castedToArrayTypes = Array.from(this.contentTypes.types)
-        let filteredArrayTypes = castedToArrayTypes.filter((item) =>
+        let arrayTypes = Array.from(this.contentTypes.types)
+        let filteredArrayTypes = arrayTypes.filter((item) =>
           item.description.startsWith(CMS_MYTYPES_PREFIX)
         )
         return filteredArrayTypes
@@ -51,23 +49,25 @@ export default {
       }
     }
   },
+
   apollo: {
     contentTypes: {
       prefetch: true,
       query: allSchemaTypes,
+
       error(error) {
-        console.log(' contentTypes :  Apollo error hook', error)
+        console.log(' contentTypes :  Apollo error ', error)
         this.$store.commit('errors/addError', {
           description: error.message,
           step: 'getContentTypes'
         })
       },
 
-      result(data) {
-        console.log(' contentTypes :  Apollo result hook')
-        console.log(this.contentTypes)
-        console.log(data)
-      },
+      // result(data) {
+      //   console.log(' contentTypes :  Apollo result hook')
+      //   console.log(this.contentTypes)
+      //   console.log(data)
+      // },
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache'
     }
