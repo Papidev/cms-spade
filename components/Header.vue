@@ -2,9 +2,9 @@
   <div>
     <div class="w-1/5">
       <multiselect
-        v-if="MyContentTypes"
-        v-model="selectedContentType"
-        :options="MyContentTypes"
+        v-if="myContentTypes"
+        v-model="this.$store.state.currentContentType"
+        :options="myContentTypes"
         :searchable="false"
         :close-on-select="true"
         :show-labels="false"
@@ -30,14 +30,14 @@ export default {
 
   data() {
     return {
-      selectedContentType: null,
+     // selectedContentType: null,
       contentTypes: []
     }
   },
   computed: {
     ...mapState(['datasources']),
 
-    MyContentTypes() {
+    myContentTypes() {
       if (this.contentTypes) {
         let arrayTypes = Array.from(this.contentTypes.types)
         let filteredArrayTypes = arrayTypes.filter((item) =>
@@ -61,6 +61,8 @@ export default {
           description: error.message,
           step: 'getContentTypes'
         })
+          // this.contentTypes = [{description : 'MyDummy'}]
+          // console.log(this.contentTypes)
       },
 
       // result(data) {

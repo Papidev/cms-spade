@@ -1,7 +1,7 @@
 export const state = () => ({
   language: 'en',
   selectedElement: '',
-  currentCategory: ''
+  currentContentType: 'Frost'
 })
 
 export const mutations = {
@@ -11,8 +11,8 @@ export const mutations = {
   setSelectedElement(state, selectedElement) {
     state.selectedElement = selectedElement
   },
-  setCurrentCategory(state, currentCategory) {
-    state.currentCategory = currentCategory
+  setCurrentCategory(state, currentContentType) {
+    state.currentContentType = currentContentType
   }
 }
 
@@ -23,8 +23,8 @@ export const actions = {
   setLanguage(vuexContext, language) {
     vuexContext.commit('setLanguage', language)
   },
-  setCurrentCategory(vuexContext, currentCategory) {
-    vuexContext.commit('setCurrentCategory', currentCategory)
+  setCurrentCategory(vuexContext, currentContentType) {
+    vuexContext.commit('setCurrentCategory', currentContentType)
   }
   // nuxtServerInit({ commit }, { req }) {
   //   // get last id from cms for current category
