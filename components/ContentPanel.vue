@@ -4,7 +4,8 @@
       :schema-fields="schemaFields"
       :cleaned-merged-item="cleanedMergedItem"
       class="w-auto px-4 py-2 m-2"
-    ></item-panel>
+    >
+    </item-panel>
 
     <client-only placeholder="Loading item-textarea">
       <item-textarea
@@ -15,8 +16,10 @@
     </client-only>
   </section>
 </template>
+
 <script>
 import { mapState } from 'vuex'
+import { mapMutations } from 'vuex'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { CMS, WIKI } from '~/constants/'
 
@@ -34,7 +37,6 @@ export default {
 
   data() {
     return {
-      errors: [],
       cmsItem: {},
       wikiItem: {},
       contentSchema: {}
@@ -44,7 +46,8 @@ export default {
   computed: {
     ...mapState(['selectedElement']),
     ...mapState(['language']),
-    ...mapState('datasources/datasources', ['sources']),
+    ...mapState('datasources', ['sources']),
+    ...mapMutations(['errors/addError']),
 
     isCmsItemLoading() {
       return this.getSourceByName(CMS)
@@ -60,29 +63,21 @@ export default {
     },
 
     mergedItem() {
-      console.log('start computed mergedItem')
       if (
         !this.selectedElement ||
         !this.contentSchema ||
         this.isWikiItemLoading ||
         this.isCmsItemLoading
       ) {
-        console.log(' computed mergedItem : esco subito')
         return
       }
-      console.log(
-        '%c computed mergedItem loggo gli items',
-        'background: #222; color: #bada55'
-      )
-
-      console.log(this.wikiItem.Name)
-      console.log(this.cmsItem[0])
 
       return this.mergeContentResults(
         ['Identifier', 'Name', 'Description'],
         [this.cmsItem[0], this.wikiItem]
       )
     },
+
     // TODO: call a reusable function to clean undesired properties from an object
     cleanedMergedItem() {
       const newObj = { ...this.mergedItem }
@@ -96,7 +91,9 @@ export default {
         return this.mergedItem.Description
           ? this.mergedItem.Description.source
           : ''
-      } else return ''
+      } else {
+        return ''
+      }
     },
 
     textareaContent() {
@@ -107,10 +104,6 @@ export default {
       }
       return content
     }
-
-    // cmsItemName() {
-    //   return this.cmsItem.Name
-    // }
   },
 
   watch: {
@@ -135,7 +128,7 @@ export default {
     },
 
     toggleLoading(source, value) {
-      this.$store.commit('datasources/datasources/setLoading', {
+      this.$store.commit('datasources/setLoading', {
         source: source,
         loadingState: value
       })
@@ -151,25 +144,19 @@ export default {
         this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
       } catch (error) {
-        this.pushError(this.errors, error.message, 'getWikiContent')
+        this.$store.commit('errors/addError', {
+          description: error.message,
+          step: 'getWikiContent'
+        })
         return false
       } finally {
         this.iswikiLoading = false
       }
     },
 
-    pushError(errorStore, errorMessage, errorStep) {
-      let newError = {}
-      newError.description = errorMessage
-      newError.step = errorStep
-      newError.DateTime = this.getCurrentDateTime()
-      errorStore.push(newError)
-    },
-
     mergeContentResults(schema, contentItems) {
       //merge contentItems depending on provided schema
 
-      console.log('Start mergeContentResults')
       let mergedItem = {}
 
       //console.log(' contentItems : ', contentItems)
@@ -208,7 +195,11 @@ export default {
       },
       error(error) {
         console.log(' cmsItem Apollo error hook')
-        this.pushError(this.errors, error.message, 'getCmsContent')
+
+        this.$store.commit('errors/addError', {
+          description: error.message,
+          step: 'getCmsContent'
+        })
       },
 
       result(data) {
@@ -233,7 +224,10 @@ export default {
         }
       },
       error(error) {
-        this.pushError(this.errors, error.message, 'getCmsContentSchema')
+        this.$store.commit('errors/addError', {
+          description: error.message,
+          step: 'getCmsContentSchema'
+        })
       },
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache',

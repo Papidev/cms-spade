@@ -22,7 +22,7 @@ export default {
       }, obj)
 
       return returnValue
-    },
+    }
 
     // removeVoidProps(obj) {
     //   const keys = Object.keys(obj)
@@ -38,26 +38,20 @@ export default {
     //   return newObj
     // }
 
-    // calbback: (contentItem) => {
-    //   console.log('contentItem della calback')
-    //   console.log(contentItem)
+    //       removeProps(obj,props) {
+    // for (let currentProp of obj){
 
-    //   console.log("contentItem['Name']")
-    //   console.log(contentItem['Name'])
-    //   return contentItem['Name']
-    // },
+    // }
+    //   const keys = Object.keys(obj)
 
-    getCurrentDateTime() {
-      var today = new Date()
-      var date =
-        today.getFullYear() +
-        '-' +
-        (today.getMonth() + 1) +
-        '-' +
-        today.getDate()
-      var time =
-        today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
-      return date + ' ' + time
-    }
+    //   const newObj = keys.reduce((accum, prop) => {
+    //     if (obj[prop] != null) {
+    //       accum[prop] = obj[prop]
+    //     }
+    //     return accum
+    //   }, {})
+    //
+    //
+    //   return newObj
   }
 }

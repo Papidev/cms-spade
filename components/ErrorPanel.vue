@@ -14,13 +14,9 @@ export default {
   components: {
     'error-panel-item': () => import('~/components/ErrorPanelItem.vue')
   },
-  props: {
-    errors: {
-      required: false,
-      default: () => {
-        return { value: [] }
-      },
-      type: Array
+  computed: {
+    errors() {
+      return this.$store.state.errors.errors
     }
   }
 }
