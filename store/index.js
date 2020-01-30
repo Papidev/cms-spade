@@ -1,7 +1,7 @@
 export const state = () => ({
   language: 'en',
   selectedElement: '',
-  currentContentType: 'Frost'
+  currentContentType: {}
 })
 
 export const mutations = {

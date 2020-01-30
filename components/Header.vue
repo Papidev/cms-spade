@@ -3,7 +3,7 @@
     <div class="w-1/5">
       <multiselect
         v-if="myContentTypes"
-        v-model="$store.state.currentContentType"
+        v-model="selectedContentType"
         :options="myContentTypes"
         :searchable="false"
         :close-on-select="true"
@@ -19,7 +19,7 @@
 <script>
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import Multiselect from 'vue-multiselect'
-import { mapState } from 'vuex'
+//import { mapState } from 'vuex'
 import { allSchemaTypes } from '~/apollo/cms/queries/schema'
 import { CMS_MYTYPES_PREFIX } from '~/constants/cms'
 
@@ -35,7 +35,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['datasources']),
+    //...mapState(['datasources']),
 
     myContentTypes() {
       if (this.contentTypes) {
@@ -46,6 +46,16 @@ export default {
         return filteredArrayTypes
       } else {
         return []
+      }
+    },
+
+    selectedContentType: {
+      get: function() {
+        return this.$store.state.currentContentType || ''
+      },
+
+      set: function(newValue) {
+        this.$store.commit('setCurrentCategory', newValue)
       }
     }
   },

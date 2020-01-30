@@ -44,8 +44,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['selectedElement']),
-    ...mapState(['language']),
+    ...mapState(['selectedElement', 'language', 'currentContentType']),
     ...mapState('datasources', ['sources']),
     ...mapMutations(['errors/addError']),
 
@@ -220,7 +219,7 @@ export default {
       query: schemaIntrospection,
       variables() {
         return {
-          name: 'Place' //TODO: make input dynamic when content type will be selectable
+          name: this.currentContentType.name
         }
       },
       error(error) {
