@@ -22,6 +22,10 @@ export default {
       }, obj)
 
       return returnValue
+    },
+
+    filterObject(obj, predicate) {
+      return bject.fromEntries(Object.entries(obj).filter(predicate))
     }
 
     // removeVoidProps(obj) {
@@ -53,5 +57,12 @@ export default {
     //
     //
     //   return newObj
+
+    // var scores = {
+    // John: 2, Sarah: 3, Janet: 1
+    // };
+
+    // var filtered = Object.filter(scores, ([name, score]) => score > 1);
+    // console.log(filtered);
   }
 }
