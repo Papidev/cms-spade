@@ -79,10 +79,20 @@ export default {
 
     // TODO: call a reusable function to clean undesired properties from an object
     cleanedMergedItem() {
-      const newObj = { ...this.mergedItem }
-      delete newObj.Description
-      delete newObj.__typename
-      return newObj
+      let array = ['Description']
+
+      let predicate = function(key) {
+        !array.includes(key)
+      }
+      console.dir(this.mergedItem)
+      let newObject = this.filterProperties(this.mergedItem, predicate)
+      console.log('newObject', newObject)
+
+      return newObject
+      // const newObj = { ...this.mergedItem }
+      // delete newObj.Description
+      // delete newObj.__typename
+      // return newObj
     },
 
     textAreaSource() {
@@ -107,12 +117,10 @@ export default {
 
   watch: {
     isCmsItemLoading(value) {
-      console.log('watcher isCmsItemLoading')
       this.toggleLoading(CMS, value)
     },
 
     iswikiLoading(value) {
-      console.log('watcher isWikiItemLoading')
       this.toggleLoading(WIKI, value)
     },
 
@@ -158,18 +166,15 @@ export default {
 
       let mergedItem = {}
 
-      //console.log(' contentItems : ', contentItems)
+      //
       for (const schemaField of schema) {
         let foundContentItem
 
         foundContentItem = contentItems.find(
           (contentItem) => contentItem[schemaField] // cerco un contentItem che abbia schemaField non vuoto
         )
-        // console.log(' foundContentItem : ', foundContentItem)
+        //
         if (foundContentItem) {
-          console.log('foundContentItem non vuoto')
-          console.log(foundContentItem[schemaField])
-
           mergedItem[schemaField] = {
             value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
             source: CMS
@@ -193,23 +198,16 @@ export default {
         return !this.selectedElement
       },
       error(error) {
-        console.log(' cmsItem Apollo error hook')
-
         this.$store.commit('errors/addError', {
           description: error.message,
           step: 'getCmsContent'
         })
       },
 
-      result(data) {
-        console.log(' cmsItem Apollo result hook')
-        console.log(this.cmsItem ? this.cmsItem[0] : 'trovato niente')
-        console.log(data)
-      },
+      result() {},
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache',
-      watchLoading(isLoading, countModifier) {
-        console.log('watch hook cmsItem : ', isLoading, countModifier)
+      watchLoading(isLoading) {
         this.toggleLoading(CMS, isLoading)
       }
     },
@@ -229,10 +227,8 @@ export default {
         })
       },
       notifyOnNetworkStatusChange: true,
-      fetchPolicy: 'no-cache',
-      watchLoading(isLoading, countModifier) {
-        console.log('watch hook contentSchema : ', isLoading, countModifier)
-      }
+      fetchPolicy: 'no-cache'
+      //watchLoading(isLoading) {}
     }
   }
 }

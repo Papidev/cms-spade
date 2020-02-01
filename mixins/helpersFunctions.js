@@ -24,8 +24,19 @@ export default {
       return returnValue
     },
 
-    filterObject(obj, predicate) {
-      return bject.fromEntries(Object.entries(obj).filter(predicate))
+    filterProperties(obj, predicate) {
+      console.dir(obj)
+      if (obj) {
+        let newObj = Object.assign(
+          ...Object.keys(obj)
+            .filter((key) => predicate(obj[key]))
+            .map((key) => ({ [key]: obj[key] }))
+        )
+        console.log('newObj')
+        console.dir(newObj)
+        return newObj
+      } else return {}
+      //return Object.fromEntries(Object.entries(obj).filter(predicate))
     }
 
     // removeVoidProps(obj) {
