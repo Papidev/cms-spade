@@ -76,7 +76,6 @@ export default {
     },
 
     async searchWikiSuggestions(elementToSearch) {
-      let resource
       if (!elementToSearch || elementToSearch.length < WIKI_SUGG_SEARCH_CHARS) {
         console.log(
           'searchWikiSuggestions exit right away : elementToSearch',
@@ -88,7 +87,7 @@ export default {
       let url =
         this.getDataEndpoint(this.language, WIKI, WIKI_SUGGEST_SEARCH) +
         elementToSearch
-
+      let resource
       try {
         resource = await this.axiosCall(url, 'get')
       } catch (error) {

@@ -4,7 +4,7 @@
       <label>{{ label }}</label>
     </div>
     <input
-      v-model="defaultContent.value"
+      v-model="content.value"
       :class="inputClasses"
       placeholder="edit me"
     />
@@ -20,32 +20,40 @@ export default {
       required: true,
       type: String
     },
-    // eslint-disable-next-line vue/require-default-prop
+
     content: {
-      type: Object
-      //defautl: ()=>{return {value: ''}}
-    }
-  },
-  computed: {
-    defaultContent() {
-      if (this.content) return this.content
-      else return { value: '', source: CMS }
+      type: Object,
+      default: function() {
+        return this.content ? this.content : { value: '', source: CMS }
+      }
     },
+    computed: {
+      // defaultContent() {
+      //   if (this.content) return this.content
+      //   else return { value: '', source: CMS }
+      // },
 
-    inputClasses() {
-      if (this.defaultContent.source === CMS) {
-        return ['input', 'input-cms']
-      } else if (this.defaultContent.source === WIKI)
-        return ['input', 'input-wiki']
-      else return ''
-    },
+      inputClasses() {
+        switch (this.content.source) {
+          case CMS:
+            return ['input', 'input-cms']
+          case WIKI:
+            return ['input', 'input-wiki']
+          default:
+            return ''
+        }
+      },
 
-    inputWrapperClasses() {
-      if (this.defaultContent.source === CMS) {
-        return 'input-cms-wrapper '
-      } else if (this.defaultContent.source === WIKI) {
-        return 'input-wiki-wrapper'
-      } else return ''
+      inputWrapperClasses() {
+        switch (this.content.source) {
+          case CMS:
+            return 'input-cms-wrapper '
+          case WIKI:
+            return 'input-wiki-wrapper'
+          default:
+            return ''
+        }
+      }
     }
   }
 }
