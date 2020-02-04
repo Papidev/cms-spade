@@ -18,8 +18,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { CMS, WIKI } from '~/constants/'
 
@@ -30,8 +29,8 @@ import wtf from 'wtf_wikipedia'
 
 export default {
   components: {
-    'item-panel': () => import('~/components/ItemPanel.vue'),
-    'item-textarea': () => import('~/components/ItemTextArea.vue')
+    'item-panel': () => import('~/components/PanelData.vue'),
+    'item-textarea': () => import('~/components/PanelWritingArea.vue')
   },
   mixins: [helpersFunctions],
 

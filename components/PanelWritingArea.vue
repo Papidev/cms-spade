@@ -26,13 +26,16 @@ export default {
   },
   computed: {
     computedClasses() {
-      if (this.source === CMS) {
-        return 'input-cms'
-      } else if (this.source === WIKI) return 'input-wiki'
-      else return ''
+      switch (this.source) {
+        case CMS:
+          return 'input-cms'
+        case WIKI:
+          return 'input-wiki'
+        default:
+          return ''
+      }
     }
   },
-
   watch: {
     value(newValue) {
       this.easyMDE.value(newValue)

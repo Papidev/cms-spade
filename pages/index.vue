@@ -17,7 +17,7 @@ if (process.client) {
 export default {
   components: {
     'search-suggest': () => import('~/components/SearchSuggest.vue'),
-    'content-panel': () => import('~/components/ContentPanel.vue')
+    'content-panel': () => import('~/components/Panel.vue')
   },
   mixins: [helpersMixin],
 
