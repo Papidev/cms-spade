@@ -1,6 +1,6 @@
 <template>
   <div>
-    <search-suggest
+    <prompter
       ref="autosuggest"
       v-model="elementToSearch"
       class="bg-green-400 w-full"
@@ -20,35 +20,36 @@
           {{ suggestion.item.description.substring(0, 75) }}
         </div>
       </template>
-    </search-suggest>
+    </prompter>
   </div>
 </template>
 
 <script>
-import { VueAutosuggest } from 'vue-autosuggest'
 import { mapState, mapActions } from 'vuex'
+
+import { VueAutosuggest } from 'vue-autosuggest'
+
 import helpersGraph from '~/mixins/helpersGraph'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
-import helpersGetData from '~/mixins/helpersGetData.js'
 import helpersWiki from '~/mixins/helpersWiki.js'
 import { WIKI, WIKI_SUGGEST_SEARCH, WIKI_SUGG_SEARCH_CHARS } from '~/constants/'
 
 export default {
   components: {
-    'search-suggest': VueAutosuggest
+    prompter: VueAutosuggest
   },
-  mixins: [helpersFunctions, helpersGraph, helpersGetData, helpersWiki],
+  mixins: [helpersFunctions, helpersGraph, helpersWiki],
 
   props: {
-    searchString: {
-      required: false,
-      default: '',
-      type: String
-    }
+    // searchString: {
+    //   required: false,
+    //   default: '',
+    //   type: String
+    // }
   },
   data() {
     return {
-      elementToSearch: this.searchString,
+      elementToSearch: '',
       shownSuggestions: []
     }
   },
