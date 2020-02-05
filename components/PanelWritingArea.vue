@@ -8,6 +8,10 @@
 import EasyMDE from 'easymde'
 import { CMS, WIKI } from '~/constants/'
 
+if (process.client) {
+  require('easymde/dist/easymde.min.css')
+}
+
 export default {
   props: {
     value: {
