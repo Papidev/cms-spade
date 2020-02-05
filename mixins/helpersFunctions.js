@@ -10,6 +10,7 @@ export default {
 
     getProp(obj, prop) {
       if (typeof obj !== 'object') {
+        console.log('Trying to get a prop from a non-object item')
         return undefined
       }
       if (typeof prop !== 'string') {
@@ -17,6 +18,7 @@ export default {
       }
       // Replace [] notation with dot notation
       prop = prop.replace(/\[["'`](.*)["'`]\]/g, '.$1')
+
       const returnValue = prop.split('.').reduce(function(acc, curr) {
         return acc ? acc[curr] : undefined
       }, obj)

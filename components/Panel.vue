@@ -161,22 +161,23 @@ export default {
     },
 
     mergeContentResults(schema, contentItems) {
-      //merge contentItems depending on provided schema
+      //merge "contentItems" depending on "schema"
 
-      let mergedItem = {}
+      let mergedItem
 
       //
-      for (const schemaField of schema) {
+      for (const schemaField in schema) {
         let foundContentItem
 
+        // cerco un contentItem che abbia schemaField non vuoto
         foundContentItem = contentItems.find(
-          (contentItem) => contentItem[schemaField] // cerco un contentItem che abbia schemaField non vuoto
+          (contentItem) => contentItem[schemaField]
         )
         //
         if (foundContentItem) {
           mergedItem[schemaField] = {
             value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
-            source: CMS
+            source: CMS // TO DO: fix this hardcoding
           }
         }
       }
