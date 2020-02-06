@@ -1,20 +1,21 @@
 <template>
   <div class="flex flex-col">
-    <div v-if="!selectedElement" class="px-4 py-2 m-2">
+    <div v-if="!selectedItem" class="px-4 py-2 m-2">
       <h1>
         Non hai selezionato nulla 😢
       </h1>
     </div>
-    <div
-      v-for="(propValue, name) in schemaFields"
-      v-else
-      :key="name"
-      class="px-4 py-2 m-2"
-    >
-      <user-input
-        :label="propValue.name"
-        :content="cleanedMergedItem[propValue.name]"
-      />
+    <div v-if="selectedContentType">
+      <div
+        v-for="(propValue, name) in schemaFields"
+        :key="name"
+        class="px-4 py-2 m-2"
+      >
+        <user-input
+          :label="propValue.name"
+          :content="cleanedMergedItem[propValue.name]"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -43,7 +44,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['selectedElement'])
+    ...mapState(['selectedItem', 'selectedContentType'])
   }
 }
 </script>

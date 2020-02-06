@@ -51,7 +51,7 @@ export default {
 
     selectedContentType: {
       get: function() {
-        return this.$store.state.currentContentType || ''
+        return this.$store.state.selectedContentType || ''
       },
 
       set: function(newValue) {

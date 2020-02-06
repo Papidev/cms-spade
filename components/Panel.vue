@@ -1,18 +1,18 @@
 <template>
   <section class="flex flex-row bg-gray-200 w-screen">
-    <item-panel
+    <panel-data
       :schema-fields="schemaFields"
       :cleaned-merged-item="cleanedMergedItem"
       class="w-auto px-4 py-2 m-2"
     >
-    </item-panel>
+    </panel-data>
 
-    <client-only placeholder="Loading item-textarea">
-      <item-textarea
+    <client-only placeholder="Loading panel-writing">
+      <panel-writing
         v-model="textareaContent"
         class="w-auto px-4 py-2 m-2"
         :source="textAreaSource"
-      ></item-textarea>
+      ></panel-writing>
     </client-only>
   </section>
 </template>
@@ -29,8 +29,8 @@ import wtf from 'wtf_wikipedia'
 
 export default {
   components: {
-    'item-panel': () => import('~/components/PanelData.vue'),
-    'item-textarea': () => import('~/components/PanelWritingArea.vue')
+    'panel-data': () => import('~/components/PanelData.vue'),
+    'panel-writing': () => import('~/components/PanelWritingArea.vue')
   },
   mixins: [helpersFunctions],
 
@@ -43,7 +43,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['selectedElement', 'language', 'currentContentType']),
+    ...mapState(['selectedItem', 'language', 'selectedContentType']),
     ...mapState('datasources', ['sources']),
     ...mapMutations(['errors/addError']),
 
@@ -65,7 +65,7 @@ export default {
     mergedItem() {
       console.log('mergedItem sono partita cazzo')
       if (
-        !this.selectedElement ||
+        !this.selectedItem ||
         !this.contentSchema ||
         this.isWikiItemLoading ||
         this.isCmsItemLoading
@@ -129,8 +129,8 @@ export default {
       this.toggleLoading(WIKI, value)
     },
 
-    async selectedElement() {
-      await this.getDataWiki(this.selectedElement, this.language)
+    async selectedItem() {
+      await this.getDataWiki(this.selectedItem, this.language)
     }
   },
 
@@ -201,11 +201,11 @@ export default {
       query: placesByName,
       variables() {
         return {
-          name: this.selectedElement
+          name: this.selectedItem
         }
       },
       skip() {
-        return !this.selectedElement
+        return !this.selectedItem
       },
       error(error) {
         this.$store.commit('errors/addError', {
@@ -227,7 +227,7 @@ export default {
       query: schemaIntrospection,
       variables() {
         return {
-          name: this.currentContentType.name
+          name: this.selectedContentType.name
         }
       },
       error(error) {

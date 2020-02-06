@@ -1,30 +1,30 @@
 export const state = () => ({
   language: 'en',
-  selectedElement: '',
-  currentContentType: {}
+  selectedItem: '',
+  selectedContentType: {}
 })
 
 export const mutations = {
   setLanguage(state, language) {
     state.language = language
   },
-  setSelectedElement(state, selectedElement) {
-    state.selectedElement = selectedElement
+  setSelectedElement(state, selectedItem) {
+    state.selectedItem = selectedItem
   },
-  setCurrentCategory(state, currentContentType) {
-    state.currentContentType = currentContentType
+  setCurrentCategory(state, selectedContentType) {
+    state.selectedContentType = selectedContentType
   }
 }
 
 export const actions = {
-  setSelectedElement(vuexContext, selectedElement) {
-    vuexContext.commit('setSelectedElement', selectedElement)
+  setSelectedElement(vuexContext, selectedItem) {
+    vuexContext.commit('setSelectedElement', selectedItem)
   },
   setLanguage(vuexContext, language) {
     vuexContext.commit('setLanguage', language)
   },
-  setCurrentCategory(vuexContext, currentContentType) {
-    vuexContext.commit('setCurrentCategory', currentContentType)
+  setCurrentCategory(vuexContext, selectedContentType) {
+    vuexContext.commit('setCurrentCategory', selectedContentType)
   }
   // nuxtServerInit({ commit }, { req }) {
   //   // get last id from cms for current category

@@ -26,33 +26,33 @@ export default {
       default: function() {
         return this.content ? this.content : { value: '', source: CMS }
       }
+    }
+  },
+  computed: {
+    // defaultContent() {
+    //   if (this.content) return this.content
+    //   else return { value: '', source: CMS }
+    // },
+
+    inputClasses() {
+      switch (this.content.source) {
+        case CMS:
+          return ['input', 'input-cms']
+        case WIKI:
+          return ['input', 'input-wiki']
+        default:
+          return ''
+      }
     },
-    computed: {
-      // defaultContent() {
-      //   if (this.content) return this.content
-      //   else return { value: '', source: CMS }
-      // },
 
-      inputClasses() {
-        switch (this.content.source) {
-          case CMS:
-            return ['input', 'input-cms']
-          case WIKI:
-            return ['input', 'input-wiki']
-          default:
-            return ''
-        }
-      },
-
-      inputWrapperClasses() {
-        switch (this.content.source) {
-          case CMS:
-            return 'input-cms-wrapper '
-          case WIKI:
-            return 'input-wiki-wrapper'
-          default:
-            return ''
-        }
+    inputWrapperClasses() {
+      switch (this.content.source) {
+        case CMS:
+          return 'input-cms-wrapper '
+        case WIKI:
+          return 'input-wiki-wrapper'
+        default:
+          return ''
       }
     }
   }
