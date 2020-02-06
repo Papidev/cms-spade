@@ -53,6 +53,8 @@ export default {
     },
 
     isWikiItemLoading() {
+      // console.log('isWikiItemLoading')
+      // console.log(this.getSourceByName(WIKI))
       return this.getSourceByName(WIKI)
     },
 
@@ -62,12 +64,17 @@ export default {
     },
 
     mergedItem() {
+      console.log('mergedItem sono partita cazzo')
       if (
         !this.selectedElement ||
         !this.contentSchema ||
         this.isWikiItemLoading ||
         this.isCmsItemLoading
       ) {
+        console.log('mergedItem mi sono bloccata cazzo')
+
+        console.log(this.isWikiItemLoading)
+        console.log(this.isCmsItemLoading)
         return
       }
 
@@ -84,9 +91,8 @@ export default {
       let predicate = function(key) {
         !array.includes(key)
       }
-      console.dir(this.mergedItem)
+
       let newObject = this.filterProperties(this.mergedItem, predicate)
-      console.log('newObject', newObject)
 
       return newObject
       // const newObj = { ...this.mergedItem }
@@ -130,8 +136,11 @@ export default {
   },
 
   methods: {
-    getSourceByName(currentSourceName) {
-      return this.sources.find((x) => x.source === currentSourceName)
+    async getSourceByName(currentSourceName) {
+      let predicate = function(x) {
+        return x.source === currentSourceName
+      }
+      return this.sources.find(predicate)
     },
 
     toggleLoading(source, value) {
@@ -155,6 +164,7 @@ export default {
           description: error.message,
           step: 'getWikiContent'
         })
+
         return false
       } finally {
         this.iswikiLoading = false
@@ -163,6 +173,9 @@ export default {
 
     mergeContentResults(schema, contentItems) {
       //merge contentItems depending on provided schema
+      console.log('start mergeContentResults')
+      console.dir(schema)
+      console.dir(contentItems)
 
       let mergedItem = {}
 

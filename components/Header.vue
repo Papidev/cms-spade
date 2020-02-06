@@ -66,19 +66,18 @@ export default {
       query: allSchemaTypes,
 
       error(error) {
-        console.log(' contentTypes :  Apollo error ', error)
         this.$store.commit('errors/addError', {
           description: error.message,
           step: 'getContentTypes'
         })
         // this.contentTypes = [{description : 'MyDummy'}]
-        // console.log(this.contentTypes)
+        //
       },
 
       // result(data) {
-      //   console.log(' contentTypes :  Apollo result hook')
-      //   console.log(this.contentTypes)
-      //   console.log(data)
+      //
+      //
+      //
       // },
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache'
