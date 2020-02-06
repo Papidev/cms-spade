@@ -18,8 +18,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { CMS, WIKI } from '~/constants/'
 
@@ -30,8 +29,8 @@ import wtf from 'wtf_wikipedia'
 
 export default {
   components: {
-    'item-panel': () => import('~/components/ItemPanel.vue'),
-    'item-textarea': () => import('~/components/ItemTextArea.vue')
+    'item-panel': () => import('~/components/PanelData.vue'),
+    'item-textarea': () => import('~/components/PanelWritingArea.vue')
   },
   mixins: [helpersFunctions],
 
@@ -172,25 +171,23 @@ export default {
     },
 
     mergeContentResults(schema, contentItems) {
-      //merge contentItems depending on provided schema
-      console.log('start mergeContentResults')
-      console.dir(schema)
-      console.dir(contentItems)
+      //merge "contentItems" depending on "schema"
 
-      let mergedItem = {}
+      let mergedItem
 
       //
-      for (const schemaField of schema) {
+      for (const schemaField in schema) {
         let foundContentItem
 
+        // cerco un contentItem che abbia schemaField non vuoto
         foundContentItem = contentItems.find(
-          (contentItem) => contentItem[schemaField] // cerco un contentItem che abbia schemaField non vuoto
+          (contentItem) => contentItem[schemaField]
         )
         //
         if (foundContentItem) {
           mergedItem[schemaField] = {
             value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
-            source: CMS
+            source: CMS // TO DO: fix this hardcoding
           }
         }
       }
