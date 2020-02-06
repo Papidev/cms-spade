@@ -9,7 +9,7 @@ export default {
           description: descriptions[i]
         })
       }
-      console.log('result', result)
+
       return [{ data: result }]
     },
 

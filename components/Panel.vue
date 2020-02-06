@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */ /* eslint-disable
+no-prototype-builtins */
 <template>
   <section class="flex flex-row bg-gray-200 w-screen">
     <panel-data
@@ -36,9 +38,10 @@ export default {
 
   data() {
     return {
-      cmsItem: {},
+      cmsData: {},
       wikiItem: {},
-      contentSchema: {}
+      contentSchema: {},
+      mergedItem: {}
     }
   },
 
@@ -47,14 +50,18 @@ export default {
     ...mapState('datasources', ['sources']),
     ...mapMutations(['errors/addError']),
 
+    cmsItem() {
+      return this.cmsData ? this.cmsData[0] : null
+    },
+
     isCmsItemLoading() {
-      return this.getSourceByName(CMS)
+      return this.getSourceByName(CMS).isLoading
     },
 
     isWikiItemLoading() {
-      // console.log('isWikiItemLoading')
-      // console.log(this.getSourceByName(WIKI))
-      return this.getSourceByName(WIKI)
+      //
+      //
+      return this.getSourceByName(WIKI).isLoading
     },
 
     schemaFields() {
@@ -62,36 +69,29 @@ export default {
       return this.getProp(this.contentSchema, 'fields')
     },
 
-    mergedItem() {
-      console.log('mergedItem sono partita cazzo')
-      if (
-        !this.selectedItem ||
-        !this.contentSchema ||
-        this.isWikiItemLoading ||
-        this.isCmsItemLoading
-      ) {
-        console.log('mergedItem mi sono bloccata cazzo')
-
-        console.log(this.isWikiItemLoading)
-        console.log(this.isCmsItemLoading)
-        return
-      }
-
-      return this.mergeContentResults(
-        ['Identifier', 'Name', 'Description'],
-        [this.cmsItem[0], this.wikiItem]
-      )
-    },
+    // mergedItem() {
+    //
+    //   if (
+    //     !this.selectedItem ||
+    //     !this.contentSchema ||
+    //     this.isWikiItemLoading ||
+    //     this.isCmsItemLoading
+    //   ) {
+    //
+    //     return
+    //   } else {
+    //
+    //     return this.mergeContentResults(
+    //       ['Identifier', 'Name', 'Description'],
+    //       [this.cmsItem, this.wikiItem]
+    //     )
+    //   }
+    // },
 
     // TODO: call a reusable function to clean undesired properties from an object
     cleanedMergedItem() {
-      let array = ['Description']
-
-      let predicate = function(key) {
-        !array.includes(key)
-      }
-
-      let newObject = this.filterProperties(this.mergedItem, predicate)
+      //
+      let newObject = this.filterProperties(this.mergedItem)
 
       return newObject
       // const newObj = { ...this.mergedItem }
@@ -125,17 +125,13 @@ export default {
       this.toggleLoading(CMS, value)
     },
 
-    iswikiLoading(value) {
-      this.toggleLoading(WIKI, value)
-    },
-
     async selectedItem() {
       await this.getDataWiki(this.selectedItem, this.language)
     }
   },
 
   methods: {
-    async getSourceByName(currentSourceName) {
+    getSourceByName(currentSourceName) {
       let predicate = function(x) {
         return x.source === currentSourceName
       }
@@ -152,8 +148,7 @@ export default {
     async submit() {},
 
     async getDataWiki(name, language) {
-      this.iswikiLoading = true
-
+      this.toggleLoading(WIKI, true)
       try {
         const content = await wtf.fetch(name, language)
         this.wikiItem.Name = name
@@ -166,37 +161,48 @@ export default {
 
         return false
       } finally {
-        this.iswikiLoading = false
+        this.toggleLoading(WIKI, false)
+
+        this.mergeContentResults(
+          ['Identifier', 'Name', 'Description'],
+          [this.cmsItem, this.wikiItem]
+        )
       }
     },
 
+    // eslint-disable-next-line no-unused-vars
     mergeContentResults(schema, contentItems) {
-      //merge "contentItems" depending on "schema"
+      console.log('Start mergeContentResults')
+      function findo(contentItem) {
+        // eslint-disable-next-line no-prototype-builtins
+        return contentItem.hasOwnProperty('Name')
+      }
 
-      let mergedItem
+      // merge "contentItems" depending on "schema"
+      let merged = {}
+      let cleanedContentItems = contentItems.filter(Boolean)
 
       //
-      for (const schemaField in schema) {
+      for (const schemaField of schema) {
         let foundContentItem
-
         // cerco un contentItem che abbia schemaField non vuoto
-        foundContentItem = contentItems.find(
-          (contentItem) => contentItem[schemaField]
-        )
+        foundContentItem = cleanedContentItems.find(findo)
+
         //
         if (foundContentItem) {
-          mergedItem[schemaField] = {
+          merged[schemaField] = {
             value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
             source: CMS // TO DO: fix this hardcoding
           }
         }
       }
-      return mergedItem
+
+      this.mergedItem = merged
     }
   },
 
   apollo: {
-    cmsItem: {
+    cmsData: {
       prefetch: false,
       query: placesByName,
       variables() {
@@ -209,7 +215,7 @@ export default {
       },
       error(error) {
         this.$store.commit('errors/addError', {
-          description: error.message,
+          description: error,
           step: 'getCmsContent'
         })
       },
@@ -219,6 +225,12 @@ export default {
       fetchPolicy: 'no-cache',
       watchLoading(isLoading) {
         this.toggleLoading(CMS, isLoading)
+        if (!isLoading) {
+          this.mergeContentResults(
+            ['Identifier', 'Name', 'Description'],
+            [this.cmsItem, this.wikiItem]
+          )
+        }
       }
     },
 
@@ -227,7 +239,7 @@ export default {
       query: schemaIntrospection,
       variables() {
         return {
-          name: this.selectedContentType.name
+          name: this.selectedContentType.name || ''
         }
       },
       error(error) {

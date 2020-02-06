@@ -65,7 +65,8 @@ export default {
       prefetch: true,
       query: allSchemaTypes,
 
-      error(error) {
+      error(error, vm, key) {
+        console.log('ERRORE APOLLO ', error, vm, key)
         this.$store.commit('errors/addError', {
           description: error.message,
           step: 'getContentTypes'

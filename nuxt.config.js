@@ -97,6 +97,7 @@ export default {
      */
 
     extend(config, ctx) {
+      config.devtool = 'source-map'
       // Run ESLint on save
       if (ctx.isDev) {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'

@@ -25,7 +25,6 @@ export default {
 
     getProp(obj, prop) {
       if (typeof obj !== 'object') {
-        console.log('Trying to get a prop from a non-object item')
         return undefined
       }
       if (typeof prop !== 'string') {
@@ -41,14 +40,31 @@ export default {
       return returnValue
     },
 
-    filterProperties(obj, predicate) {
-      if (obj) {
-        let newObj = Object.assign(
-          ...Object.keys(obj)
-            .filter((key) => predicate(obj[key]))
-            .map((key) => ({ [key]: obj[key] }))
-        )
+    filterProperties(obj) {
+      let array = ['Description']
 
+      // let predicate = function(key) {
+      //  array.includes(key)
+      // }
+
+      if (obj && Object.entries(obj).length > 0) {
+        let keys = Object.keys(obj)
+        console.log('keys')
+        console.log(keys)
+        let intermediate = keys.filter((key) => !array.includes(key))
+        console.log('intermediate')
+        console.log(intermediate)
+
+        let intermediate2 = intermediate.map((key) => ({ [key]: obj[key] }))
+        console.log('intermediate2')
+        console.log(intermediate2)
+
+        let newObj = intermediate2.reduce(function(result, current) {
+          return Object.assign(result, current)
+        }, {})
+
+        console.log('newObj')
+        console.log(newObj)
         return newObj
       } else return {}
       //return Object.fromEntries(Object.entries(obj).filter(predicate))
