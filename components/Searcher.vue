@@ -82,6 +82,7 @@ export default {
           'searchWikiSuggestions exit right away : elementToSearch',
           elementToSearch
         )
+        this.shownSuggestions = []
         return
       }
 
