@@ -8,7 +8,7 @@
       >
         <user-input
           :label="propValue.name"
-          :content="cleanedMergedItem[propValue.name]"
+          :content="Item[propValue.name]"
         />
       </div>
     </div>
@@ -29,7 +29,7 @@ export default {
         return []
       }
     },
-    cleanedMergedItem: {
+    Item: {
       type: Object,
       default: () => {
         return {}

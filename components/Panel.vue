@@ -102,7 +102,7 @@ export default {
       } finally {
         this.toggleLoading(WIKI, false)
 
-        this.mergeContentResults(
+        this.createMergedItem(
           ['Identifier', 'Name', 'Description'],
           [this.cmsItem, this.wikiItem]
         )
@@ -110,8 +110,8 @@ export default {
     },
 
     // merge "contentItems" depending on "schema"
-    mergeContentResults(schema, contentItems) {
-      // console.group('mergeContentResults')
+    createMergedItem(schema, contentItems) {
+      // console.group('createMergedItem')
       // console.log(contentItems[0])
       // console.log(contentItems[1])
       let merged = {}
@@ -176,7 +176,7 @@ export default {
       watchLoading(isLoading) {
         this.toggleLoading(CMS, isLoading)
         if (!isLoading) {
-          this.mergeContentResults(
+          this.createMergedItem(
             ['Identifier', 'Name', 'Description'],
             [this.cmsItem, this.wikiItem]
           )
