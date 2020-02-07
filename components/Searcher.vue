@@ -20,13 +20,13 @@
           {{ suggestion.item.description.substring(0, 75) }}
         </div>
       </template>
-
-      <div v-if="!selectedItem" class="px-4 py-2 m-2">
-        <h1>
-          Non hai selezionato nulla 😢
-        </h1>
-      </div>
     </prompter>
+
+    <div v-if="!selectedItem" class="px-4 py-2 m-2">
+      <h1>
+        Non hai selezionato nulla 😢
+      </h1>
+    </div>
   </div>
 </template>
 
