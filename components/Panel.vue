@@ -4,16 +4,16 @@ no-prototype-builtins */
   <section class="flex flex-row bg-gray-200 w-screen">
     <panel-data
       :schema-fields="schemaFields"
-      :cleaned-merged-item="cleanedMergedItem"
+      :item="itemInfo"
       class="w-auto px-4 py-2 m-2"
     >
     </panel-data>
 
     <client-only placeholder="Loading panel-writing">
       <panel-writing
-        v-model="textareaContent"
+        v-model="itemDescription.value"
         class="w-auto px-4 py-2 m-2"
-        :source="textAreaSource"
+        :source="itemDescription.source"
       ></panel-writing>
     </client-only>
   </section>
@@ -41,7 +41,8 @@ export default {
       cmsData: {},
       wikiItem: {},
       contentSchema: {},
-      mergedItem: {}
+      itemInfo: {},
+      itemDescription: {}
     }
   },
 
@@ -60,28 +61,29 @@ export default {
     },
 
     textAreaSource() {
-      if (this.mergedItem) {
-        return this.mergedItem.Description
-          ? this.mergedItem.Description.source
-          : ''
+      if (this.itemDescription) {
+        return this.itemDescription.value ? this.itemDescription.source : ''
       } else {
         return ''
       }
     },
     textareaContent() {
-      let content = this.getProp(this.mergedItem, 'Description.value')
-      if (!content) {
-        content = this.getProp(this.cmsItem, 'Description')
-      }
-      return content
-    },
-    cleanedMergedItem() {
-      let exclude = ['Description'] // TODO: make this dynamic
-      let newObject = this.removeProps(this.mergedItem, exclude)
-      return newObject
+      if (this.itemDescription) {
+        return this.itemDescription.value
+
+        // let content = this.getProp(this.itemDescription, 'value')
+        // console.log('textareaContent', content)
+        // if (!content) {
+        //   content = this.getProp(this.cmsItem, 'Description')
+        // }
+      } else return 'pippo'
+      // cleanedMergedItem() {
+      //   let exclude = ['Description'] // TODO: make this dynamic
+      //   let newObject = this.removeProps(this.itemInfo, exclude)
+      //   return newObject
+      // }
     }
   },
-
   watch: {
     async selectedItem() {
       await this.getDataWiki(this.selectedItem, this.language)
@@ -129,14 +131,19 @@ export default {
 
         //
         if (foundContentItem) {
-          merged[schemaField] = {
-            value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
-            source: foundContentItem.source // TO DO: fix this hardcoding
+          if (schemaField === 'Description') {
+            this.itemDescription.value = foundContentItem[schemaField]
+            this.itemDescription.source = foundContentItem.source
+          } else {
+            merged[schemaField] = {
+              value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
+              source: foundContentItem.source // TO DO: fix this hardcoding
+            }
           }
         }
       }
 
-      this.mergedItem = merged
+      this.itemInfo = merged
     },
 
     toggleLoading(source, value) {

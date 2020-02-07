@@ -6,10 +6,7 @@
         :key="name"
         class="px-4 py-2 m-2"
       >
-        <user-input
-          :label="propValue.name"
-          :content="Item[propValue.name]"
-        />
+        <user-input :label="propValue.name" :content="Item[propValue.name]" />
       </div>
     </div>
   </div>
@@ -29,7 +26,7 @@ export default {
         return []
       }
     },
-    Item: {
+    item: {
       type: Object,
       default: () => {
         return {}
