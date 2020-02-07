@@ -51,54 +51,19 @@ export default {
     ...mapMutations(['errors/addError']),
 
     cmsItem() {
-      return this.cmsData ? this.cmsData[0] : null
+      return this.cmsData ? { ...this.cmsData[0], source: CMS } : {}
     },
-
-    // isCmsItemLoading() {
-    //   return this.getSourceByName(CMS).isLoading
-    // },
-
-    // isWikiItemLoading() {
-    //   //
-    //   //
-    //   return this.getSourceByName(WIKI).isLoading
-    // },
 
     schemaFields() {
       // content type schema
       return this.getProp(this.contentSchema, 'fields')
     },
 
-    // mergedItem() {
-    //
-    //   if (
-    //     !this.selectedItem ||
-    //     !this.contentSchema ||
-    //     this.isWikiItemLoading ||
-    //     this.isCmsItemLoading
-    //   ) {
-    //
-    //     return
-    //   } else {
-    //
-    //     return this.mergeContentResults(
-    //       ['Identifier', 'Name', 'Description'],
-    //       [this.cmsItem, this.wikiItem]
-    //     )
-    //   }
-    // },
-
     // TODO: call a reusable function to clean undesired properties from an object
     cleanedMergedItem() {
-      //
-      let array = ['Description']
-      let newObject = this.removeProps(this.mergedItem, array)
-
+      let exclude = ['Description'] // TODO: make this dynamic
+      let newObject = this.removeProps(this.mergedItem, exclude)
       return newObject
-      // const newObj = { ...this.mergedItem }
-      // delete newObj.Description
-      // delete newObj.__typename
-      // return newObj
     },
 
     textAreaSource() {
@@ -122,22 +87,18 @@ export default {
   },
 
   watch: {
-    // isCmsItemLoading(value) {
-    //   this.toggleLoading(CMS, value)
-    // },
-
     async selectedItem() {
       await this.getDataWiki(this.selectedItem, this.language)
     }
   },
 
   methods: {
-    getSourceByName(currentSourceName) {
-      let predicate = function(x) {
-        return x.source === currentSourceName
-      }
-      return this.sources.find(predicate)
-    },
+    // getSourceByName(currentSourceName) {
+    //   let predicate = function(x) {
+    //     return x.source === currentSourceName
+    //   }
+    //   return this.sources.find(predicate)
+    // },
 
     toggleLoading(source, value) {
       this.$store.commit('datasources/setLoading', {
@@ -152,7 +113,6 @@ export default {
         step: step
       })
     },
-    async submit() {},
 
     async getDataWiki(name, language) {
       this.toggleLoading(WIKI, true)
@@ -160,6 +120,7 @@ export default {
         const content = await wtf.fetch(name, language)
         this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
+        this.wikiItem.source = WIKI
       } catch (error) {
         this.addError(error.message, 'getWikiContent')
 
@@ -174,29 +135,29 @@ export default {
       }
     },
 
-    // eslint-disable-next-line no-unused-vars
+    // merge "contentItems" depending on "schema"
     mergeContentResults(schema, contentItems) {
-      console.log('Start mergeContentResults')
-      function findo(contentItem) {
-        // eslint-disable-next-line no-prototype-builtins
-        return contentItem.hasOwnProperty('Name')
-      }
-
-      // merge "contentItems" depending on "schema"
+      console.group('mergeContentResults')
+      console.log(contentItems[0])
+      console.log(contentItems[1])
       let merged = {}
+
+      // filter falsy values
       let cleanedContentItems = contentItems.filter(Boolean)
 
-      //
       for (const schemaField of schema) {
         let foundContentItem
         // cerco un contentItem che abbia schemaField non vuoto
-        foundContentItem = cleanedContentItems.find(findo)
+        foundContentItem = cleanedContentItems.find((contentItem) =>
+          // eslint-disable-next-line no-prototype-builtins
+          contentItem.hasOwnProperty(schemaField)
+        )
 
         //
         if (foundContentItem) {
           merged[schemaField] = {
             value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
-            source: CMS // TO DO: fix this hardcoding
+            source: foundContentItem.source // TO DO: fix this hardcoding
           }
         }
       }
