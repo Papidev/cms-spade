@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col">
-    <div v-if="!selectedItem" class="px-4 py-2 m-2">
+    <!-- <div v-if="!selectedItem" class="px-4 py-2 m-2">
       <h1>
         Non hai selezionato nulla 😢
       </h1>
-    </div>
+    </div> -->
     <div v-if="selectedContentType">
       <div
         v-for="(propValue, name) in schemaFields"
@@ -22,7 +22,6 @@
 
 <script>
 import { mapState } from 'vuex'
-
 export default {
   components: {
     'user-input': () => import('~/components/UserInput.vue')
@@ -44,7 +43,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['selectedItem', 'selectedContentType'])
+    ...mapState(['selectedContentType'])
   }
 }
 </script>

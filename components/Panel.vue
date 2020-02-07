@@ -50,20 +50,13 @@ export default {
     ...mapState('datasources', ['sources']),
     ...mapMutations(['errors/addError']),
 
-    cmsItem() {
-      return this.cmsData ? { ...this.cmsData[0], source: CMS } : {}
-    },
-
     schemaFields() {
       // content type schema
       return this.getProp(this.contentSchema, 'fields')
     },
 
-    // TODO: call a reusable function to clean undesired properties from an object
-    cleanedMergedItem() {
-      let exclude = ['Description'] // TODO: make this dynamic
-      let newObject = this.removeProps(this.mergedItem, exclude)
-      return newObject
+    cmsItem() {
+      return this.cmsData ? { ...this.cmsData[0], source: CMS } : {}
     },
 
     textAreaSource() {
@@ -75,14 +68,17 @@ export default {
         return ''
       }
     },
-
     textareaContent() {
       let content = this.getProp(this.mergedItem, 'Description.value')
-
       if (!content) {
         content = this.getProp(this.cmsItem, 'Description')
       }
       return content
+    },
+    cleanedMergedItem() {
+      let exclude = ['Description'] // TODO: make this dynamic
+      let newObject = this.removeProps(this.mergedItem, exclude)
+      return newObject
     }
   },
 
@@ -93,27 +89,6 @@ export default {
   },
 
   methods: {
-    // getSourceByName(currentSourceName) {
-    //   let predicate = function(x) {
-    //     return x.source === currentSourceName
-    //   }
-    //   return this.sources.find(predicate)
-    // },
-
-    toggleLoading(source, value) {
-      this.$store.commit('datasources/setLoading', {
-        source: source,
-        loadingState: value
-      })
-    },
-
-    addError(errorMessage, step) {
-      this.$store.commit('errors/addError', {
-        description: errorMessage,
-        step: step
-      })
-    },
-
     async getDataWiki(name, language) {
       this.toggleLoading(WIKI, true)
       try {
@@ -123,8 +98,7 @@ export default {
         this.wikiItem.source = WIKI
       } catch (error) {
         this.addError(error.message, 'getWikiContent')
-
-        return false
+        return
       } finally {
         this.toggleLoading(WIKI, false)
 
@@ -137,9 +111,9 @@ export default {
 
     // merge "contentItems" depending on "schema"
     mergeContentResults(schema, contentItems) {
-      console.group('mergeContentResults')
-      console.log(contentItems[0])
-      console.log(contentItems[1])
+      // console.group('mergeContentResults')
+      // console.log(contentItems[0])
+      // console.log(contentItems[1])
       let merged = {}
 
       // filter falsy values
@@ -163,6 +137,20 @@ export default {
       }
 
       this.mergedItem = merged
+    },
+
+    toggleLoading(source, value) {
+      this.$store.commit('datasources/setLoading', {
+        source: source,
+        loadingState: value
+      })
+    },
+
+    addError(errorMessage, step) {
+      this.$store.commit('errors/addError', {
+        description: errorMessage,
+        step: step
+      })
     }
   },
 
