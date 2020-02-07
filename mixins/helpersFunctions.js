@@ -40,34 +40,26 @@ export default {
       return returnValue
     },
 
-    filterProperties(obj) {
-      let array = ['Description']
-
-      // let predicate = function(key) {
-      //  array.includes(key)
-      // }
-
-      if (obj && Object.entries(obj).length > 0) {
+    removeProps(obj, properties) {
+      //if (obj && Object.entries(obj).length > 0) {
+      if (obj) {
         let keys = Object.keys(obj)
-        console.log('keys')
-        console.log(keys)
-        let intermediate = keys.filter((key) => !array.includes(key))
-        console.log('intermediate')
-        console.log(intermediate)
 
+        //remove provided properties from object keys array
+        let intermediate = keys.filter((key) => !properties.includes(key))
+
+        // map to each remaining key the value contained by "obj" for that key
         let intermediate2 = intermediate.map((key) => ({ [key]: obj[key] }))
-        console.log('intermediate2')
-        console.log(intermediate2)
 
-        let newObj = intermediate2.reduce(function(result, current) {
-          return Object.assign(result, current)
-        }, {})
-
-        console.log('newObj')
-        console.log(newObj)
+        //reduce the array of objects in one single object
+        let newObj = intermediate2.reduce(
+          (result, current) => Object.assign(result, current),
+          {}
+        )
         return newObj
-      } else return {}
-      //return Object.fromEntries(Object.entries(obj).filter(predicate))
+      } else {
+        return {}
+      }
     }
 
     // removeVoidProps(obj) {

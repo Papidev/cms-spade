@@ -54,15 +54,15 @@ export default {
       return this.cmsData ? this.cmsData[0] : null
     },
 
-    isCmsItemLoading() {
-      return this.getSourceByName(CMS).isLoading
-    },
+    // isCmsItemLoading() {
+    //   return this.getSourceByName(CMS).isLoading
+    // },
 
-    isWikiItemLoading() {
-      //
-      //
-      return this.getSourceByName(WIKI).isLoading
-    },
+    // isWikiItemLoading() {
+    //   //
+    //   //
+    //   return this.getSourceByName(WIKI).isLoading
+    // },
 
     schemaFields() {
       // content type schema
@@ -91,7 +91,8 @@ export default {
     // TODO: call a reusable function to clean undesired properties from an object
     cleanedMergedItem() {
       //
-      let newObject = this.filterProperties(this.mergedItem)
+      let array = ['Description']
+      let newObject = this.removeProps(this.mergedItem, array)
 
       return newObject
       // const newObj = { ...this.mergedItem }
@@ -121,9 +122,9 @@ export default {
   },
 
   watch: {
-    isCmsItemLoading(value) {
-      this.toggleLoading(CMS, value)
-    },
+    // isCmsItemLoading(value) {
+    //   this.toggleLoading(CMS, value)
+    // },
 
     async selectedItem() {
       await this.getDataWiki(this.selectedItem, this.language)
@@ -145,6 +146,12 @@ export default {
       })
     },
 
+    addError(errorMessage, step) {
+      this.$store.commit('errors/addError', {
+        description: errorMessage,
+        step: step
+      })
+    },
     async submit() {},
 
     async getDataWiki(name, language) {
@@ -154,10 +161,7 @@ export default {
         this.wikiItem.Name = name
         this.wikiItem.Description = content.text()
       } catch (error) {
-        this.$store.commit('errors/addError', {
-          description: error.message,
-          step: 'getWikiContent'
-        })
+        this.addError(error.message, 'getWikiContent')
 
         return false
       } finally {
@@ -214,10 +218,7 @@ export default {
         return !this.selectedItem
       },
       error(error) {
-        this.$store.commit('errors/addError', {
-          description: error,
-          step: 'getCmsContent'
-        })
+        this.addError(error.message, 'getCmsContent')
       },
 
       result() {},
@@ -243,10 +244,7 @@ export default {
         }
       },
       error(error) {
-        this.$store.commit('errors/addError', {
-          description: error.message,
-          step: 'getCmsContentSchema'
-        })
+        this.addError(error.message, 'getCmsContentSchema')
       },
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache'
