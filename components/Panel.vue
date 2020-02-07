@@ -40,7 +40,9 @@ export default {
     return {
       cmsData: {},
       wikiItem: {},
+
       contentSchema: {},
+
       itemInfo: {},
       itemDescription: {}
     }
@@ -58,31 +60,8 @@ export default {
 
     cmsItem() {
       return this.cmsData ? { ...this.cmsData[0], source: CMS } : {}
-    },
-
-    textAreaSource() {
-      if (this.itemDescription) {
-        return this.itemDescription.value ? this.itemDescription.source : ''
-      } else {
-        return ''
-      }
-    },
-    textareaContent() {
-      if (this.itemDescription) {
-        return this.itemDescription.value
-
-        // let content = this.getProp(this.itemDescription, 'value')
-        // console.log('textareaContent', content)
-        // if (!content) {
-        //   content = this.getProp(this.cmsItem, 'Description')
-        // }
-      } else return 'pippo'
-      // cleanedMergedItem() {
-      //   let exclude = ['Description'] // TODO: make this dynamic
-      //   let newObject = this.removeProps(this.itemInfo, exclude)
-      //   return newObject
-      // }
     }
+ 
   },
   watch: {
     async selectedItem() {
@@ -131,14 +110,14 @@ export default {
 
         //
         if (foundContentItem) {
-          if (schemaField === 'Description') {
-            this.itemDescription.value = foundContentItem[schemaField]
-            this.itemDescription.source = foundContentItem.source
-          } else {
-            merged[schemaField] = {
-              value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
-              source: foundContentItem.source // TO DO: fix this hardcoding
-            }
+          if(schemaField === 'Description'){
+            this.itemDescription.value  =  foundContentItem[schemaField]
+            this.itemDescription.source =  foundContentItem.source
+          } else{
+          merged[schemaField] = {
+            value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
+            source: foundContentItem.source // TO DO: fix this hardcoding
+          }
           }
         }
       }
