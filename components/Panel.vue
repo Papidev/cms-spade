@@ -2,12 +2,7 @@
 no-prototype-builtins */
 <template>
   <section class="flex flex-row bg-gray-200 w-screen">
-    <panel-data
-      :schema-fields="schemaFields"
-      :item="itemInfo"
-      class="w-auto px-4 py-2 m-2"
-    >
-    </panel-data>
+    <panel-data :item="itemInfo" class="w-auto px-4 py-2 m-2"> </panel-data>
 
     <client-only placeholder="Loading panel-writing">
       <panel-writing
@@ -21,11 +16,10 @@ no-prototype-builtins */
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-import helpersFunctions from '~/mixins/helpersFunctions.js'
+//import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { CMS, WIKI } from '~/constants/'
 
 import { placesByName } from '~/apollo/cms/queries/place/places'
-import { schemaIntrospection } from '~/apollo/cms/queries/schema'
 
 import wtf from 'wtf_wikipedia'
 
@@ -34,14 +28,12 @@ export default {
     'panel-data': () => import('~/components/PanelData.vue'),
     'panel-writing': () => import('~/components/PanelWritingArea.vue')
   },
-  mixins: [helpersFunctions],
+  //mixins: [helpersFunctions],
 
   data() {
     return {
       cmsData: {},
       wikiItem: {},
-
-      contentSchema: {},
 
       itemInfo: {},
       itemDescription: {}
@@ -53,15 +45,9 @@ export default {
     ...mapState('datasources', ['sources']),
     ...mapMutations(['errors/addError']),
 
-    schemaFields() {
-      // content type schema
-      return this.getProp(this.contentSchema, 'fields')
-    },
-
     cmsItem() {
       return this.cmsData ? { ...this.cmsData[0], source: CMS } : {}
     }
- 
   },
   watch: {
     async selectedItem() {
@@ -110,14 +96,14 @@ export default {
 
         //
         if (foundContentItem) {
-          if(schemaField === 'Description'){
-            this.itemDescription.value  =  foundContentItem[schemaField]
-            this.itemDescription.source =  foundContentItem.source
-          } else{
-          merged[schemaField] = {
-            value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
-            source: foundContentItem.source // TO DO: fix this hardcoding
-          }
+          if (schemaField === 'Description') {
+            this.itemDescription.value = foundContentItem[schemaField]
+            this.itemDescription.source = foundContentItem.source
+          } else {
+            merged[schemaField] = {
+              value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
+              source: foundContentItem.source // TO DO: fix this hardcoding
+            }
           }
         }
       }
@@ -168,23 +154,23 @@ export default {
           )
         }
       }
-    },
-
-    contentSchema: {
-      prefetch: true,
-      query: schemaIntrospection,
-      variables() {
-        return {
-          name: this.selectedContentType.name || ''
-        }
-      },
-      error(error) {
-        this.addError(error.message, 'getCmsContentSchema')
-      },
-      notifyOnNetworkStatusChange: true,
-      fetchPolicy: 'no-cache'
-      //watchLoading(isLoading) {}
     }
+
+    // contentSchema: {
+    //   prefetch: true,
+    //   query: schemaIntrospection,
+    //   variables() {
+    //     return {
+    //       name: this.selectedContentType.name || ''
+    //     }
+    //   },
+    //   error(error) {
+    //     this.addError(error.message, 'getCmsContentSchema')
+    //   },
+    //   notifyOnNetworkStatusChange: true,
+    //   fetchPolicy: 'no-cache'
+    //   //watchLoading(isLoading) {}
+    // }
   }
 }
 </script>

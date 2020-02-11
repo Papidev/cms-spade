@@ -20,7 +20,8 @@ export default {
     },
     source: {
       required: true,
-      type: String
+      type: String,
+      default: ''
     }
   },
   data() {
