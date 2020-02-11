@@ -35,27 +35,24 @@ export default {
   data: function() {
     return {
       contentSchema: {},
-      ignoredSchemaFields: ['_id', 'id', 'createdAt', 'updatedAt'],
-      schemaFields: []
+      ignoredSchemaFields: ['_id', 'id', 'createdAt', 'updatedAt']
+      // schemaFields: []
     }
   },
 
   computed: {
-    ...mapState(['selectedContentType'])
-    // schemaFields() {
-    //   console.log('start schemaFields')
-    //   // content type schema
-    //   if (this.contentSchema) {
-    //     let allfields = this.getProp(this.contentSchema, 'fields')
-    //     console.log(allfields)
-    //     return allfields.filter((field) => {
-    //       console.log(field)
-    //       return !this.ignoredSchemaFields.includes(field)
-    //     })
-    //   } else {
-    //     return []
-    //   }
-    // }
+    ...mapState(['selectedContentType']),
+    schemaFields() {
+      if (this.contentSchema) {
+        let allfields = this.getProp(this.contentSchema, 'fields')
+
+        return allfields.filter(
+          (field) => !this.ignoredSchemaFields.includes(field.name)
+        )
+      } else {
+        return []
+      }
+    }
   },
   apollo: {
     contentSchema: {
@@ -70,36 +67,7 @@ export default {
         this.addError(error.message, 'getCmsContentSchema')
       },
       notifyOnNetworkStatusChange: true,
-      fetchPolicy: 'no-cache',
-      result() {
-        console.log('result')
-        if (this.contentSchema) {
-          let allfields = this.getProp(this.contentSchema, 'fields')
-          console.log(allfields)
-          this.schemaFields = allfields.filter((field) => {
-            console.log(field)
-            let booelan = !this.ignoredSchemaFields.includes(field.name)
-            console.log('boolean', field, booelan)
-            return booelan
-          })
-        }
-      },
-
-      watchLoading(isLoading) {
-        console.log('isLoading', isLoading)
-        // if (!isLoading) {
-        //   if (this.contentSchema) {
-        //     let allfields = this.getProp(this.contentSchema, 'fields')
-        //     console.log(allfields)
-        //     this.schemaFields = allfields.filter((field) => {
-        //       console.log(field)
-        //       return !this.ignoredSchemaFields.includes(field)
-        //     })
-        //   } else {
-        //     console.log('ramo else')
-        //   }
-        // }
-      }
+      fetchPolicy: 'no-cache'
     }
   }
 }
