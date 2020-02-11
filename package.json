@@ -25,6 +25,7 @@
     "strapi-sdk-javascript": "^0.3.3",
     "vue-apollo": "^3.0.3",
     "vue-autosuggest": "^2.0.4",
+    "vue-carousel": "0.18.0",
     "vue-multiselect": "^2.1.6",
     "vue-sidebar-menu": "^4.5.1",
     "wtf_wikipedia": "^7.8.1"

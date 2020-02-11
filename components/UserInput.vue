@@ -1,20 +1,39 @@
 <template>
-  <div :class="inputWrapperClasses">
-    <div>
-      <label>{{ label }}</label>
+  <div>
+    <Carousel
+      :per-page="1"
+      :navigate-to="someLocalProperty"
+      :mouse-drag="false"
+    >
+      <Slide>
+        Slide 1 Content
+      </Slide>
+      <Slide>
+        Slide 2 Content
+      </Slide>
+    </Carousel>
+    <div :class="inputWrapperClasses">
+      <div>
+        <label>{{ label }}</label>
+      </div>
+      <input
+        v-model="content.value"
+        :class="inputClasses"
+        placeholder="edit me"
+      />
     </div>
-    <input
-      v-model="content.value"
-      :class="inputClasses"
-      placeholder="edit me"
-    />
   </div>
 </template>
 
 <script>
 import { CMS, WIKI } from '~/constants/'
+import { Carousel, Slide } from 'vue-carousel'
 
 export default {
+  components: {
+    Carousel,
+    Slide
+  },
   props: {
     label: {
       required: true,

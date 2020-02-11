@@ -2,7 +2,8 @@
 no-prototype-builtins */
 <template>
   <section class="flex flex-row bg-gray-200 w-screen">
-    <panel-data :item="itemInfo" class="w-auto px-4 py-2 m-2"> </panel-data>
+    <panel-data :items="items" :item="itemInfo" class="w-auto px-4 py-2 m-2">
+    </panel-data>
 
     <client-only placeholder="Loading panel-writing">
       <panel-writing
@@ -45,6 +46,9 @@ export default {
     ...mapState('datasources', ['sources']),
     ...mapMutations(['errors/addError']),
 
+    items() {
+      return [this.cmsItem, this.wikiItem]
+    },
     cmsItem() {
       return this.cmsData ? { ...this.cmsData[0], source: CMS } : {}
     }

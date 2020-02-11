@@ -29,6 +29,13 @@ export default {
       default: () => {
         return {}
       }
+    },
+    items: {
+      // array of items [cmsItem,wikiItem,jsonItem]
+      type: Array,
+      default: () => {
+        return []
+      }
     }
   },
 
