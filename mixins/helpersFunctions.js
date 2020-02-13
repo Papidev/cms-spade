@@ -36,7 +36,7 @@ export default {
       const returnValue = prop.split('.').reduce(function(acc, curr) {
         return acc ? acc[curr] : undefined
       }, obj)
-      console.log('returnValue', returnValue)
+
       return returnValue
     },
 

@@ -47,22 +47,24 @@ export default {
     ...mapMutations(['errors/addError']),
 
     items() {
-      return [
-        {
-          name: 'Name',
-          occurrences: [
-            { value: 'paperoga', source: CMS },
-            { value: 'filo sganga', source: WIKI }
-          ]
-        },
-        {
-          name: 'Identifier',
-          occurrences: [
-            { value: '100', source: CMS },
-            { value: '200', source: WIKI }
-          ]
-        }
-      ]
+      console.log('ritriggerata items computed property')
+      return [this.cmsItem, this.wikiItem]
+      // return [
+      //   {
+      //     name: 'Name',
+      //     occurrences: [
+      //       { value: 'paperoga', source: CMS },
+      //       { value: 'filo sganga', source: WIKI }
+      //     ]
+      //   },
+      //   {
+      //     name: 'Identifier',
+      //     occurrences: [
+      //       { value: '100', source: CMS },
+      //       { value: '200', source: WIKI }
+      //     ]
+      //   }
+      // ]
     },
     cmsItem() {
       return this.cmsData ? { ...this.cmsData[0], source: CMS } : {}
@@ -79,9 +81,11 @@ export default {
       this.toggleLoading(WIKI, true)
       try {
         const content = await wtf.fetch(name, language)
-        this.wikiItem.Name = name
-        this.wikiItem.Description = content.text()
-        this.wikiItem.source = WIKI
+        this.wikiItem = {
+          name: name,
+          description: content.text(),
+          source: WIKI
+        }
       } catch (error) {
         this.addError(error.message, 'getWikiContent')
         return

@@ -2,8 +2,8 @@
   <div class="flex flex-col">
     <div v-if="selectedContentType">
       <div
-        v-for="(propValue, name) in schemaFields"
-        :key="name"
+        v-for="(field, key) of schemaFields"
+        :key="key"
         class="px-4 py-2 m-2"
       >
         <Carousel
@@ -12,12 +12,9 @@
           :navigation-enabled="true"
           :pagination-enabled="false"
         >
-          <Slide
-            v-for="(currentOccurrence, index) in f(propValue.name)"
-            :key="index"
-          >
+          <Slide v-for="(currentOccurrence, index) in f(field)" :key="index">
             <user-input
-              :label="propValue.name"
+              :label="field"
               :content="{
                 value: currentOccurrence.value,
                 source: currentOccurrence.source
@@ -35,7 +32,7 @@ import { mapState } from 'vuex'
 import { schemaIntrospection } from '~/apollo/cms/queries/schema'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { Carousel, Slide } from 'vue-carousel'
-
+import { CMS } from '~/constants/'
 export default {
   components: {
     'user-input': () => import('~/components/UserInput.vue'),
@@ -64,7 +61,8 @@ export default {
   data: function() {
     return {
       contentSchema: {},
-      ignoredSchemaFields: ['_id', 'id', 'createdAt', 'updatedAt']
+      ignoredSchemaFields: ['_id', 'id', 'createdAt', 'updatedAt'],
+      pappo: []
       // schemaFields: []
     }
   },
@@ -76,23 +74,48 @@ export default {
       if (this.contentSchema) {
         let allfields = this.getProp(this.contentSchema, 'fields')
 
-        return allfields.filter(
+        allfields = allfields.filter(
           (field) => !this.ignoredSchemaFields.includes(field.name)
         )
+
+        return allfields.map((item) => item.name.toLowerCase())
       } else {
         return []
       }
     }
   },
+  watch: {
+    items: function(newItems) {
+      this.pppp(newItems, this.schemaFields)
+    }
+  },
 
   methods: {
     f(propvalue) {
-      console.log('propvalue', propvalue)
-      let found = this.items.find((item) => item.name === propvalue)
-      if (found) {
-        console.log('found.occurrences', found.occurrences)
+      console.log('partito f')
+      let found = this.pappo.find((item) => item.name === propvalue)
+
+      if (found && found.occurrences.length > 0) {
         return found.occurrences
-      } else return []
+      } else {
+        return [{ value: '', source: CMS }]
+      }
+    },
+
+    pppp(items, schemaFields) {
+      console.log('start generazione Pappo')
+      let resultArray = []
+      for (let field of schemaFields) {
+        let occurrArray = []
+        for (const item of items) {
+          if (item[field])
+            occurrArray.push({ value: item[field], source: item.source })
+        }
+
+        resultArray.push({ name: field, occurrences: occurrArray })
+      }
+      this.pappo = resultArray
+      console.log('modificato pappo')
     }
   },
 
@@ -107,6 +130,9 @@ export default {
       },
       error(error) {
         this.addError(error.message, 'getCmsContentSchema')
+      },
+      result() {
+        this.pppp(this.items, this.schemaFields)
       },
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache'
