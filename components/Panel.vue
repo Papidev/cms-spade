@@ -2,7 +2,11 @@
 no-prototype-builtins */
 <template>
   <section class="flex flex-row bg-gray-200 w-screen">
-    <panel-data :items="items" :item="itemInfo" class="w-auto px-4 py-2 m-2">
+    <panel-data
+      :items="items"
+      class="w-auto px-4 py-2 m-2"
+      @descriptionFound="setItemDescription"
+    >
     </panel-data>
 
     <client-only placeholder="Loading panel-writing">
@@ -36,7 +40,7 @@ export default {
       cmsData: {},
       wikiItem: {},
 
-      itemInfo: {},
+      // itemInfo: {},
       itemDescription: {}
     }
   },
@@ -77,6 +81,17 @@ export default {
   },
 
   methods: {
+    setItemDescription(descOccurrence) {
+      console.log('setItemDescription')
+      console.table(descOccurrence[0])
+      if (descOccurrence[0]) {
+        this.itemDescription = {
+          value: descOccurrence[0].value || '',
+          source: descOccurrence[0].source || CMS
+        }
+      }
+    },
+
     async getDataWiki(name, language) {
       this.toggleLoading(WIKI, true)
       try {
@@ -92,47 +107,44 @@ export default {
       } finally {
         this.toggleLoading(WIKI, false)
 
-        this.createMergedItem(
-          ['Identifier', 'Name', 'Description'],
-          [this.cmsItem, this.wikiItem]
-        )
+        // this.createMergedItem(
+        //   ['identifier', 'name', 'description'],
+        //   [this.cmsItem, this.wikiItem]
+        // )
       }
     },
 
     // merge "contentItems" depending on "schema"
-    createMergedItem(schema, contentItems) {
-      // console.group('createMergedItem')
-      // console.log(contentItems[0])
-      // console.log(contentItems[1])
-      let merged = {}
+    // createMergedItem(schema, contentItems) {
+    //   let merged = {}
 
-      // filter falsy values
-      let cleanedContentItems = contentItems.filter(Boolean)
+    //   // filter falsy values
+    //   let cleanedContentItems = contentItems.filter(Boolean)
 
-      for (const schemaField of schema) {
-        let foundContentItem
-        // cerco un contentItem che abbia schemaField non vuoto
-        foundContentItem = cleanedContentItems.find((contentItem) =>
-          // eslint-disable-next-line no-prototype-builtins
-          contentItem.hasOwnProperty(schemaField)
-        )
+    //   for (const schemaField of schema) {
+    //     let foundContentItem
+    //     // cerco un contentItem che abbia schemaField non vuoto
+    //     foundContentItem = cleanedContentItems.find((contentItem) =>
+    //       // eslint-disable-next-line no-prototype-builtins
+    //       contentItem.hasOwnProperty(schemaField)
+    //     )
 
-        //
-        if (foundContentItem) {
-          if (schemaField === 'Description') {
-            this.itemDescription.value = foundContentItem[schemaField]
-            this.itemDescription.source = foundContentItem.source
-          } else {
-            merged[schemaField] = {
-              value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
-              source: foundContentItem.source // TO DO: fix this hardcoding
-            }
-          }
-        }
-      }
+    //     //
+    //     if (foundContentItem) {
+    //       if (schemaField === 'description') {
+    //         this.itemDescription.value = foundContentItem[schemaField]
+    //         this.itemDescription.source = foundContentItem.source
+    //       } else {
+    //         merged[schemaField] = {
+    //           value: foundContentItem[schemaField], // valore di schemaField dentro a content item che lo possiede
+    //           source: foundContentItem.source // TO DO: fix this hardcoding
+    //         }
+    //       }
+    //     }
+    //   }
 
-      this.itemInfo = merged
-    },
+    //   this.itemInfo = merged
+    // },
 
     toggleLoading(source, value) {
       this.$store.commit('datasources/setLoading', {
@@ -171,10 +183,10 @@ export default {
       watchLoading(isLoading) {
         this.toggleLoading(CMS, isLoading)
         if (!isLoading) {
-          this.createMergedItem(
-            ['Identifier', 'Name', 'Description'],
-            [this.cmsItem, this.wikiItem]
-          )
+          // this.createMergedItem(
+          //   ['Identifier', 'Name', 'Description'],
+          //   [this.cmsItem, this.wikiItem]
+          // )
         }
       }
     }

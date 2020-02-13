@@ -93,12 +93,19 @@ export default {
   methods: {
     f(propvalue) {
       console.log('partito f')
+
       let found = this.pappo.find((item) => item.name === propvalue)
 
-      if (found && found.occurrences.length > 0) {
-        return found.occurrences
-      } else {
-        return [{ value: '', source: CMS }]
+      if (found) {
+        if (propvalue === 'description') {
+          this.$emit('descriptionFound', found.occurrences)
+          return []
+        }
+        if (found.occurrences.length > 0) {
+          return found.occurrences
+        } else {
+          return [{ value: '', source: CMS }]
+        }
       }
     },
 
