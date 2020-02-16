@@ -12,7 +12,10 @@
           :navigation-enabled="true"
           :pagination-enabled="false"
         >
-          <Slide v-for="(currentOccurrence, index) in f(field)" :key="index">
+          <Slide
+            v-for="(currentOccurrence, index) in getOccurrences(field)"
+            :key="index"
+          >
             <user-input
               :label="field"
               :content="{
@@ -28,7 +31,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { schemaIntrospection } from '~/apollo/cms/queries/schema'
 import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { Carousel, Slide } from 'vue-carousel'
@@ -62,14 +65,14 @@ export default {
     return {
       contentSchema: {},
       ignoredSchemaFields: ['_id', 'id', 'createdAt', 'updatedAt'],
-      pappo: []
+      schemaFieldsValues: []
       // schemaFields: []
     }
   },
 
   computed: {
     ...mapState(['selectedContentType']),
-
+    ...mapActions(['errors/addError']),
     schemaFields() {
       if (this.contentSchema) {
         let allfields = this.getProp(this.contentSchema, 'fields')
@@ -86,15 +89,17 @@ export default {
   },
   watch: {
     items: function(newItems) {
-      this.pppp(newItems, this.schemaFields)
+      this.generateSchemaFieldsValues(newItems, this.schemaFields)
     }
   },
 
   methods: {
-    f(propvalue) {
-      console.log('partito f')
+    getOccurrences(propvalue) {
+      console.log('partito getOccurrences')
 
-      let found = this.pappo.find((item) => item.name === propvalue)
+      let found = this.schemaFieldsValues.find(
+        (item) => item.name === propvalue
+      )
 
       if (found) {
         if (propvalue === 'description') {
@@ -109,8 +114,8 @@ export default {
       }
     },
 
-    pppp(items, schemaFields) {
-      console.log('start generazione Pappo')
+    generateSchemaFieldsValues(items, schemaFields) {
+      console.log('start generazione schemaFieldsValues')
       let resultArray = []
       for (let field of schemaFields) {
         let occurrArray = []
@@ -121,8 +126,8 @@ export default {
 
         resultArray.push({ name: field, occurrences: occurrArray })
       }
-      this.pappo = resultArray
-      console.log('modificato pappo')
+      this.schemaFieldsValues = resultArray
+      console.log('modificato schemaFieldsValues')
     }
   },
 
@@ -136,10 +141,13 @@ export default {
         }
       },
       error(error) {
-        this.addError(error.message, 'getCmsContentSchema')
+        this.$store.dispatch('errors/addError', {
+          description: error.message,
+          step: 'getCmsContentSchema'
+        })
       },
       result() {
-        this.pppp(this.items, this.schemaFields)
+        this.generateSchemaFieldsValues(this.items, this.schemaFields)
       },
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache'

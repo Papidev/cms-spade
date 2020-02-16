@@ -19,7 +19,7 @@
 <script>
 import 'vue-multiselect/dist/vue-multiselect.min.css'
 import Multiselect from 'vue-multiselect'
-//import { mapState } from 'vuex'
+import { mapActions } from 'vuex'
 import { allSchemaTypes } from '~/apollo/cms/queries/schema'
 import { CMS_MYTYPES_PREFIX } from '~/constants/cms'
 
@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     //...mapState(['datasources']),
-
+    ...mapActions(['errors/addError']),
     myContentTypes() {
       if (this.contentTypes) {
         let arrayTypes = Array.from(this.contentTypes.types)
@@ -67,7 +67,7 @@ export default {
 
       error(error, vm, key) {
         console.log('ERRORE APOLLO ', error, vm, key)
-        this.$store.commit('errors/addError', {
+        this.$store.dispatch('errors/addError', {
           description: error.message,
           step: 'getContentTypes'
         })

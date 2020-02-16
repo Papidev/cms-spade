@@ -20,7 +20,7 @@ no-prototype-builtins */
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 //import helpersFunctions from '~/mixins/helpersFunctions.js'
 import { CMS, WIKI } from '~/constants/'
 
@@ -48,7 +48,7 @@ export default {
   computed: {
     ...mapState(['selectedItem', 'language', 'selectedContentType']),
     ...mapState('datasources', ['sources']),
-    ...mapMutations(['errors/addError']),
+    ...mapActions(['errors/addError']),
 
     items() {
       console.log('ritriggerata items computed property')
@@ -102,7 +102,11 @@ export default {
           source: WIKI
         }
       } catch (error) {
-        this.addError(error.message, 'getWikiContent')
+        this.$store.dispatch('errors/addError', {
+          description: error.message,
+          step: 'getWikiContent'
+        })
+
         return
       } finally {
         this.toggleLoading(WIKI, false)
@@ -151,13 +155,6 @@ export default {
         source: source,
         loadingState: value
       })
-    },
-
-    addError(errorMessage, step) {
-      this.$store.commit('errors/addError', {
-        description: errorMessage,
-        step: step
-      })
     }
   },
 
@@ -174,7 +171,10 @@ export default {
         return !this.selectedItem
       },
       error(error) {
-        this.addError(error.message, 'getCmsContent')
+        this.$store.dispatch('errors/addError', {
+          description: error.message,
+          step: 'getCmsContent'
+        })
       },
 
       result() {},
@@ -190,22 +190,6 @@ export default {
         }
       }
     }
-
-    // contentSchema: {
-    //   prefetch: true,
-    //   query: schemaIntrospection,
-    //   variables() {
-    //     return {
-    //       name: this.selectedContentType.name || ''
-    //     }
-    //   },
-    //   error(error) {
-    //     this.addError(error.message, 'getCmsContentSchema')
-    //   },
-    //   notifyOnNetworkStatusChange: true,
-    //   fetchPolicy: 'no-cache'
-    //   //watchLoading(isLoading) {}
-    // }
   }
 }
 </script>

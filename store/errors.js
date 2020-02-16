@@ -3,8 +3,20 @@ export const state = () => ({
 })
 
 export const mutations = {
-  addError(state, error) {
-    pushError(state.errors, error.description, error.step)
+  pushError(state, error) {
+    let newError = {
+      description: error.description,
+      step: error.step,
+      dateTime: getCurrentDateTime()
+    }
+
+    state.errors.push(newError)
+  }
+}
+
+export const actions = {
+  addError({ commit }, error) {
+    commit('pushError', error)
   }
 }
 
@@ -17,10 +29,6 @@ function getCurrentDateTime() {
   return date + ' ' + time
 }
 
-function pushError(errorStore, errorMessage, errorStep) {
-  let newError = {}
-  newError.description = errorMessage
-  newError.step = errorStep
-  newError.dateTime = getCurrentDateTime()
-  errorStore.push(newError)
-}
+// function pushError(errorStore, errorMessage, errorStep) {
+
+// }
