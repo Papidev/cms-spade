@@ -46,12 +46,12 @@ export default {
   mixins: [helpersFunctions],
 
   props: {
-    item: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
+    // item: {
+    //   type: Object,
+    //   default: () => {
+    //     return {}
+    //   }
+    // },
     items: {
       // array of items [cmsItem,wikiItem,jsonItem]
       type: Array,
@@ -63,19 +63,19 @@ export default {
 
   data: function() {
     return {
-      contentSchema: {},
+      contentTypeSchema: {},
       ignoredSchemaFields: ['_id', 'id', 'createdAt', 'updatedAt'],
-      schemaFieldsValues: []
+      schemaFieldsOccurrences: []
       // schemaFields: []
     }
   },
 
   computed: {
     ...mapState(['selectedContentType']),
-    ...mapActions(['errors/addError']),
+
     schemaFields() {
-      if (this.contentSchema) {
-        let allfields = this.getProp(this.contentSchema, 'fields')
+      if (this.contentTypeSchema) {
+        let allfields = this.getProp(this.contentTypeSchema, 'fields')
 
         allfields = allfields.filter(
           (field) => !this.ignoredSchemaFields.includes(field.name)
@@ -94,10 +94,11 @@ export default {
   },
 
   methods: {
+    ...mapActions(['errors/addError']),
     getOccurrences(propvalue) {
       console.log('partito getOccurrences')
 
-      let found = this.schemaFieldsValues.find(
+      let found = this.schemaFieldsOccurrences.find(
         (item) => item.name === propvalue
       )
 
@@ -115,7 +116,7 @@ export default {
     },
 
     generateSchemaFieldsValues(items, schemaFields) {
-      console.log('start generazione schemaFieldsValues')
+      console.log('start generazione schemaFieldsOccurrences')
       let resultArray = []
       for (let field of schemaFields) {
         let occurrArray = []
@@ -126,13 +127,13 @@ export default {
 
         resultArray.push({ name: field, occurrences: occurrArray })
       }
-      this.schemaFieldsValues = resultArray
-      console.log('modificato schemaFieldsValues')
+      this.schemaFieldsOccurrences = resultArray
+      console.log('modificato schemaFieldsOccurrences')
     }
   },
 
   apollo: {
-    contentSchema: {
+    contentTypeSchema: {
       prefetch: true,
       query: schemaIntrospection,
       variables() {

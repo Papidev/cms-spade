@@ -1,6 +1,6 @@
 query schemaIntrospection($name: String!)
  {
-    contentSchema: __type(name: $name) {
+    contentTypeSchema: __type(name: $name) {
     name
     fields {
       name
