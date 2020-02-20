@@ -52,8 +52,8 @@ export default {
     //     return {}
     //   }
     // },
-    items: {
-      // array of items [cmsItem,wikiItem,jsonItem]
+    contentItems: {
+      // array of contentItems [cmsItem,wikiItem,jsonItem]
       type: Array,
       default: () => {
         return []
@@ -88,7 +88,7 @@ export default {
     }
   },
   watch: {
-    items: function(newItems) {
+    contentItems: function(newItems) {
       this.generateSchemaFieldsValues(newItems, this.schemaFields)
     }
   },
@@ -115,12 +115,12 @@ export default {
       }
     },
 
-    generateSchemaFieldsValues(items, schemaFields) {
+    generateSchemaFieldsValues(contentItems, schemaFields) {
       console.log('start generazione schemaFieldsOccurrences')
       let resultArray = []
       for (let field of schemaFields) {
         let occurrArray = []
-        for (const item of items) {
+        for (const item of contentItems) {
           if (item[field])
             occurrArray.push({ value: item[field], source: item.source })
         }
@@ -148,7 +148,7 @@ export default {
         })
       },
       result() {
-        this.generateSchemaFieldsValues(this.items, this.schemaFields)
+        this.generateSchemaFieldsValues(this.contentItems, this.schemaFields)
       },
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache'

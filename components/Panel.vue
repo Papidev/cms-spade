@@ -3,7 +3,7 @@ no-prototype-builtins */
 <template>
   <section class="flex flex-row bg-gray-200 w-screen">
     <panel-data
-      :items="items"
+      :content-items="contentItems"
       class="w-auto px-4 py-2 m-2"
       @descriptionFound="setItemDescription"
     >
@@ -39,8 +39,6 @@ export default {
     return {
       cmsData: {},
       wikiItem: {},
-
-      // itemInfo: {},
       itemDescription: {}
     }
   },
@@ -48,27 +46,9 @@ export default {
   computed: {
     ...mapState(['selectedItem', 'language', 'selectedContentType']),
     ...mapState('datasources', ['sources']),
-    ...mapActions(['errors/addError']),
 
-    items() {
-      console.log('ritriggerata items computed property')
+    contentItems() {
       return [this.cmsItem, this.wikiItem]
-      // return [
-      //   {
-      //     name: 'Name',
-      //     occurrences: [
-      //       { value: 'paperoga', source: CMS },
-      //       { value: 'filo sganga', source: WIKI }
-      //     ]
-      //   },
-      //   {
-      //     name: 'Identifier',
-      //     occurrences: [
-      //       { value: '100', source: CMS },
-      //       { value: '200', source: WIKI }
-      //     ]
-      //   }
-      // ]
     },
     cmsItem() {
       return this.cmsData ? { ...this.cmsData[0], source: CMS } : {}
@@ -81,8 +61,9 @@ export default {
   },
 
   methods: {
+    ...mapActions(['errors/addError']),
     setItemDescription(descOccurrence) {
-      console.log('setItemDescription')
+      console.group('setItemDescription')
       console.table(descOccurrence[0])
       if (descOccurrence[0]) {
         this.itemDescription = {
