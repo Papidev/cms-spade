@@ -2,9 +2,9 @@
    
      cmsData: places(where: { Name: $name }) {
       id
-      Identifier
-      Name
-      Description
+      identifier: Identifier
+      name: Name
+      description : Description
     }
 
     }

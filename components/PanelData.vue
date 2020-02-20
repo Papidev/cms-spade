@@ -89,15 +89,16 @@ export default {
   },
   watch: {
     contentItems: function(newItems) {
+      console.log('watch contentItems')
+      console.log(newItems)
       this.generateSchemaFieldsValues(newItems, this.schemaFields)
     }
   },
 
   methods: {
     ...mapActions(['errors/addError']),
-    getOccurrences(propvalue) {
-      console.log('partito getOccurrences')
 
+    getOccurrences(propvalue) {
       let found = this.schemaFieldsOccurrences.find(
         (item) => item.name === propvalue
       )
@@ -116,19 +117,24 @@ export default {
     },
 
     generateSchemaFieldsValues(contentItems, schemaFields) {
-      console.log('start generazione schemaFieldsOccurrences')
+      console.log('generateSchemaFieldsValues')
       let resultArray = []
       for (let field of schemaFields) {
         let occurrArray = []
         for (const item of contentItems) {
-          if (item[field])
+          console.log(field)
+          console.log(item.source)
+          console.log(item[field])
+
+          if (item[field]) {
+            if (item.source == CMS) console.log(item[field])
             occurrArray.push({ value: item[field], source: item.source })
+          }
         }
 
         resultArray.push({ name: field, occurrences: occurrArray })
       }
       this.schemaFieldsOccurrences = resultArray
-      console.log('modificato schemaFieldsOccurrences')
     }
   },
 
@@ -147,9 +153,7 @@ export default {
           step: 'getCmsContentSchema'
         })
       },
-      result() {
-        this.generateSchemaFieldsValues(this.contentItems, this.schemaFields)
-      },
+
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache'
     }

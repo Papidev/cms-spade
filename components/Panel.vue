@@ -63,8 +63,6 @@ export default {
   methods: {
     ...mapActions(['errors/addError']),
     setItemDescription(descOccurrence) {
-      console.group('setItemDescription')
-      console.table(descOccurrence[0])
       if (descOccurrence[0]) {
         this.itemDescription = {
           value: descOccurrence[0].value || '',
@@ -157,8 +155,10 @@ export default {
           step: 'getCmsContent'
         })
       },
+      result() {
+        // this.generateSchemaFieldsValues(this.contentItems, this.schemaFields)
+      },
 
-      result() {},
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'no-cache',
       watchLoading(isLoading) {
