@@ -1,3 +1,4 @@
+import helperFunctions from '~/mixins/helpersFunctions.js'
 export default {
   methods: {
     suggestionsSetup(names, descriptions) {
@@ -14,7 +15,8 @@ export default {
     },
 
     getSuggestionName(suggestion) {
-      return suggestion.item.name
+      return helperFunctions.methods.getProp(suggestion, 'name')
+      //suggestion.item.name
     }
   }
 }

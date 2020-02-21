@@ -89,8 +89,6 @@ export default {
   },
   watch: {
     contentItems: function(newItems) {
-      console.log('watch contentItems')
-      console.log(newItems)
       this.generateSchemaFieldsValues(newItems, this.schemaFields)
     }
   },
@@ -117,18 +115,13 @@ export default {
     },
 
     generateSchemaFieldsValues(contentItems, schemaFields) {
-      console.log('generateSchemaFieldsValues')
       let resultArray = []
       for (let field of schemaFields) {
         let occurrArray = []
         for (const item of contentItems) {
-          console.log(field)
-          console.log(item.source)
-          console.log(item[field])
-
           if (item[field]) {
-            if (item.source == CMS) console.log(item[field])
-            occurrArray.push({ value: item[field], source: item.source })
+            if (item.source == CMS)
+              occurrArray.push({ value: item[field], source: item.source })
           }
         }
 

@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="flex">
     <prompter
       ref="autosuggest"
       v-model="elementToSearch"
-      class="bg-green-400 w-full"
+      class=" flex-auto bg-green-400 w-full"
       :suggestions="shownSuggestions"
       :get-suggestion-value="getSuggestionItemName"
       :input-props="{
@@ -21,7 +21,13 @@
         </div>
       </template>
     </prompter>
-
+    <button
+      type="button"
+      class="flex-auto h-auto btn btn-blue"
+      @click="handleButtonClick"
+    >
+      search
+    </button>
     <div v-if="!selectedItem" class="px-4 py-2 m-2">
       <h1>
         Non hai selezionato nulla 😢
@@ -72,6 +78,9 @@ export default {
       setLanguage: 'setLanguage'
     }),
 
+    handleButtonClick() {
+      this.handleSelectedSuggestion(this.$refs.autosuggest._data.internalValue)
+    },
     onKeyDown(e) {
       if (e.keyCode === 13) {
         this.searchWikiSuggestions(this.elementToSearch)
@@ -121,7 +130,8 @@ export default {
         return
       }
 
-      const suggestionName = this.getSuggestionName(suggestion)
+      const suggestionName = this.getSuggestionName(suggestion) || suggestion
+
       console.log(
         `handleSelectedSuggestion : suggestionName --> ${suggestionName}`
       )
@@ -132,3 +142,14 @@ export default {
   }
 }
 </script>
+<style scoped>
+.btn {
+  @apply font-bold py-2 px-4 rounded;
+}
+.btn-blue {
+  @apply bg-blue-500 text-white;
+}
+.btn-blue:hover {
+  @apply bg-blue-700;
+}
+</style>
